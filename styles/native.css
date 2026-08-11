@@ -99,6 +99,15 @@
       color var(--lc-transition-fast);
   }
 
+  /* ── Hover: a guarda precisa ser IDÊNTICA aqui e em toda variante ────────
+     `:not()` herda a especificidade do argumento, então esta guarda dupla vale
+     2 na coluna de classe. Se uma variante guardar só `:not(:disabled)`, ela
+     fica em 3 contra os 4 daqui e PERDE — o botão sólido recebia cinza neutro
+     no hover com o texto ainda branco (1,07:1 no legacy, 1,10:1 no modern:
+     branco no quase-branco). Com a guarda igual em todas, empatam em 4 e as
+     variantes vencem por virem depois neste arquivo. Ao acrescentar variante,
+     copie a guarda inteira.
+     -------------------------------------------------------------------- */
   .lc-btn:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-neutral-fill-quiet);
   }
@@ -122,7 +131,7 @@
     background: var(--lc-color-brand-fill-normal);
     color: var(--lc-color-brand-on-loud);
   }
-  .lc-btn--brand:hover:not(:disabled) {
+  .lc-btn--brand:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-brand-fill-loud);
   }
 
@@ -130,7 +139,7 @@
     background: var(--lc-color-success-fill-normal);
     color: var(--lc-color-success-on-loud);
   }
-  .lc-btn--success:hover:not(:disabled) {
+  .lc-btn--success:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-success-fill-loud);
   }
 
@@ -138,7 +147,7 @@
     background: var(--lc-color-warning-fill-normal);
     color: var(--lc-color-warning-on-loud);
   }
-  .lc-btn--warning:hover:not(:disabled) {
+  .lc-btn--warning:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-warning-fill-loud);
   }
 
@@ -146,7 +155,7 @@
     background: var(--lc-color-danger-fill-normal);
     color: var(--lc-color-danger-on-loud);
   }
-  .lc-btn--danger:hover:not(:disabled) {
+  .lc-btn--danger:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-danger-fill-loud);
   }
 
@@ -156,7 +165,7 @@
     background: transparent;
     color: var(--lc-color-brand-text);
   }
-  .lc-btn--quiet:hover:not(:disabled) {
+  .lc-btn--quiet:hover:not(:disabled):not([aria-disabled='true']) {
     background: var(--lc-color-brand-fill-quiet);
   }
 
