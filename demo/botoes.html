@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Botões — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Botões <span class="doc-selo doc-selo--classe">classe</span></h1>
+      <p class="doc-lede">
+        <code>.lc-btn</code> e cinco variantes. Não existe <code>&lt;lc-button&gt;</code>: botão não
+        tem comportamento, então é classe.
+      </p>
+
+      <h2 class="doc-h2">Variantes</h2>
+      <p>
+        O default é o <code>.btn-default</code> do legado (branco com borda), o segundo mais usado
+        lá. O sólido de marca é <code>.lc-btn--brand</code>, o mais usado de todos.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <button class="lc-btn lc-btn--brand">Salvar</button>
+          <button class="lc-btn">Cancelar</button>
+          <button class="lc-btn lc-btn--quiet">Ver mais</button>
+          <button class="lc-btn lc-btn--success">Aprovar</button>
+          <button class="lc-btn lc-btn--warning">Revisar</button>
+          <button class="lc-btn lc-btn--danger">Excluir</button>
+        </template>
+      </div>
+
+      <p>
+        Passe o mouse nas variantes sólidas: cada uma escurece para a própria cor
+        (<code>fill-loud</code>).
+      </p>
+
+      <h2 class="doc-h2">Tamanhos e estados</h2>
+      <div class="doc-exemplo">
+        <template>
+          <button class="lc-btn lc-btn--sm">Pequeno</button>
+          <button class="lc-btn">Padrão</button>
+          <button class="lc-btn lc-btn--lg">Grande</button>
+          <button class="lc-btn" disabled>Desabilitado</button>
+          <button class="lc-btn lc-btn--brand" aria-disabled="true">aria-disabled</button>
+        </template>
+      </div>
+
+      <p>
+        As duas formas de desabilitar valem: <code>disabled</code> nativo e
+        <code>aria-disabled="true"</code>, para o caso em que o botão precisa continuar focável.
+        Nenhuma das duas reage ao hover.
+      </p>
+
+      <h2 class="doc-h2">Largura total e grupo</h2>
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <button class="lc-btn lc-btn--brand lc-btn--block">Largura total</button>
+            <div class="lc-btn-group">
+              <button class="lc-btn">Dia</button>
+              <button class="lc-btn">Semana</button>
+              <button class="lc-btn">Mês</button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

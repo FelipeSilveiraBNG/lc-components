@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-icon — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">
+        <code>lc-icon</code> <span class="doc-selo doc-selo--componente">comp</span>
+      </h1>
+      <p class="doc-lede">
+        Ícone sempre por componente — nunca SVG inline, nunca emoji. É a regra de ouro nº 6.
+      </p>
+
+      <h2 class="doc-h2">Semântico e decorativo</h2>
+      <p>
+        Com <code>label</code> o ícone é semântico e o leitor de tela anuncia o rótulo. Sem
+        <code>label</code> é decorativo, e o componente o esconde da acessibilidade — o que é o certo
+        quando há texto ao lado dizendo a mesma coisa.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-icon name="user" label="Usuário"></lc-icon>
+          <lc-icon name="calendar"></lc-icon>
+          <lc-icon name="search"></lc-icon>
+          <lc-icon name="check"></lc-icon>
+          <lc-icon name="trash"></lc-icon>
+          <lc-icon name="pencil"></lc-icon>
+          <lc-icon name="plus"></lc-icon>
+          <lc-icon name="chevron-down"></lc-icon>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Biblioteca do Font Awesome 4</h2>
+      <p>
+        <code>library="fa4"</code> aceita os nomes do Font Awesome 4 usados no legado, para portar
+        view sem traduzir cada nome de ícone.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-icon name="fa-times" library="fa4"></lc-icon>
+          <lc-icon name="fa-pencil" library="fa4"></lc-icon>
+          <lc-icon name="fa-trash-o" library="fa4"></lc-icon>
+          <lc-icon name="fa-user" library="fa4"></lc-icon>
+          <lc-icon name="fa-calendar" library="fa4"></lc-icon>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Nome inválido falha alto</h2>
+      <p>
+        Nome inexistente rende um <strong>marcador visível</strong> e um aviso no console — nunca um
+        espaço vazio. Espaço vazio é como ícone quebrado atravessa uma revisão inteira sem ninguém
+        notar.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-icon name="nao-existe"></lc-icon>
+          <lc-icon name="tambem-nao"></lc-icon>
+        </template>
+      </div>
+
+      <div class="lc-alert lc-alert--warning">
+        <lc-icon name="warning"></lc-icon>
+        <span>
+          <strong>Nunca use tag self-closing.</strong>
+          <code>&lt;lc-icon /&gt;</code> faz o parser HTML engolir o resto do markup. Sempre
+          <code>&lt;lc-icon name="x"&gt;&lt;/lc-icon&gt;</code>.
+        </span>
+      </div>
+
+      <p class="lc-quiet">
+        A lista completa de nomes está em <code>components/lc-icon/library.system.js</code>.
+      </p>
+    </main>
+  </body>
+</html>

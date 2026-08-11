@@ -34,7 +34,11 @@ function listarJs(dir) {
   return saida;
 }
 
-const arquivos = listarJs(join(RAIZ, 'components')).sort();
+/* `demo/` entra na varredura porque o casco da documentação virou módulo
+   (demo/docs.js). Enquanto ele era um <script> dentro do index.html, não havia
+   lint que o alcançasse — e foi exatamente ali que passou um erro que derrubava
+   o módulo inteiro. Código que roda merece guarda, esteja em componente ou não. */
+const arquivos = [...listarJs(join(RAIZ, 'components')), ...listarJs(join(RAIZ, 'demo'))].sort();
 const falhas = [];
 
 for (const arquivo of arquivos) {

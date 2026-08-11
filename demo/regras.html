@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Regras de ouro — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Regras de ouro</h1>
+      <p class="doc-lede">
+        São seis, e a primeira explica a arquitetura inteira do kit.
+      </p>
+
+      <h2 class="doc-h2">Classe, não tag</h2>
+      <div class="lc-alert lc-alert--brand">
+        <lc-icon name="info"></lc-icon>
+        <span>
+          <strong>Botão, campo, card, alert, badge e tabela são CLASSE, não tag.</strong>
+          Não existe <code>&lt;lc-button&gt;</code>; existe <code>.lc-btn</code>. Custom element só
+          onde há <em>comportamento</em>.
+        </span>
+      </div>
+      <p>
+        O alvo do kit é reproduzir telas que já existem em HTML simples. Portar uma view do legado
+        tem que ser <strong>renomear classe</strong>, não reescrever em componente — se fosse
+        preciso reescrever, ninguém portaria.
+      </p>
+      <p>
+        Os selos <span class="doc-selo doc-selo--classe">classe</span> e
+        <span class="doc-selo doc-selo--componente">comp</span> na navegação à esquerda marcam de que
+        lado cada coisa está.
+      </p>
+
+      <h2 class="doc-h2">As outras cinco</h2>
+      <ol>
+        <li>
+          <strong>Nunca reestilize componente por dentro.</strong> Use atributo,
+          <code>::part()</code> ou a custom property documentada no JSDoc do componente.
+        </li>
+        <li>
+          <strong>Tag custom nunca é self-closing.</strong>
+          <code>&lt;lc-icon name="x"&gt;&lt;/lc-icon&gt;</code>, jamais
+          <code>&lt;lc-icon /&gt;</code> — o parser HTML engole o resto do markup.
+        </li>
+        <li>
+          <strong>Nenhum valor literal de cor ou medida no protótipo.</strong> Use token
+          (<code>var(--lc-space-m)</code>). Literal quebra na troca de tema, que é a razão de o kit
+          existir.
+        </li>
+        <li><strong>Textos de UI em pt-BR.</strong></li>
+        <li>
+          <strong>Ícone sempre por <code>&lt;lc-icon&gt;</code></strong>, nunca SVG inline nem
+          emoji.
+        </li>
+      </ol>
+
+      <h2 class="doc-h2">Quando a tag aparece como texto cru</h2>
+      <p>Nesta ordem:</p>
+      <ol>
+        <li>
+          <strong>A página está em <code>file://</code>.</strong> ES modules exigem HTTP. Sirva por
+          um servidor.
+        </li>
+        <li>
+          <strong>Caminho errado</strong> do <code>loader.js</code> ou do <code>lc.css</code>.
+          Confira a aba Network.
+        </li>
+        <li>
+          <strong>Erro de sintaxe</strong> em algum componente — a exceção aborta o módulo e nenhuma
+          tag se registra. Rode <code>node tools/check-syntax.mjs</code>.
+        </li>
+        <li><strong>Duas cópias do kit</strong> na página — procure o aviso <code>[lc-bricks]</code> no console.</li>
+        <li><strong>Tag self-closing</strong> — veja a regra 3 acima.</li>
+      </ol>
+    </main>
+  </body>
+</html>

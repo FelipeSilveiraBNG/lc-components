@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-dropdown — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">
+        <code>lc-dropdown</code> <span class="doc-selo doc-selo--componente">comp</span>
+      </h1>
+      <p class="doc-lede">
+        Menu de ações que abre no top layer nativo. Fecha por clique fora e por Esc sozinho, sem uma
+        linha de configuração.
+      </p>
+
+      <h2 class="doc-h2">Menu básico</h2>
+      <p>
+        O gatilho vai no <code>slot="trigger"</code>; os itens são
+        <code>.lc-menu-item</code> soltos. <code>data-variant="danger"</code> tinge o item
+        destrutivo, e <code>&lt;hr&gt;</code> separa grupos.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-dropdown>
+            <button slot="trigger" class="lc-btn">
+              Ações <lc-icon name="chevron-down"></lc-icon>
+            </button>
+            <button class="lc-menu-item" data-value="editar">
+              <lc-icon name="pencil"></lc-icon> Editar
+            </button>
+            <button class="lc-menu-item" data-value="duplicar">
+              <lc-icon name="plus"></lc-icon> Duplicar
+            </button>
+            <hr />
+            <button class="lc-menu-item" data-variant="danger" data-value="excluir">
+              <lc-icon name="trash"></lc-icon> Excluir
+            </button>
+          </lc-dropdown>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Posicionamento</h2>
+      <p>
+        <code>placement</code> aceita <code>bottom-start</code> (default),
+        <code>bottom-end</code>, <code>top-start</code> e <code>top-end</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-dropdown placement="bottom-start">
+            <button slot="trigger" class="lc-btn lc-btn--sm">bottom-start</button>
+            <button class="lc-menu-item" data-value="a">Opção A</button>
+            <button class="lc-menu-item" data-value="b">Opção B</button>
+          </lc-dropdown>
+          <lc-dropdown placement="bottom-end">
+            <button slot="trigger" class="lc-btn lc-btn--sm">bottom-end</button>
+            <button class="lc-menu-item" data-value="a">Opção A</button>
+            <button class="lc-menu-item" data-value="b">Opção B</button>
+          </lc-dropdown>
+          <lc-dropdown placement="top-start">
+            <button slot="trigger" class="lc-btn lc-btn--sm">top-start</button>
+            <button class="lc-menu-item" data-value="a">Opção A</button>
+            <button class="lc-menu-item" data-value="b">Opção B</button>
+          </lc-dropdown>
+        </template>
+      </div>
+
+      <div class="lc-alert lc-alert--success">
+        <lc-icon name="success"></lc-icon>
+        <span>
+          O painel abre no <strong>top layer</strong> nativo: não é recortado por contêiner com
+          overflow, funciona dentro de modal e na última linha de tabela que rola, sem
+          <code>z-index</code>. Era o bug estrutural nº 1 do legado.
+        </span>
+      </div>
+
+      <h2 class="doc-h2">Evento cancelável</h2>
+      <p>
+        Emite <code>lc-select</code> com <code>{ value, item }</code>. É
+        <strong>cancelável</strong>: <code>preventDefault()</code> mantém o menu aberto — útil para
+        item que alterna algo sem fechar.
+      </p>
+
+      <pre class="doc-codigo"><code>document.addEventListener('lc-select', (e) =&gt; {
+  if (e.detail.value === 'colunas') e.preventDefault(); // mantém aberto
+  console.log(e.detail.value);
+});</code></pre>
+    </main>
+  </body>
+</html>

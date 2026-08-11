@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tabela — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Tabela <span class="doc-selo doc-selo--classe">classe</span></h1>
+      <p class="doc-lede">
+        <code>.lc-table</code> mais quatro modificadores: <code>--striped</code>,
+        <code>--hover</code>, <code>--bordered</code> e <code>--condensed</code>.
+      </p>
+
+      <h2 class="doc-h2">Listagem com ações</h2>
+      <p>
+        O menu de ações da última linha usa <strong>top layer</strong>, então não é recortado pela
+        tabela nem por um contêiner com <code>overflow</code>. Abra o da segunda linha para ver.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <table class="lc-table lc-table--striped lc-table--hover">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Paciente</th>
+                  <th>Unidade</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Ana Souza</td>
+                  <td>Hospital Central</td>
+                  <td><span class="lc-badge lc-badge--success">Agendada</span></td>
+                  <td>
+                    <lc-dropdown placement="bottom-end">
+                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                      <button class="lc-menu-item" data-value="ver">Ver</button>
+                      <button class="lc-menu-item" data-value="editar">Editar</button>
+                    </lc-dropdown>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Bruno Lima</td>
+                  <td>Unidade Norte</td>
+                  <td><span class="lc-badge lc-badge--warning">Pendente</span></td>
+                  <td>
+                    <lc-dropdown placement="bottom-end">
+                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                      <button class="lc-menu-item" data-value="ver">Ver</button>
+                      <button class="lc-menu-item" data-variant="danger" data-value="cancelar">
+                        Cancelar
+                      </button>
+                    </lc-dropdown>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Densa e com bordas</h2>
+      <p>
+        <code>--condensed</code> é para tabela de conferência, onde caber mais linha na tela vale
+        mais que respiro.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <table class="lc-table lc-table--bordered lc-table--condensed">
+              <thead>
+                <tr>
+                  <th>Plantão</th>
+                  <th>Entrada</th>
+                  <th>Saída</th>
+                  <th>Horas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Noturno</td>
+                  <td>19:00</td>
+                  <td>07:00</td>
+                  <td>12</td>
+                </tr>
+                <tr>
+                  <td>Diurno</td>
+                  <td>07:00</td>
+                  <td>19:00</td>
+                  <td>12</td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

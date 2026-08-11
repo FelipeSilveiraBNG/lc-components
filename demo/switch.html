@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-switch — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">
+        <code>lc-switch</code> <span class="doc-selo doc-selo--componente">comp</span>
+      </h1>
+      <p class="doc-lede">
+        Interruptor que é cidadão do <code>&lt;form&gt;</code> nativo: entra no
+        <code>FormData</code>, responde a <code>reset()</code> e participa da validação.
+      </p>
+
+      <h2 class="doc-h2">Dentro de um formulário</h2>
+      <p>
+        Desligado <strong>não entra</strong> no <code>FormData</code> — igual ao checkbox nativo, e
+        não um <code>false</code>. Mexa nos interruptores e veja a saída mudar; o
+        <code>Reset</code> volta ao estado que os atributos declaravam.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <form id="form-demo" class="lc-stack">
+              <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
+              <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
+              <lc-switch disabled>Desabilitado</lc-switch>
+              <div class="lc-row">
+                <button class="lc-btn lc-btn--brand lc-btn--sm" type="submit">Enviar</button>
+                <button class="lc-btn lc-btn--sm" type="reset">Reset</button>
+              </div>
+              <output class="lc-hint" id="saida-form">FormData aparece aqui</output>
+            </form>
+          </template>
+        </div>
+      </div>
+
+      <div class="lc-alert lc-alert--success">
+        <lc-icon name="success"></lc-icon>
+        <span>
+          Ser <em>form-associated</em> é o que separa este componente de uma <code>div</code> com
+          aparência de interruptor: o protótipo pode enviar o formulário de verdade e você vê os
+          dados que o backend receberia.
+        </span>
+      </div>
+
+      <h2 class="doc-h2">Evento</h2>
+      <p>
+        Emite <code>lc-change</code> com <code>{ checked, value }</code> em
+        <code>detail</code>. O evento borbulha e atravessa o shadow boundary, então dá para escutar
+        no <code>document</code> ou no <code>&lt;form&gt;</code>.
+      </p>
+
+      <pre class="doc-codigo"><code>document.addEventListener('lc-change', (e) =&gt; {
+  console.log(e.detail.checked, e.detail.value);
+});</code></pre>
+    </main>
+  </body>
+</html>

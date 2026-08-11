@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Campos — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Campos <span class="doc-selo doc-selo--classe">classe</span></h1>
+      <p class="doc-lede">
+        <code>.lc-field</code> agrupa rótulo, controle e mensagem. Input, select e textarea
+        compartilham a mesma altura e o mesmo raio.
+      </p>
+
+      <h2 class="doc-h2">Campo, seleção e erro</h2>
+      <p>
+        <code>.lc-field--error</code> no grupo tinge a borda e libera o <code>.lc-error</code>. O
+        rótulo é <code>&lt;label&gt;</code> de verdade, com <code>for</code> — sem isso o clique no
+        texto não foca o campo e o leitor de tela não anuncia nada.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div class="lc-field">
+              <label class="lc-label" for="nome">Nome do paciente</label>
+              <input class="lc-input" id="nome" placeholder="Digite o nome" />
+            </div>
+            <div class="lc-field">
+              <label class="lc-label" for="uni">Unidade</label>
+              <select class="lc-select" id="uni">
+                <option>Hospital Central</option>
+                <option>Unidade Norte</option>
+              </select>
+            </div>
+            <div class="lc-field lc-field--error">
+              <label class="lc-label" for="cpf">CPF</label>
+              <input class="lc-input" id="cpf" value="123" />
+              <span class="lc-error">CPF inválido.</span>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Dica e texto longo</h2>
+      <p>
+        <code>.lc-hint</code> é a mensagem neutra, para o que não é erro.
+        <code>.lc-textarea</code> nasce com duas linhas e meia de altura e só redimensiona na
+        vertical.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div class="lc-field">
+              <label class="lc-label" for="obs">Observações</label>
+              <textarea class="lc-textarea" id="obs" placeholder="Opcional"></textarea>
+              <span class="lc-hint">Aparece no relatório mensal.</span>
+            </div>
+            <div class="lc-field">
+              <label class="lc-label" for="trav">Convênio</label>
+              <input class="lc-input" id="trav" value="Não editável" disabled />
+            </div>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

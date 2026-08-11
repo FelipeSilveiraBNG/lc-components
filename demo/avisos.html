@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Avisos e chips — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Avisos e chips <span class="doc-selo doc-selo--classe">classe</span></h1>
+      <p class="doc-lede">
+        <code>.lc-alert</code> unifica o <code>.alert</code> e o <code>.callout</code> do legado, que
+        eram a mesma coisa com ênfase diferente.
+      </p>
+
+      <h2 class="doc-h2">Alertas</h2>
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div class="lc-alert">Nenhum registro selecionado.</div>
+            <div class="lc-alert lc-alert--brand">Registro salvo com sucesso.</div>
+            <div class="lc-alert lc-alert--success">Escala publicada.</div>
+            <div class="lc-alert lc-alert--warning">Outro usuário está editando este registro.</div>
+            <div class="lc-alert lc-alert--danger">Falha ao consultar o CEP.</div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Banner</h2>
+      <p>
+        <code>.lc-alert--banner</code> é o antigo <code>.callout</code>: barra na lateral em vez de
+        borda em volta. A barra usa <code>currentColor</code>, então acompanha a variante sem
+        precisar de token próprio.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div class="lc-alert lc-alert--danger lc-alert--banner">
+              Falha ao consultar o CEP.
+            </div>
+            <div class="lc-alert lc-alert--warning lc-alert--banner">
+              A escala deste mês ainda não foi publicada.
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Chips de status</h2>
+      <p>
+        <code>.lc-badge</code> é chip de status, não contador. Raio de pílula, fundo tintado e o
+        texto na cor escura da variante — nunca branco sobre a cor sólida, que não passaria contraste
+        neste tamanho.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <span class="lc-badge lc-badge--success">Ativo</span>
+          <span class="lc-badge lc-badge--warning">Pendente</span>
+          <span class="lc-badge lc-badge--danger">Cancelado</span>
+          <span class="lc-badge lc-badge--brand">Em análise</span>
+          <span class="lc-badge">Inativo</span>
+        </template>
+      </div>
+    </main>
+  </body>
+</html>

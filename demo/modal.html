@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-modal — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">
+        <code>lc-modal</code> <span class="doc-selo doc-selo--componente">comp</span>
+      </h1>
+      <p class="doc-lede">
+        Diálogo sobre <code>&lt;dialog&gt;</code> nativo, com foco preso, fundo escuro e Esc de
+        graça.
+      </p>
+
+      <h2 class="doc-h2">Abrir sem uma linha de JavaScript</h2>
+      <p>
+        <code>data-lc-modal="open &lt;id&gt;"</code> em qualquer elemento abre o modal daquele
+        <code>id</code>; <code>"close &lt;id&gt;"</code> fecha. É o que permite protótipo navegável
+        sem escrever script — e é convenção emprestada do Web Awesome.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <button class="lc-btn lc-btn--brand" data-lc-modal="open m1">Editar paciente</button>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Fechamento cancelável</h2>
+      <p>
+        Fecha pelo ×, pelo clique no fundo e por Esc. Os três passam pelo mesmo evento
+        <code>lc-hide</code>, que é <strong>cancelável</strong> e diz a origem em
+        <code>detail.source</code> — dá para impedir o fechamento quando há alteração não salva, sem
+        precisar interceptar três caminhos diferentes.
+      </p>
+
+      <pre class="doc-codigo"><code>document.getElementById('m1').addEventListener('lc-hide', (e) =&gt; {
+  // Deixa o × fechar sempre; barra fundo e Esc se houver alteração.
+  if (e.detail.source !== 'close-button' &amp;&amp; temAlteracao) e.preventDefault();
+});</code></pre>
+
+      <h2 class="doc-h2">Atributos e medidas</h2>
+      <p>
+        <code>size="small|large"</code>, <code>without-header</code>,
+        <code>without-footer</code> e <code>without-close-button</code>. Para largura fora da escala,
+        as custom properties <code>--width</code> e <code>--max-height</code> — nunca reestilizando
+        por dentro.
+      </p>
+
+      <div class="lc-alert lc-alert--brand">
+        <lc-icon name="info"></lc-icon>
+        <span>
+          O modal aberto tem um <code>lc-dropdown</code> dentro. Abra os dois: o menu não é recortado
+          pelo diálogo, porque os dois estão no top layer. No legado isso exigia
+          <code>z-index</code> e ainda quebrava.
+        </span>
+      </div>
+    </main>
+
+    <lc-modal id="m1" label="Editar paciente">
+      <div class="lc-field">
+        <label class="lc-label" for="m-nome">Nome</label>
+        <input class="lc-input" id="m-nome" value="Ana Souza" autofocus />
+      </div>
+      <div class="lc-field">
+        <label class="lc-label" for="m-uni">Unidade</label>
+        <input class="lc-input" id="m-uni" value="Hospital Central" />
+      </div>
+      <lc-dropdown>
+        <button slot="trigger" class="lc-btn lc-btn--sm">
+          Dropdown dentro do modal <lc-icon name="chevron-down"></lc-icon>
+        </button>
+        <button class="lc-menu-item" data-value="funciona">Funciona</button>
+        <button class="lc-menu-item" data-value="sem-z-index">Sem z-index</button>
+      </lc-dropdown>
+      <div slot="footer">
+        <button class="lc-btn" data-lc-modal="close m1">Cancelar</button>
+        <button class="lc-btn lc-btn--brand" onclick="lc.toast('Salvo.', { variant: 'success' })">
+          Salvar
+        </button>
+      </div>
+    </lc-modal>
+  </body>
+</html>

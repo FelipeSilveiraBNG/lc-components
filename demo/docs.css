@@ -1,0 +1,510 @@
+/* ==========================================================================
+   Layout de DOCUMENTAÇÃO do lc-bricks — inspirado em webawesome.com/docs.
+
+   Três colunas: navegação agrupada à esquerda, prosa no meio, sumário "nesta
+   página" à direita. Cabeçalho de duas faixas, grudado no topo.
+
+   ── Uma folha para TODAS as páginas ─────────────────────────────────────────
+   A documentação é multi-página: cada tópico é um .html carregado de verdade.
+   O casco (cabeçalho, lateral, rodapé) é montado pelo docs.js a partir de uma
+   única lista de navegação, então nenhuma página repete markup de shell — não
+   existe cópia para divergir. Esta folha e aquele módulo são o shell inteiro.
+
+   ── Sobre literais nesta folha ──────────────────────────────────────────────
+   AGENTS.md regra 4 proíbe literal de cor e medida no PROTÓTIPO, e é a regra
+   certa: literal quebra na troca de tema, que é a razão do kit existir. Duas
+   exceções conscientes, ambas de GEOMETRIA DE PÁGINA, não de design:
+
+     1. Largura das colunas (`--doc-lateral`, `--doc-sumario`) e medida de
+        leitura (`68ch`). Não existe token para isso porque não é decisão de
+        tema — é decisão de layout desta documentação.
+     2. A paleta do bloco de código, isolada em `.doc-codigo` e justificada lá.
+
+   Todo o RESTO — cor, espaço, raio, fonte, sombra — sai do contrato.
+   ========================================================================== */
+:root {
+  --doc-lateral: 15rem;
+  --doc-sumario: 14rem;
+  --doc-topo-altura: 6.5rem;
+}
+
+/* ── O modal antes do upgrade ────────────────────────────────────────────────
+   `lc-modal` usa `display: contents` no host, então até os custom elements
+   sofrerem upgrade o conteúdo do modal fica VISÍVEL e focável no fim do
+   documento. Duas consequências ruins: um flash do markup cru, e — a pior — o
+   `autofocus` do campo lá dentro dispara nessa janela e o navegador rola a
+   página até o fim, fazendo a doc abrir no meio.
+
+   `:not(:defined)` casa exatamente nessa janela. Escondido, o campo deixa de
+   ser candidato a `autofocus`, e o problema não acontece em vez de ser desfeito
+   depois — corrigir por `scrollTo` não funciona, porque o flush de `autofocus`
+   do navegador acontece DEPOIS dos scripts de módulo.
+
+   O `autofocus` continua no markup de propósito: é ele que escolhe o foco
+   inicial quando o modal abre de verdade (lc-modal.js:114).
+   -------------------------------------------------------------------------- */
+lc-modal:not(:defined) {
+  display: none;
+}
+
+/* ── Pular para o conteúdo: primeiro foco tabulável da página ────────────── */
+.doc-pular {
+  position: absolute;
+  top: var(--lc-space-xs);
+  left: var(--lc-space-xs);
+  z-index: 3;
+  padding: var(--lc-space-xs) var(--lc-space-s);
+  border-radius: var(--lc-radius-control);
+  background: var(--lc-color-brand-fill-normal);
+  color: var(--lc-color-brand-on-loud);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.doc-pular:focus {
+  transform: none;
+}
+
+/* ══ CABEÇALHO ═══════════════════════════════════════════════════════════════
+   Duas faixas, como no Web Awesome: a de cima carrega a marca, a de baixo a
+   navegação. */
+.doc-topo {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.doc-marca {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-s);
+  padding: var(--lc-space-s) var(--lc-space-l);
+  border-bottom: var(--lc-border-width) solid var(--lc-color-border-quiet);
+  background: var(--lc-color-surface-sunken);
+}
+.doc-marca__nome {
+  /* Sem isto o nome quebra em duas linhas em tela estreita. */
+  white-space: nowrap;
+  color: var(--lc-color-text-normal);
+  font-family: var(--lc-font-family-heading);
+  font-size: var(--lc-font-size-l);
+  font-weight: var(--lc-font-weight-bold);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.doc-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-m);
+  flex-wrap: wrap;
+  padding: var(--lc-space-xs) var(--lc-space-l);
+  border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
+  background: var(--lc-color-surface-card);
+}
+.doc-nav a {
+  padding: var(--lc-space-2xs) 0;
+  border-bottom: 2px solid transparent;
+  color: var(--lc-color-text-normal);
+  font-size: var(--lc-font-size-s);
+  font-weight: var(--lc-font-weight-semibold);
+  text-decoration: none;
+}
+.doc-nav a:hover {
+  color: var(--lc-color-brand-text);
+}
+.doc-nav a[aria-current='true'] {
+  border-bottom-color: var(--lc-color-brand-border);
+  color: var(--lc-color-brand-text);
+}
+
+/* ══ CASCO DE TRÊS COLUNAS ══════════════════════════════════════════════════ */
+.doc-casco {
+  display: grid;
+  grid-template-columns: var(--doc-lateral) minmax(0, 1fr) var(--doc-sumario);
+  gap: var(--lc-space-xl);
+  align-items: start;
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: var(--lc-space-l);
+}
+/* Página curta não ganha sumário: uma coluna com um item só é ruído. */
+.doc-casco--sem-sumario {
+  grid-template-columns: var(--doc-lateral) minmax(0, 1fr);
+}
+
+/* ── Navegação lateral ────────────────────────────────────────────────────── */
+.doc-lateral {
+  position: sticky;
+  top: var(--doc-topo-altura);
+  max-height: calc(100vh - var(--doc-topo-altura) - var(--lc-space-l));
+  overflow-y: auto;
+  padding-inline-end: var(--lc-space-xs);
+}
+.doc-grupo + .doc-grupo {
+  margin-top: var(--lc-space-l);
+}
+.doc-grupo__titulo {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-2xs);
+  margin-bottom: var(--lc-space-xs);
+  color: var(--lc-color-text-normal);
+  font-size: var(--lc-font-size-xs);
+  font-weight: var(--lc-font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.doc-grupo ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  /* A régua vertical que o Web Awesome usa para amarrar o grupo. */
+  border-inline-start: var(--lc-border-width) solid var(--lc-color-border-normal);
+}
+.doc-grupo a {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-2xs);
+  padding: var(--lc-space-2xs) var(--lc-space-s);
+  /* Compensa a régua do <ul> para o acento do item ativo cair sobre ela. */
+  margin-inline-start: calc(-1 * var(--lc-border-width));
+  border-inline-start: 2px solid transparent;
+  color: var(--lc-color-text-normal);
+  font-size: var(--lc-font-size-s);
+  text-decoration: none;
+}
+.doc-grupo a:hover {
+  background: var(--lc-color-neutral-fill-quiet);
+}
+.doc-grupo a[aria-current='page'] {
+  border-inline-start-color: var(--lc-color-brand-border);
+  color: var(--lc-color-brand-text);
+  font-weight: var(--lc-font-weight-semibold);
+}
+
+/* Selo de natureza: o kit distingue CLASSE de COMPONENTE, e essa distinção é a
+   regra de ouro nº 1 do AGENTS.md. Vale na navegação. */
+.doc-selo {
+  padding: 0 var(--lc-space-3xs);
+  border-radius: var(--lc-radius-pill);
+  font-size: var(--lc-font-size-2xs);
+  font-weight: var(--lc-font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+/* Na lateral o selo encosta na direita, alinhando a coluna de selos. No título
+   ele fica junto do texto, então o `auto` não pode ser global. */
+.doc-grupo .doc-selo {
+  margin-inline-start: auto;
+}
+.doc-selo--classe {
+  background: var(--lc-color-neutral-fill-quiet);
+  color: var(--lc-color-neutral-text);
+}
+.doc-selo--componente {
+  background: var(--lc-color-brand-fill-quiet);
+  color: var(--lc-color-brand-text);
+}
+
+/* ── Coluna de prosa ──────────────────────────────────────────────────────── */
+.doc-conteudo {
+  min-width: 0;
+}
+.doc-lede {
+  max-width: 68ch;
+  color: var(--lc-color-text-quiet);
+  font-size: var(--lc-font-size-l);
+  line-height: var(--lc-line-height-relaxed);
+}
+.doc-h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-s);
+  flex-wrap: wrap;
+  /* Sem isto o cabeçalho grudado cobre o título ao pular por âncora. */
+  scroll-margin-top: var(--doc-topo-altura);
+  margin: var(--lc-space-2xl) 0 var(--lc-space-s);
+  font-family: var(--lc-font-family-heading);
+  font-size: var(--lc-font-size-2xl);
+  font-weight: var(--lc-font-weight-bold);
+  line-height: var(--lc-line-height-tight);
+}
+.doc-h3 {
+  scroll-margin-top: var(--doc-topo-altura);
+  margin: var(--lc-space-l) 0 var(--lc-space-xs);
+  font-size: var(--lc-font-size-xl);
+  font-weight: var(--lc-font-weight-semibold);
+}
+.doc-conteudo p,
+.doc-conteudo ol,
+.doc-conteudo ul {
+  max-width: 68ch;
+}
+.doc-conteudo p {
+  margin: 0 0 var(--lc-space-s);
+}
+/* Chip de código inline: fundo tintado, como no Web Awesome. */
+.doc-conteudo :not(pre) > code {
+  padding: 0 var(--lc-space-3xs);
+  border-radius: var(--lc-radius-control);
+  background: var(--lc-color-surface-sunken);
+  color: var(--lc-color-text-normal);
+  font-size: var(--lc-font-size-s);
+}
+/* Âncora do título, revelada no hover — convenção de página de docs. */
+.doc-ancora {
+  color: var(--lc-color-text-quiet);
+  font-size: var(--lc-font-size-m);
+  font-weight: var(--lc-font-weight-normal);
+  text-decoration: none;
+  opacity: 0;
+}
+.doc-h2:hover .doc-ancora,
+.doc-ancora:focus-visible {
+  opacity: 1;
+}
+
+/* ── Exemplo: preview em cima, código embaixo, um bloco só ────────────────── */
+.doc-exemplo {
+  margin: var(--lc-space-m) 0 var(--lc-space-l);
+  border: var(--lc-border-width) solid var(--lc-color-border-normal);
+  border-radius: var(--lc-radius-card);
+  overflow: hidden;
+}
+.doc-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--lc-space-s);
+  flex-wrap: wrap;
+  padding: var(--lc-space-m);
+  background: var(--lc-color-surface-card);
+}
+/* Exemplo de formulário/tabela empilha em vez de enfileirar. */
+.doc-preview--bloco {
+  display: block;
+}
+.doc-exemplo .doc-codigo {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  border-top: var(--lc-border-width) solid var(--lc-color-border-normal);
+}
+
+/* ── Bloco de código ──────────────────────────────────────────────────────────
+   AQUI ficam os únicos literais de cor da folha, e de propósito:
+
+   O contrato não tem superfície escura porque NENHUM dos dois produtos reais
+   tem — inventar `--lc-color-surface-code` seria acrescentar ao contrato uma cor
+   que não foi medida em lugar nenhum, exatamente o que o cabeçalho de
+   primitivos.css proíbe ("nada aqui foi inventado").
+
+   E um bloco de código é deliberadamente IGUAL nos dois temas: ele não
+   representa a tela do produto, representa o código-fonte. Então não ter token é
+   a resposta certa, não uma lacuna.
+
+   Prefixo `--cod-` em vez de `--lc-` para não se passar por contrato.
+   -------------------------------------------------------------------------- */
+.doc-codigo {
+  --cod-fundo: #2b303b;
+  --cod-texto: #e6e9ef;
+  --cod-comentario: #99a3b3;
+  --cod-tag: #7dd3fc;
+  --cod-atributo: #d8b4fe;
+  --cod-texto-string: #9ae6b4;
+
+  position: relative;
+  margin: var(--lc-space-m) 0;
+  padding: var(--lc-space-s) var(--lc-space-m);
+  border-radius: var(--lc-radius-card);
+  background: var(--cod-fundo);
+  color: var(--cod-texto);
+  font-size: var(--lc-font-size-s);
+  line-height: var(--lc-line-height-relaxed);
+  overflow-x: auto;
+  tab-size: 2;
+}
+.doc-codigo code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.tok-comentario {
+  color: var(--cod-comentario);
+}
+.tok-tag {
+  color: var(--cod-tag);
+}
+.tok-atributo {
+  color: var(--cod-atributo);
+}
+.tok-string {
+  color: var(--cod-texto-string);
+}
+.tok-pontuacao {
+  color: var(--cod-comentario);
+}
+
+.doc-copiar {
+  position: absolute;
+  top: var(--lc-space-2xs);
+  right: var(--lc-space-2xs);
+  padding: var(--lc-space-3xs) var(--lc-space-xs);
+  border: var(--lc-border-width) solid rgb(255 255 255 / 0.25);
+  border-radius: var(--lc-radius-control);
+  background: rgb(255 255 255 / 0.1);
+  color: var(--cod-texto);
+  font-family: inherit;
+  font-size: var(--lc-font-size-2xs);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--lc-transition-fast);
+}
+.doc-codigo:hover .doc-copiar,
+.doc-copiar:focus-visible {
+  opacity: 1;
+}
+
+/* ── Sumário "nesta página" ───────────────────────────────────────────────── */
+.doc-sumario {
+  position: sticky;
+  top: var(--doc-topo-altura);
+  max-height: calc(100vh - var(--doc-topo-altura) - var(--lc-space-l));
+  overflow-y: auto;
+  font-size: var(--lc-font-size-s);
+}
+.doc-sumario__titulo {
+  margin-bottom: var(--lc-space-xs);
+  color: var(--lc-color-text-normal);
+  font-size: var(--lc-font-size-xs);
+  font-weight: var(--lc-font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.doc-sumario ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-inline-start: var(--lc-border-width) solid var(--lc-color-border-normal);
+}
+.doc-sumario a {
+  display: block;
+  padding: var(--lc-space-3xs) var(--lc-space-s);
+  margin-inline-start: calc(-1 * var(--lc-border-width));
+  border-inline-start: 2px solid transparent;
+  color: var(--lc-color-text-quiet);
+  text-decoration: none;
+}
+.doc-sumario li li a {
+  padding-inline-start: var(--lc-space-l);
+}
+.doc-sumario a:hover {
+  color: var(--lc-color-text-normal);
+}
+.doc-sumario a[aria-current='true'] {
+  border-inline-start-color: var(--lc-color-brand-border);
+  color: var(--lc-color-brand-text);
+  font-weight: var(--lc-font-weight-semibold);
+}
+
+/* ── Anterior / Próximo ───────────────────────────────────────────────────────
+   Numa doc multi-página isto deixa de ser enfeite: sem ele, terminar de ler uma
+   página é um beco sem saída, e a única saída é voltar para a lateral. */
+.doc-vizinhos {
+  display: flex;
+  gap: var(--lc-space-m);
+  margin-top: var(--lc-space-2xl);
+  padding-top: var(--lc-space-m);
+  border-top: var(--lc-border-width) solid var(--lc-color-border-normal);
+}
+.doc-vizinho {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-3xs);
+  flex: 1 1 0;
+  padding: var(--lc-space-s) var(--lc-space-m);
+  border: var(--lc-border-width) solid var(--lc-color-border-normal);
+  border-radius: var(--lc-radius-card);
+  background: var(--lc-color-surface-card);
+  text-decoration: none;
+}
+.doc-vizinho:hover {
+  border-color: var(--lc-color-brand-border);
+}
+.doc-vizinho--proximo {
+  text-align: end;
+}
+.doc-vizinho__rotulo {
+  color: var(--lc-color-text-quiet);
+  font-size: var(--lc-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.doc-vizinho__titulo {
+  color: var(--lc-color-brand-text);
+  font-weight: var(--lc-font-weight-semibold);
+}
+
+/* ── Tabela de tokens ─────────────────────────────────────────────────────── */
+.doc-amostra-cor {
+  display: inline-block;
+  width: var(--lc-space-m);
+  height: var(--lc-space-m);
+  border: var(--lc-border-width) solid var(--lc-color-border-loud);
+  border-radius: var(--lc-radius-control);
+  vertical-align: middle;
+}
+.doc-valor {
+  color: var(--lc-color-text-quiet);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--lc-font-size-xs);
+}
+
+/* ── Rodapé ───────────────────────────────────────────────────────────────── */
+.doc-rodape {
+  margin-top: var(--lc-space-2xl);
+  border-top: var(--lc-border-width) solid var(--lc-color-border-normal);
+  background: var(--lc-color-surface-card);
+}
+.doc-rodape__interno {
+  display: flex;
+  align-items: baseline;
+  gap: var(--lc-space-m);
+  flex-wrap: wrap;
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: var(--lc-space-m) var(--lc-space-l);
+  font-size: var(--lc-font-size-s);
+}
+
+/* ══ RESPONSIVO ══════════════════════════════════════════════════════════════
+   Duas quebras. O sumário some primeiro: é o mais dispensável, porque repete o
+   que a lateral já dá. A lateral vira faixa no topo do conteúdo em vez de
+   desaparecer — sem ela não há navegação nenhuma. */
+@media (max-width: 68rem) {
+  .doc-casco,
+  .doc-casco--sem-sumario {
+    grid-template-columns: var(--doc-lateral) minmax(0, 1fr);
+  }
+  .doc-sumario {
+    display: none;
+  }
+}
+@media (max-width: 52rem) {
+  .doc-casco,
+  .doc-casco--sem-sumario {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* A tagline é a primeira coisa a sair: em 420px ela ocupava três linhas e
+     empurrava o seletor de tema, que é o controle que importa aqui. */
+  .doc-marca__desc {
+    display: none;
+  }
+  .doc-lateral {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: var(--lc-space-m);
+    border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
+  }
+  .doc-vizinhos {
+    flex-direction: column;
+  }
+}

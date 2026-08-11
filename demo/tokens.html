@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tokens — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Tokens</h1>
+      <p class="doc-lede">
+        O contrato que os dois temas preenchem. Componente nenhum lê valor cru — lê token.
+      </p>
+
+      <h2 class="doc-h2">Valores do tema atual</h2>
+      <p>
+        Os valores abaixo são lidos <strong>ao vivo</strong>, com
+        <code>getComputedStyle</code>. Troque o tema no cabeçalho e a coluna de valor muda junto — é
+        a prova de que o contrato é o que os componentes leem, e não uma tabela de documentação que
+        envelhece em silêncio.
+      </p>
+
+      <table class="lc-table lc-table--condensed lc-table--striped" id="tabela-tokens">
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Valor no tema atual</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="lc-alert">
+        <lc-icon name="info"></lc-icon>
+        <span>
+          <strong>Todo token existe nos dois temas</strong> — o
+          <code>tools/check-contrato.mjs</code> reprova se não. Um token que só um tema define é um
+          buraco que aparece meses depois, na tela que ninguém estava olhando.
+        </span>
+      </div>
+
+      <h2 class="doc-h2">As três camadas</h2>
+      <p>
+        <strong>Primitivos</strong> (<code>tokens/primitivos.css</code>) são escalas cruas, com nome
+        privado <code>--lc-_*</code>. Só os arquivos de tema leem daqui.
+      </p>
+      <p>
+        <strong>Contrato</strong> (<code>styles/temas/*.css</code>) é o conjunto de nomes que os
+        componentes leem. Cada tema define o contrato inteiro.
+      </p>
+      <p>
+        <strong>Consumo</strong> (<code>styles/native.css</code> e os componentes) só lê contrato,
+        nunca primitivo. O <code>check-contrato.mjs</code> reprova quem furar essa separação nos dois
+        sentidos.
+      </p>
+
+      <h2 class="doc-h2">Nomes por papel, não por aparência</h2>
+      <p>
+        <code>--lc-radius-control</code>, não <code>--lc-radius-4px</code>.
+        <code>--lc-color-brand-fill-loud</code>, não <code>--lc-color-azul-escuro</code>. O nome diz
+        onde a coisa é usada, então continua verdadeiro quando o valor muda de tema para tema.
+      </p>
+      <p>
+        Os papéis de cor: <code>fill-quiet</code> (fundo tintado),
+        <code>fill-normal</code> (preenchimento sólido), <code>fill-loud</code> (o sólido em
+        hover), <code>on-loud</code> (texto sobre o sólido), <code>border</code> e
+        <code>text</code> — a cor escurecida o bastante para ser legível como texto.
+      </p>
+    </main>
+  </body>
+</html>

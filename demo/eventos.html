@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eventos — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Eventos</h1>
+      <p class="doc-lede">
+        Todos borbulham e atravessam o shadow boundary — pode escutar no
+        <code>document</code>.
+      </p>
+
+      <h2 class="doc-h2">Tabela</h2>
+      <table class="lc-table lc-table--condensed">
+        <thead>
+          <tr>
+            <th>Evento</th>
+            <th>Origem</th>
+            <th><code>detail</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>lc-change</code></td>
+            <td><code>lc-switch</code></td>
+            <td><code>{ checked, value }</code></td>
+          </tr>
+          <tr>
+            <td><code>lc-select</code></td>
+            <td><code>lc-dropdown</code> — cancelável, mantém aberto</td>
+            <td><code>{ value, item }</code></td>
+          </tr>
+          <tr>
+            <td><code>lc-show</code> / <code>lc-after-show</code></td>
+            <td><code>lc-modal</code>, <code>lc-dropdown</code></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><code>lc-hide</code> / <code>lc-after-hide</code></td>
+            <td>
+              <code>lc-modal</code>, <code>lc-dropdown</code> — <code>lc-hide</code> cancelável
+            </td>
+            <td><code>{ source }</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="doc-h2">Por que atravessar o shadow boundary importa</h2>
+      <p>
+        Um evento que não atravessa obriga quem escuta a alcançar o elemento por dentro do shadow
+        root — que é exatamente o que a regra de ouro nº 2 proíbe. Emitindo com
+        <code>composed</code>, o listener no <code>document</code> basta, e o protótipo não precisa
+        conhecer a estrutura interna de nada.
+      </p>
+
+      <pre class="doc-codigo"><code>// Um listener para todos os menus da página.
+document.addEventListener('lc-select', (e) =&gt; {
+  console.log('ação:', e.detail.value);
+});</code></pre>
+
+      <h2 class="doc-h2">Cancelável é o que salva o protótipo</h2>
+      <p>
+        <code>lc-select</code> e <code>lc-hide</code> são canceláveis. O segundo diz a origem em
+        <code>detail.source</code>, então dá para tratar × diferente de Esc e de clique no fundo com
+        um só listener — em vez de interceptar três caminhos e esquecer um.
+      </p>
+
+      <pre class="doc-codigo"><code>modal.addEventListener('lc-hide', (e) =&gt; {
+  if (e.detail.source !== 'close-button' &amp;&amp; temAlteracao) e.preventDefault();
+});</code></pre>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-toast — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">
+        <code>lc-toast</code> <span class="doc-selo doc-selo--componente">comp</span>
+      </h1>
+      <p class="doc-lede">
+        Notificação chamada por função, não por markup: <code>lc.toast(mensagem, opções)</code>.
+      </p>
+
+      <h2 class="doc-h2">Variantes</h2>
+      <p>
+        <code>brand</code>, <code>success</code>, <code>warning</code>, <code>danger</code> e
+        <code>neutral</code>. <code>title</code> acrescenta uma linha de destaque acima da mensagem.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <button class="lc-btn" onclick="lc.toast('Registro salvo.', { variant: 'success' })">
+            Sucesso
+          </button>
+          <button
+            class="lc-btn"
+            onclick="lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' })"
+          >
+            Erro com título
+          </button>
+          <button class="lc-btn" onclick="lc.toast('Escala em revisão.', { variant: 'warning' })">
+            Aviso
+          </button>
+          <button class="lc-btn" onclick="lc.toast('Sincronizado.', { variant: 'neutral' })">
+            Neutro
+          </button>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Duração</h2>
+      <p>
+        Por padrão fecha sozinho. <code>duration: 0</code> mantém aberto até o usuário fechar — para
+        operação em andamento, onde sumir sozinho seria mentira.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <button class="lc-btn" onclick="lc.toast('Processando…', { duration: 0 })">
+            Não fecha sozinho
+          </button>
+          <button class="lc-btn" onclick="lc.toast('Rápido.', { duration: 1000 })">
+            Um segundo
+          </button>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Acima do modal</h2>
+      <p>
+        O toast aparece <strong>acima de modal aberto</strong>. Sem isso, a confirmação de "salvo"
+        ficaria atrás do diálogo que a provocou — que é justamente o momento em que ela importa.
+      </p>
+
+      <pre class="doc-codigo"><code>lc.toast('Registro salvo.', { variant: 'success' });
+lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' });
+lc.toast('Processando…', { duration: 0 }); // 0 = não fecha sozinho</code></pre>
+    </main>
+  </body>
+</html>
