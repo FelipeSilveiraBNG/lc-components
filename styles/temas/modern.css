@@ -1,0 +1,158 @@
+/* ==========================================================================
+   TEMA `modern` — reproduz o console admin em React (Next 16 + Tailwind v4)
+
+   Ativa com <html data-lc-theme="modern">.
+
+   ── O que este tema É, e o que NÃO é ─────────────────────────────────────
+   É reprodução MEDIDA do que os apps React parecem hoje: slate como neutro,
+   blue-600 como acento, `rounded-lg`, `shadow-sm`, base 14px.
+   Fonte: framework-prototipos/08-levantamento-react.md §3, onde a frequência de
+   classe Tailwind foi contada em 468 arquivos.
+
+   NÃO é a identidade do brandbook (turquesa #3CDBC0 + Poppins). Aquela
+   identidade ainda não tem hierarquia visual definida — decisão registrada em
+   01 §0.4 — e inventá-la aqui seria fixar por acidente de protótipo a primária
+   que ninguém escolheu. Quando a hierarquia existir, ela entra como um TERCEIRO
+   tema (ou como paleta), sem tocar em componente nenhum.
+
+   Ou seja: os dois temas deste kit são reproduções. Nenhum é proposta.
+
+   ── O achado que explica a semelhança de densidade ───────────────────────
+   `--lc-font-size-m` é 14px nos DOIS temas, e isso é dado, não descuido:
+   `text-sm` (14px) + `text-xs` (12px) são 89% dos usos de tamanho nos apps
+   React. Admin é denso nos dois runtimes; o que muda é forma, cor e elevação.
+   A superfície espaçosa (16px, alvo de 48–56px) é a de PACIENTE, e não é este
+   tema. Ver 08 §8.3.
+   ========================================================================== */
+
+[data-lc-theme='modern'] {
+  /* ── Cor: marca — blue-600, o acento de fato (638 usos, 08 §3.2) ─────── */
+  --lc-color-brand-fill-quiet: var(--lc-_azul-50);
+  --lc-color-brand-fill-normal: var(--lc-_azul-600);
+  --lc-color-brand-fill-loud: var(--lc-_azul-700);
+  --lc-color-brand-on-loud: var(--lc-_branco);
+  --lc-color-brand-border: var(--lc-_azul-600);
+  --lc-color-brand-text: var(--lc-_azul-700);
+
+  /* ── Cor: sucesso — emerald (277 usos) ──────────────────────────────── */
+  --lc-color-success-fill-quiet: var(--lc-_esmeralda-50);
+  --lc-color-success-fill-normal: var(--lc-_esmeralda-600);
+  --lc-color-success-fill-loud: #047857;
+  --lc-color-success-on-loud: var(--lc-_branco);
+  --lc-color-success-border: var(--lc-_esmeralda-600);
+  --lc-color-success-text: #047857;
+
+  /* ── Cor: aviso — amber (268 usos) ──────────────────────────────────── */
+  --lc-color-warning-fill-quiet: var(--lc-_ambar-50);
+  --lc-color-warning-fill-normal: var(--lc-_ambar-500);
+  --lc-color-warning-fill-loud: var(--lc-_ambar-600);
+  --lc-color-warning-on-loud: var(--lc-_branco);
+  --lc-color-warning-border: var(--lc-_ambar-500);
+  --lc-color-warning-text: #b45309; /* (derivado) AA sobre branco */
+
+  /* ── Cor: perigo ────────────────────────────────────────────────────── */
+  --lc-color-danger-fill-quiet: var(--lc-_vermelho-50);
+  --lc-color-danger-fill-normal: var(--lc-_vermelho-600);
+  --lc-color-danger-fill-loud: #b91c1c;
+  --lc-color-danger-on-loud: var(--lc-_branco);
+  --lc-color-danger-border: var(--lc-_vermelho-600);
+  --lc-color-danger-text: #b91c1c;
+
+  /* ── Cor: neutro — slate, 82% dos neutros ───────────────────────────── */
+  --lc-color-neutral-fill-quiet: var(--lc-_slate-100);
+  --lc-color-neutral-fill-normal: var(--lc-_slate-200);
+  --lc-color-neutral-fill-loud: var(--lc-_slate-300);
+  --lc-color-neutral-on-loud: var(--lc-_slate-800);
+  --lc-color-neutral-border: var(--lc-_slate-200);
+  --lc-color-neutral-text: var(--lc-_slate-600);
+
+  /* ── Superfície ─────────────────────────────────────────────────────── */
+  --lc-color-surface-page: var(--lc-_slate-50);
+  --lc-color-surface-card: var(--lc-_branco);
+  --lc-color-surface-raised: var(--lc-_branco);
+  --lc-color-surface-sunken: var(--lc-_slate-100);
+  --lc-color-surface-overlay: var(--lc-_overlay-suave);
+
+  /* ── Texto ──────────────────────────────────────────────────────────── */
+  --lc-color-text-normal: var(--lc-_slate-800);
+  --lc-color-text-quiet: var(--lc-_slate-500);
+  --lc-color-text-inverse: var(--lc-_branco);
+  --lc-color-text-link: var(--lc-_azul-600);
+
+  /* ── Borda — border-slate-200 é a borda de fato (374 usos) ──────────── */
+  --lc-color-border-quiet: var(--lc-_slate-100);
+  --lc-color-border-normal: var(--lc-_slate-200);
+  --lc-color-border-loud: var(--lc-_slate-300);
+
+  /* ── Espaço — escala de 4px do Tailwind (p-3/p-4/p-6 medidos) ───────── */
+  --lc-space-3xs: 2px;
+  --lc-space-2xs: 4px;
+  --lc-space-xs: 8px;
+  --lc-space-s: 12px;
+  --lc-space-m: 16px;
+  --lc-space-l: 24px;
+  --lc-space-xl: 32px;
+  --lc-space-2xl: 40px;
+
+  /* ── Forma — rounded-lg (567 usos) e rounded-xl (291) ───────────────── */
+  --lc-radius-control: 8px;
+  --lc-radius-card: 12px;
+  --lc-radius-panel: 12px;
+  --lc-radius-pill: 999px;
+  --lc-border-width: 1px;
+  /* Mais discreta que no legacy: o console React sinaliza estado por tinta de
+     fundo e badge, não por barra grossa. 2px é (derivado). */
+  --lc-accent-bar-width: 2px;
+
+  /* ── Densidade ──────────────────────────────────────────────────────────
+     Altura de controle é DERIVADA: o doc 08 mediu tipografia e padding, não
+     altura de campo. 38px é o que sai de text-sm + padding vertical de 8px.
+     Marcado como derivado para ninguém tratar como medição.
+     ---------------------------------------------------------------------- */
+  --lc-control-height: 38px; /* (derivado) */
+  --lc-control-height-sm: 32px; /* (derivado) */
+  --lc-control-height-lg: 44px; /* (derivado) */
+  --lc-control-padding-x: 12px;
+  --lc-touch-target-min: 38px;
+
+  /* ── Tipografia ─────────────────────────────────────────────────────────
+     O `core-frontend` não carrega webfont: renderiza na stack default do
+     Tailwind (08 §4). Mesma regra do tema legacy — reproduzir o render.
+     ---------------------------------------------------------------------- */
+  --lc-font-family: var(--lc-_stack-sistema);
+  --lc-font-family-heading: var(--lc-_stack-sistema);
+
+  /* 11px é requisito REVELADO: `[11px]` aparece 35× como valor arbitrário
+     porque a escala do Tailwind não tem passo abaixo de text-xs (08 §3.4). */
+  --lc-font-size-2xs: 11px;
+  --lc-font-size-xs: 12px; /* text-xs — 820 usos */
+  --lc-font-size-s: 13px;
+  --lc-font-size-m: 14px; /* text-sm — 1.405 usos, o dominante */
+  --lc-font-size-l: 16px; /* text-base */
+  --lc-font-size-xl: 18px; /* text-lg */
+  --lc-font-size-2xl: 24px; /* text-2xl */
+
+  --lc-line-height-tight: 1.25;
+  --lc-line-height-normal: 1.5;
+  --lc-line-height-relaxed: 1.625;
+
+  /* Os quatro pesos existem de fato: medium 583 usos, semibold 569, bold 138 */
+  --lc-font-weight-normal: 400;
+  --lc-font-weight-medium: 500;
+  --lc-font-weight-semibold: 600;
+  --lc-font-weight-bold: 700;
+
+  /* ── Elevação — shadow-sm domina (185 usos) ─────────────────────────── */
+  --lc-shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --lc-shadow-panel: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --lc-shadow-overlay: 0 20px 25px -5px rgb(0 0 0 / 0.15);
+
+  /* ── Movimento ──────────────────────────────────────────────────────── */
+  --lc-transition-fast: 0.15s ease;
+  --lc-transition-normal: 0.2s ease;
+
+  /* ── Foco — MEDIDO: é o anel global do bng-suite-console (08 §7.6) ──── */
+  --lc-focus-ring-color: var(--lc-_azul-600);
+  --lc-focus-ring-width: 2px;
+  --lc-focus-ring-offset: 2px;
+}

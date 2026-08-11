@@ -1,0 +1,24 @@
+/* ==========================================================================
+   Ordem de precedência das camadas de cascata do lc-bricks.
+
+   Copiado do Web Awesome (src/styles/layers.css), que resolve assim o problema
+   de "quem vence: elemento nativo, utilitário ou tema" — sem !important e sem
+   depender da ordem dos @import.
+
+   lc-native     estilização de elemento nativo (a base de toda tela)
+   lc-utilities  utilitários pontuais; precisam vencer a camada nativa
+
+   O que NÃO está aqui, e por quê:
+
+   - Os TEMAS não usam camada. No Web Awesome eles precisam, porque lá as
+     paletas e temas podem se sobrepor. Aqui os seletores dos dois temas são
+     mutuamente exclusivos (`:root:not([data-lc-theme])` / `[data-lc-theme=x]`),
+     então nunca há disputa e uma camada não resolveria nada que já não esteja
+     resolvido. Ver o cabeçalho de temas/legacy.css.
+
+   - Estilo de COMPONENTE não está aqui porque vive dentro do shadow root, que
+     tem sua própria pilha de camadas. Cada componente declara
+     `@layer lc-component { … }` no próprio arquivo de estilo.
+   ========================================================================== */
+
+@layer lc-native, lc-utilities;

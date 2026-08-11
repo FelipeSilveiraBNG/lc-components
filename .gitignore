@@ -1,0 +1,15 @@
+# O kit não tem package.json de propósito (zero build, zero dependência de
+# runtime). Se alguém instalar algo para experimentar, não versionar.
+node_modules/
+
+# Saída de teste e captura de tela
+*.png
+!demo/**/*.png
+test-results/
+playwright-report/
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp

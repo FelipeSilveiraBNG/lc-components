@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-bricks v0.1.0 — vitrine</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/loader.js"></script>
+    <style>
+      .barra {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        flex-wrap: wrap;
+        padding: var(--lc-space-s) var(--lc-space-m);
+        border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
+        background: var(--lc-color-surface-card);
+      }
+      .grade {
+        display: grid;
+        gap: var(--lc-space-m);
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        align-items: start;
+      }
+      .amostra {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        flex-wrap: wrap;
+      }
+      code {
+        font-size: var(--lc-font-size-xs);
+        color: var(--lc-color-text-quiet);
+      }
+    </style>
+  </head>
+  <body class="lc">
+    <!-- ══ O seletor de tema É o artefato ═══════════════════════════════════
+         Um tema serve para prototipar. Dois servem para ARGUMENTAR: a mesma tela
+         em dois futuros, num clique, na frente de quem decide. Ver doc 07 §1. -->
+    <div class="barra lc-no-print">
+      <strong>lc-bricks v0.1.0</strong>
+      <span class="lc-grow"></span>
+      <span class="lc-quiet">tema:</span>
+      <div class="lc-btn-group">
+        <button class="lc-btn lc-btn--sm lc-btn--brand" id="t-legacy">legacy (PHP)</button>
+        <button class="lc-btn lc-btn--sm" id="t-modern">modern (React)</button>
+      </div>
+    </div>
+
+    <div class="lc-page-body">
+      <h1 class="lc-h1">Vitrine</h1>
+      <p class="lc-quiet" style="max-width: 72ch">
+        Cinco componentes e a camada nativa, nos dois temas. Nada aqui muda de código quando o
+        tema troca — só os tokens. Os dois temas são <strong>reprodução medida</strong>:
+        <code>legacy</code> é o painel PHP (AdminLTE/BS3), <code>modern</code> é o console React
+        (Tailwind/slate). Nenhum dos dois é proposta de design.
+      </p>
+
+      <div class="grade">
+        <!-- ── Camada nativa ──────────────────────────────────────────── -->
+        <div class="lc-card lc-card--brand">
+          <div class="lc-card__header">Botões <code>.lc-btn</code></div>
+          <div class="lc-card__body lc-stack">
+            <div class="amostra">
+              <button class="lc-btn lc-btn--brand">Salvar</button>
+              <button class="lc-btn">Cancelar</button>
+              <button class="lc-btn lc-btn--quiet">Ver mais</button>
+            </div>
+            <div class="amostra">
+              <button class="lc-btn lc-btn--success">Aprovar</button>
+              <button class="lc-btn lc-btn--warning">Revisar</button>
+              <button class="lc-btn lc-btn--danger">Excluir</button>
+            </div>
+            <div class="amostra">
+              <button class="lc-btn lc-btn--sm">Pequeno</button>
+              <button class="lc-btn lc-btn--lg">Grande</button>
+              <button class="lc-btn" disabled>Desabilitado</button>
+            </div>
+            <p class="lc-quiet">
+              Não existe <code>&lt;lc-button&gt;</code>: botão não tem comportamento, então é
+              classe (doc 07 §4.2).
+            </p>
+          </div>
+        </div>
+
+        <div class="lc-card">
+          <div class="lc-card__header">Campos <code>.lc-field</code></div>
+          <div class="lc-card__body">
+            <div class="lc-field">
+              <label class="lc-label" for="nome">Nome do paciente</label>
+              <input class="lc-input" id="nome" placeholder="Digite o nome" />
+            </div>
+            <div class="lc-field">
+              <label class="lc-label" for="uni">Unidade</label>
+              <select class="lc-select" id="uni">
+                <option>Hospital Central</option>
+                <option>Unidade Norte</option>
+              </select>
+            </div>
+            <div class="lc-field lc-field--error">
+              <label class="lc-label" for="cpf">CPF</label>
+              <input class="lc-input" id="cpf" value="123" />
+              <span class="lc-error">CPF inválido.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lc-card">
+          <div class="lc-card__header">Avisos e chips</div>
+          <div class="lc-card__body lc-stack">
+            <div class="lc-alert lc-alert--brand">Registro salvo com sucesso.</div>
+            <div class="lc-alert lc-alert--warning">
+              Outro usuário está editando este registro.
+            </div>
+            <div class="lc-alert lc-alert--danger lc-alert--banner">
+              Falha ao consultar o CEP.
+            </div>
+            <div class="amostra">
+              <span class="lc-badge lc-badge--success">Ativo</span>
+              <span class="lc-badge lc-badge--warning">Pendente</span>
+              <span class="lc-badge lc-badge--danger">Cancelado</span>
+              <span class="lc-badge">Inativo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Componentes ────────────────────────────────────────────── -->
+        <div class="lc-card lc-card--success">
+          <div class="lc-card__header">
+            <span>&lt;lc-switch&gt;</span>
+            <span class="lc-badge lc-badge--brand">form-associated</span>
+          </div>
+          <div class="lc-card__body">
+            <form id="form-demo" class="lc-stack">
+              <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
+              <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
+              <lc-switch disabled>Desabilitado</lc-switch>
+              <div class="amostra">
+                <button class="lc-btn lc-btn--brand lc-btn--sm" type="submit">Enviar</button>
+                <button class="lc-btn lc-btn--sm" type="reset">Reset</button>
+              </div>
+              <output class="lc-hint" id="saida-form">FormData aparece aqui</output>
+            </form>
+          </div>
+        </div>
+
+        <div class="lc-card">
+          <div class="lc-card__header">&lt;lc-dropdown&gt; · &lt;lc-icon&gt;</div>
+          <div class="lc-card__body lc-stack">
+            <div class="amostra">
+              <lc-dropdown>
+                <button slot="trigger" class="lc-btn">
+                  Ações <lc-icon name="chevron-down"></lc-icon>
+                </button>
+                <button class="lc-menu-item" data-value="editar">
+                  <lc-icon name="pencil"></lc-icon> Editar
+                </button>
+                <button class="lc-menu-item" data-value="dup">
+                  <lc-icon name="plus"></lc-icon> Duplicar
+                </button>
+                <hr />
+                <button class="lc-menu-item" data-variant="danger" data-value="excluir">
+                  <lc-icon name="trash"></lc-icon> Excluir
+                </button>
+              </lc-dropdown>
+
+              <lc-dropdown placement="bottom-end">
+                <button slot="trigger" class="lc-btn lc-btn--quiet">Alinhado à direita</button>
+                <button class="lc-menu-item" data-value="a">Opção A</button>
+                <button class="lc-menu-item" data-value="b">Opção B</button>
+              </lc-dropdown>
+            </div>
+            <p class="lc-quiet">
+              O painel abre no <strong>top layer</strong>: não é recortado por contêiner com
+              overflow, funciona dentro de modal e na última linha de tabela. Era o bug
+              estrutural nº 1 do legado.
+            </p>
+            <div class="amostra">
+              <lc-icon name="user" label="Usuário"></lc-icon>
+              <lc-icon name="calendar"></lc-icon>
+              <lc-icon name="search"></lc-icon>
+              <lc-icon name="fa-times" library="fa4"></lc-icon>
+              <lc-icon name="nao-existe"></lc-icon>
+              <code>← o último é nome inválido: marcador visível, nunca vazio</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="lc-card">
+          <div class="lc-card__header">&lt;lc-modal&gt; · &lt;lc-toast&gt;</div>
+          <div class="lc-card__body lc-stack">
+            <div class="amostra">
+              <!-- Abre sem uma linha de JS: invocador por data-attribute -->
+              <button class="lc-btn lc-btn--brand" data-lc-modal="open m1">
+                Abrir modal (sem JS)
+              </button>
+              <button class="lc-btn" onclick="lc.toast('Registro salvo.', { variant: 'success' })">
+                Toast de sucesso
+              </button>
+              <button
+                class="lc-btn"
+                onclick="lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' })"
+              >
+                Toast de erro
+              </button>
+            </div>
+            <p class="lc-quiet">
+              O botão do modal usa <code>data-lc-modal="open m1"</code> — convenção do Web
+              Awesome que permite protótipo navegável sem JavaScript.
+            </p>
+          </div>
+        </div>
+
+        <!-- ── Tabela ─────────────────────────────────────────────────── -->
+        <div class="lc-card" style="grid-column: 1 / -1">
+          <div class="lc-card__header">Tabela <code>.lc-table</code></div>
+          <div class="lc-card__body">
+            <table class="lc-table lc-table--striped lc-table--hover">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Paciente</th>
+                  <th>Unidade</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Ana Souza</td>
+                  <td>Hospital Central</td>
+                  <td><span class="lc-badge lc-badge--success">Agendada</span></td>
+                  <td>
+                    <lc-dropdown placement="bottom-end">
+                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                      <button class="lc-menu-item" data-value="ver">Ver</button>
+                      <button class="lc-menu-item" data-value="editar">Editar</button>
+                    </lc-dropdown>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Bruno Lima</td>
+                  <td>Unidade Norte</td>
+                  <td><span class="lc-badge lc-badge--warning">Pendente</span></td>
+                  <td>
+                    <lc-dropdown placement="bottom-end">
+                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                      <button class="lc-menu-item" data-value="ver">Ver</button>
+                      <button class="lc-menu-item" data-variant="danger" data-value="x">
+                        Cancelar
+                      </button>
+                    </lc-dropdown>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <lc-modal id="m1" label="Editar paciente">
+      <div class="lc-field">
+        <label class="lc-label" for="m-nome">Nome</label>
+        <input class="lc-input" id="m-nome" value="Ana Souza" autofocus />
+      </div>
+      <div class="lc-field">
+        <label class="lc-label" for="m-uni">Unidade</label>
+        <input class="lc-input" id="m-uni" value="Hospital Central" />
+      </div>
+      <p class="lc-quiet">
+        Fecha pelo ×, pelo clique no fundo e por Esc — os três passam pelo mesmo evento
+        cancelável <code>lc-hide</code>, com a origem em <code>detail.source</code>.
+      </p>
+      <lc-dropdown>
+        <button slot="trigger" class="lc-btn lc-btn--sm">Dropdown dentro do modal</button>
+        <button class="lc-menu-item" data-value="1">Funciona</button>
+        <button class="lc-menu-item" data-value="2">Sem z-index</button>
+      </lc-dropdown>
+      <div slot="footer">
+        <button class="lc-btn" data-lc-modal="close m1">Cancelar</button>
+        <button class="lc-btn lc-btn--brand" onclick="lc.toast('Salvo.', { variant: 'success' })">
+          Salvar
+        </button>
+      </div>
+    </lc-modal>
+
+    <script type="module">
+      const root = document.documentElement;
+      const btnLegacy = document.getElementById('t-legacy');
+      const btnModern = document.getElementById('t-modern');
+
+      function aplicar(tema) {
+        root.setAttribute('data-lc-theme', tema);
+        btnLegacy.classList.toggle('lc-btn--brand', tema === 'legacy');
+        btnModern.classList.toggle('lc-btn--brand', tema === 'modern');
+        localStorage.setItem('lc-tema', tema);
+      }
+
+      btnLegacy.addEventListener('click', () => aplicar('legacy'));
+      btnModern.addEventListener('click', () => aplicar('modern'));
+      aplicar(localStorage.getItem('lc-tema') ?? 'legacy');
+
+      // Mostra o FormData para provar que o switch é cidadão do <form> nativo.
+      const form = document.getElementById('form-demo');
+      const saida = document.getElementById('saida-form');
+      function mostrar() {
+        saida.textContent = `FormData: ${JSON.stringify(Object.fromEntries(new FormData(form)))}`;
+      }
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        mostrar();
+      });
+      form.addEventListener('lc-change', mostrar);
+      form.addEventListener('reset', () => setTimeout(mostrar, 0));
+      setTimeout(mostrar, 100);
+
+      document.addEventListener('lc-select', (e) =>
+        lc.toast(`Ação: ${e.detail.value}`, { variant: 'brand' }),
+      );
+    </script>
+  </body>
+</html>

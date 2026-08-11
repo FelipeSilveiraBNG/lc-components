@@ -1,0 +1,78 @@
+/* ==========================================================================
+   PRIMITIVOS — escalas cruas.
+
+   REGRA R1: nenhum componente e nenhuma classe da camada nativa lê um token
+   deste arquivo. Só os arquivos de tema leem daqui.
+
+   O sublinhado no nome (`--lc-_azul-500`) marca "privado". É o que torna a
+   regra verificável: `tools/check-contrato.mjs` reprova qualquer `--lc-_` que
+   apareça fora de tokens/ e styles/temas/.
+
+   Procedência de cada bloco está anotada. Nada aqui foi inventado.
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     LEGADO — medido no backoffice PHP.
+     Fonte: framework-prototipos/01-design-tokens.md (AdminLTE 2.4.2 + BS3)
+     ------------------------------------------------------------------------ */
+  --lc-_ad-azul: #3c8dbc;          /* light-blue — a primária de fato do painel */
+  --lc-_ad-azul-escuro: #367fa9;
+  --lc-_ad-azul-claro: #e8f1f7;    /* derivado p/ fundo tintado (não existe no legado) */
+  --lc-_ad-verde: #00a65a;
+  --lc-_ad-verde-claro: #e0f3ea;   /* derivado */
+  --lc-_ad-amarelo: #f39c12;
+  --lc-_ad-amarelo-claro: #fdf3e3; /* derivado */
+  --lc-_ad-vermelho: #dd4b39;
+  --lc-_ad-vermelho-claro: #fbeae7;/* derivado */
+  --lc-_ad-cinza: #d2d6de;
+  --lc-_ad-cinza-claro: #f7f7f7;
+  --lc-_ad-divisor: #f4f4f4;
+  --lc-_ad-canvas: #ecf0f5;        /* .content-wrapper */
+  --lc-_ad-texto: #333333;
+  --lc-_ad-texto-card: #444444;
+  --lc-_ad-texto-fraco: #999999;
+  --lc-_ad-borda-input: #cccccc;
+
+  /* ------------------------------------------------------------------------
+     MODERNO — medido nos apps React (paleta default do Tailwind, que virou a
+     paleta do produto por omissão).
+     Fonte: framework-prototipos/08-levantamento-react.md §3
+       slate = 82% dos neutros (2.589 usos) · blue = acento (638 usos)
+     Os hex marcados (medido) apareceram literalmente no JSX — §3.4.
+     ------------------------------------------------------------------------ */
+  --lc-_slate-50: #f8fafc;
+  --lc-_slate-100: #f1f5f9;
+  --lc-_slate-200: #e2e8f0;
+  --lc-_slate-300: #cbd5e1;
+  --lc-_slate-400: #94a3b8;
+  --lc-_slate-500: #64748b;        /* (medido) */
+  --lc-_slate-600: #475569;        /* (medido) */
+  --lc-_slate-700: #334155;
+  --lc-_slate-800: #1e293b;        /* (medido) */
+
+  --lc-_azul-50: #eff6ff;          /* (medido) */
+  --lc-_azul-500: #3b82f6;
+  --lc-_azul-600: #2563eb;         /* (medido — o hex nº 1 do JSX, 22 usos) */
+  --lc-_azul-700: #1d4ed8;         /* (medido) */
+
+  --lc-_esmeralda-50: #ecfdf5;
+  --lc-_esmeralda-600: #059669;
+  --lc-_ambar-50: #fffbeb;
+  --lc-_ambar-500: #f59e0b;        /* (medido) */
+  --lc-_ambar-600: #d97706;
+  --lc-_vermelho-50: #fef2f2;
+  --lc-_vermelho-600: #dc2626;     /* (medido) */
+
+  /* ------------------------------------------------------------------------
+     COMUNS
+     ------------------------------------------------------------------------ */
+  --lc-_branco: #ffffff;
+  --lc-_preto: #000000;
+  --lc-_overlay: rgb(0 0 0 / 0.62);       /* legado: custom.css, 6 usos */
+  --lc-_overlay-suave: rgb(15 23 42 / 0.45);
+
+  --lc-_stack-helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --lc-_stack-sistema: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+}

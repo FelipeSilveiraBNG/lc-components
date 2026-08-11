@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teste de recorte de overlay — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+  </head>
+  <body class="lc">
+    <div class="lc-page-body">
+      <h1 class="lc-h1">Recorte de overlay</h1>
+      <p class="lc-quiet" style="max-width: 70ch">
+        O bug estrutural nº 1 do legado (doc 05 §3.7): dropdown recortado por contêiner com
+        <code>overflow</code>, dentro de modal, ou na última linha de uma tabela que rola. O
+        legado precisava de <code>dropdownParent</code> no Select2 e de override de overflow em
+        <code>custom.css:554-578</code>. Aqui o painel vive no top layer.
+      </p>
+
+      <!-- Cenário 1: dentro de contêiner com overflow, na ÚLTIMA linha -->
+      <div class="lc-card">
+        <div class="lc-card__header">Tabela que rola — última linha</div>
+        <div style="max-height: 140px; overflow: auto" id="scroller">
+          <table class="lc-table lc-table--striped">
+            <tbody>
+              <tr><td>Ana Souza</td><td>Agendada</td></tr>
+              <tr><td>Bruno Lima</td><td>Concluída</td></tr>
+              <tr><td>Carla Dias</td><td>Agendada</td></tr>
+              <tr>
+                <td>Último Paciente</td>
+                <td>
+                  <lc-dropdown id="dd-tabela" placement="bottom-end">
+                    <button slot="trigger" class="lc-btn lc-btn--sm">Ações</button>
+                    <button class="lc-menu-item" data-value="editar">Editar</button>
+                    <button class="lc-menu-item" data-value="excluir" data-variant="danger">Excluir</button>
+                  </lc-dropdown>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cenário 2: dentro de modal -->
+      <button class="lc-btn lc-btn--brand" data-lc-modal="open modal-teste">Abrir modal</button>
+      <lc-modal id="modal-teste" label="Dropdown dentro de modal">
+        <p>O painel precisa aparecer acima do modal, e o Esc deve fechar o menu primeiro.</p>
+        <lc-dropdown id="dd-modal">
+          <button slot="trigger" class="lc-btn">Escolher unidade</button>
+          <button class="lc-menu-item" data-value="1">Hospital Central</button>
+          <button class="lc-menu-item" data-value="2">Unidade Norte</button>
+        </lc-dropdown>
+        <div slot="footer">
+          <button class="lc-btn" data-lc-modal="close modal-teste">Fechar</button>
+        </div>
+      </lc-modal>
+
+      <div id="saida"></div>
+    </div>
+
+    <script type="module">
+      import { check, render } from './harness.js';
+
+      const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+      await customElements.whenDefined('lc-dropdown');
+      await customElements.whenDefined('lc-modal');
+      await espera(50);
+
+      /** O painel está inteiro dentro do viewport? */
+      function visivelInteiro(painel) {
+        const r = painel.getBoundingClientRect();
+        return r.width > 0 && r.height > 0 && r.top >= 0 && r.left >= 0 &&
+          r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1;
+      }
+
+      /* ── Cenário 1: última linha de contêiner que rola ─────────────────── */
+      const ddTabela = document.getElementById('dd-tabela');
+      const scroller = document.getElementById('scroller');
+      scroller.scrollTop = scroller.scrollHeight;
+      await espera(30);
+
+      ddTabela.show();
+      await espera(60);
+      const painelTabela = ddTabela.shadowRoot.querySelector('.panel');
+
+      check('Painel abre na última linha de contêiner com overflow', painelTabela.matches(':popover-open'));
+      check('Painel não é recortado pelo contêiner que rola', visivelInteiro(painelTabela),
+        JSON.stringify(painelTabela.getBoundingClientRect().toJSON()));
+
+      /* O teste que prova que o top layer resolveu: o painel renderiza FORA dos
+         limites do contêiner com overflow. Num dropdown comum isso é impossível. */
+      const limiteScroller = scroller.getBoundingClientRect();
+      const rPainel = painelTabela.getBoundingClientRect();
+      check('Painel escapa dos limites do contêiner (é o que o top layer dá)',
+        rPainel.bottom > limiteScroller.bottom || rPainel.top < limiteScroller.top,
+        `painel ${rPainel.top.toFixed(0)}–${rPainel.bottom.toFixed(0)} · contêiner ${limiteScroller.top.toFixed(0)}–${limiteScroller.bottom.toFixed(0)}`);
+
+      ddTabela.hide();
+      await espera(30);
+
+      /* ── Cenário 2: dentro de modal, e a pilha do Esc ──────────────────── */
+      const modal = document.getElementById('modal-teste');
+      const ddModal = document.getElementById('dd-modal');
+
+      modal.show();
+      await espera(60);
+      check('Modal abriu com showModal (top layer)', modal.shadowRoot.querySelector('.dialog').open);
+
+      ddModal.show();
+      await espera(60);
+      const painelModal = ddModal.shadowRoot.querySelector('.panel');
+      check('Dropdown abre dentro do modal', painelModal.matches(':popover-open'));
+      check('Painel do dropdown não é recortado pelo modal', visivelInteiro(painelModal));
+
+      /* ── O Esc é testado pelo DRIVER, não aqui ────────────────────────────
+         Light dismiss de popover e Esc de <dialog> são comportamento nativo,
+         acionado por entrada de teclado REAL. `new KeyboardEvent('keydown')`
+         sintético não dispara nenhum dos dois — medido: a primeira versão deste
+         teste falhava por isso, e a falha era do teste, não do kit.
+
+         Então a asserção mora em tools/run-tests.mjs, que pressiona a tecla de
+         verdade com o Playwright. A página deixa o cenário montado e publica as
+         referências para o driver. */
+      window.__lcEsc = { modal, dropdown: ddModal };
+      check('Cenário de Esc montado para o driver (asserção em tools/run-tests.mjs)',
+        Boolean(window.__lcEsc.modal && window.__lcEsc.dropdown));
+
+      /* ── Cenário 3: os dois temas ─────────────────────────────────────── */
+      document.documentElement.setAttribute('data-lc-theme', 'modern');
+      await espera(30);
+      ddModal.show();
+      await espera(60);
+      check('[modern] painel continua inteiro no viewport', visivelInteiro(painelModal));
+      ddModal.hide();
+      document.documentElement.setAttribute('data-lc-theme', 'legacy');
+
+      modal.hide();
+      await espera(30);
+
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,159 @@
+/* ==========================================================================
+   TEMA `legacy` — reproduz o backoffice PHP (AdminLTE 2.4.2 + Bootstrap 3.3.7)
+
+   É o tema DEFAULT: vale quando não há atributo `data-lc-theme` no <html>.
+
+   Fonte de todo valor: framework-prototipos/01-design-tokens.md, medido no
+   código do legado. Onde um valor foi DERIVADO (porque o legado não tinha),
+   está marcado `(derivado)` com o motivo.
+
+   ── Sobre o seletor ──────────────────────────────────────────────────────
+   `:root:not([data-lc-theme])` em vez de `:root` puro. Assim o seletor deste
+   tema e o do `modern` são MUTUAMENTE EXCLUSIVOS, e a ordem de import entre os
+   dois arquivos deixa de importar. Com `:root` puro, os dois teriam
+   especificidade 0,1,0 e a precedência dependeria da ordem — frágil.
+
+   ── Sobre os papéis de cor ───────────────────────────────────────────────
+   fill-quiet   fundo tintado (alert, badge suave, chip)
+   fill-normal  preenchimento sólido (botão primário)
+   fill-loud    preenchimento sólido em hover/ativo (mais escuro)
+   on-loud      texto/ícone sobre fill-normal e fill-loud
+   border       a cor como borda
+   text         a cor legível como TEXTO sobre superfície clara
+
+   `text` quase nunca é igual a `fill-normal`: #3c8dbc sobre branco dá ~3,0:1,
+   abaixo de AA. Escurecer a cor só para uso em texto é a mesma técnica que o
+   `linkcare-me` já usa (`--lc-teal-ink`, ver 08 §8.2).
+   ========================================================================== */
+
+:root:not([data-lc-theme]),
+[data-lc-theme='legacy'] {
+  /* ── Cor: marca ─────────────────────────────────────────────────────── */
+  --lc-color-brand-fill-quiet: var(--lc-_ad-azul-claro);
+  --lc-color-brand-fill-normal: var(--lc-_ad-azul);
+  --lc-color-brand-fill-loud: var(--lc-_ad-azul-escuro);
+  --lc-color-brand-on-loud: var(--lc-_branco);
+  --lc-color-brand-border: var(--lc-_ad-azul);
+  --lc-color-brand-text: #2b6280; /* (derivado) AA sobre branco */
+
+  /* ── Cor: sucesso ───────────────────────────────────────────────────── */
+  --lc-color-success-fill-quiet: var(--lc-_ad-verde-claro);
+  --lc-color-success-fill-normal: var(--lc-_ad-verde);
+  --lc-color-success-fill-loud: #008d4c;
+  --lc-color-success-on-loud: var(--lc-_branco);
+  --lc-color-success-border: var(--lc-_ad-verde);
+  --lc-color-success-text: #067a44; /* (derivado) AA */
+
+  /* ── Cor: aviso ─────────────────────────────────────────────────────── */
+  --lc-color-warning-fill-quiet: var(--lc-_ad-amarelo-claro);
+  --lc-color-warning-fill-normal: var(--lc-_ad-amarelo);
+  --lc-color-warning-fill-loud: #db8b0b;
+  --lc-color-warning-on-loud: var(--lc-_branco);
+  --lc-color-warning-border: var(--lc-_ad-amarelo);
+  --lc-color-warning-text: #8a5a00; /* (derivado) AA — âmbar exige bem escuro */
+
+  /* ── Cor: perigo ────────────────────────────────────────────────────── */
+  --lc-color-danger-fill-quiet: var(--lc-_ad-vermelho-claro);
+  --lc-color-danger-fill-normal: var(--lc-_ad-vermelho);
+  --lc-color-danger-fill-loud: #d33724;
+  --lc-color-danger-on-loud: var(--lc-_branco);
+  --lc-color-danger-border: var(--lc-_ad-vermelho);
+  --lc-color-danger-text: #b3341f; /* (derivado) AA */
+
+  /* ── Cor: neutro ────────────────────────────────────────────────────── */
+  --lc-color-neutral-fill-quiet: var(--lc-_ad-cinza-claro);
+  --lc-color-neutral-fill-normal: var(--lc-_ad-cinza);
+  --lc-color-neutral-fill-loud: #b5bbc8;
+  /* Texto ESCURO sobre neutro: o `.bg-gray` do AdminLTE usa preto, não branco
+     (01 §1.1). Não é descuido, é o comportamento do legado. */
+  --lc-color-neutral-on-loud: var(--lc-_ad-texto);
+  --lc-color-neutral-border: var(--lc-_ad-cinza);
+  --lc-color-neutral-text: #666666;
+
+  /* ── Superfície ─────────────────────────────────────────────────────── */
+  --lc-color-surface-page: var(--lc-_ad-canvas);
+  --lc-color-surface-card: var(--lc-_branco);
+  --lc-color-surface-raised: var(--lc-_branco);
+  --lc-color-surface-sunken: var(--lc-_ad-cinza-claro);
+  --lc-color-surface-overlay: var(--lc-_overlay);
+
+  /* ── Texto ──────────────────────────────────────────────────────────── */
+  --lc-color-text-normal: var(--lc-_ad-texto);
+  --lc-color-text-quiet: var(--lc-_ad-texto-fraco);
+  --lc-color-text-inverse: var(--lc-_branco);
+  --lc-color-text-link: var(--lc-_ad-azul);
+
+  /* ── Borda ──────────────────────────────────────────────────────────── */
+  --lc-color-border-quiet: var(--lc-_ad-divisor);
+  --lc-color-border-normal: var(--lc-_ad-cinza);
+  --lc-color-border-loud: var(--lc-_ad-borda-input);
+
+  /* ── Espaço — escala real do legado: 5/10/15/20/25 + gutter 30 ──────── */
+  --lc-space-3xs: 2px;
+  --lc-space-2xs: 4px;
+  --lc-space-xs: 5px;
+  --lc-space-s: 10px;
+  --lc-space-m: 15px;
+  --lc-space-l: 20px;
+  --lc-space-xl: 25px;
+  --lc-space-2xl: 30px;
+
+  /* ── Forma — nome por PAPEL, não por tamanho (07 §6.2) ──────────────── */
+  --lc-radius-control: 4px; /* .btn, .form-control */
+  --lc-radius-card: 3px; /* .box */
+  --lc-radius-panel: 4px; /* .portlet */
+  --lc-radius-pill: 999px;
+  --lc-border-width: 1px;
+  /* Barra de acento que sinaliza variante de contêiner. No legado é a borda
+     superior de 3px do `.box` (01 §3.2) — é assim que o painel diz "este card é
+     de aviso". Token porque os dois temas dão peso diferente a ela. */
+  --lc-accent-bar-width: 3px;
+
+  /* ── Densidade ──────────────────────────────────────────────────────── */
+  --lc-control-height: 34px;
+  --lc-control-height-sm: 30px;
+  --lc-control-height-lg: 45px;
+  --lc-control-padding-x: 12px;
+  --lc-touch-target-min: 34px; /* o legado não tem alvo de toque ampliado */
+
+  /* ── Tipografia ─────────────────────────────────────────────────────────
+     O painel DECLARA 'Source Sans Pro' e não carrega webfont nenhuma: renderiza
+     em Helvetica/Arial (01 §2.2). Reproduzir o RENDER, não o código (07 §5.1.1).
+     ---------------------------------------------------------------------- */
+  --lc-font-family: var(--lc-_stack-helvetica);
+  --lc-font-family-heading: var(--lc-_stack-helvetica);
+
+  --lc-font-size-2xs: 10px;
+  --lc-font-size-xs: 11px;
+  --lc-font-size-s: 12px; /* .badge, .btn-sm */
+  --lc-font-size-m: 14px; /* body */
+  --lc-font-size-l: 16px;
+  --lc-font-size-xl: 18px; /* .box-title, .btn-lg */
+  --lc-font-size-2xl: 24px; /* .content-header > h1 */
+
+  --lc-line-height-tight: 1.2;
+  --lc-line-height-normal: 1.42857143; /* o valor exato do Bootstrap 3 */
+  --lc-line-height-relaxed: 1.6;
+
+  /* O legado só tem 400 e 700 (01 §2.1). `medium` existir com o mesmo valor de
+     `normal` é a verdade deste tema, não um esquecimento — o contrato precisa do
+     nome porque o tema `modern` usa 500 de fato. */
+  --lc-font-weight-normal: 400;
+  --lc-font-weight-medium: 400;
+  --lc-font-weight-semibold: 700;
+  --lc-font-weight-bold: 700;
+
+  /* ── Elevação — sombra dura, de 1px ─────────────────────────────────── */
+  --lc-shadow-card: 0 1px 1px rgb(0 0 0 / 0.1);
+  --lc-shadow-panel: 0 1px 3px rgb(0 0 0 / 0.12);
+  --lc-shadow-overlay: 0 5px 15px rgb(0 0 0 / 0.5); /* .modal do BS3 */
+
+  /* ── Movimento ──────────────────────────────────────────────────────── */
+  --lc-transition-fast: 0.15s ease-in-out; /* foco de input */
+  --lc-transition-normal: 0.3s ease-in-out; /* recolher sidebar */
+
+  /* ── Foco — o BS3 usa brilho de box-shadow, não outline ─────────────── */
+  --lc-focus-ring-color: rgb(60 141 188 / 0.6);
+  --lc-focus-ring-width: 3px;
+  --lc-focus-ring-offset: 0px;
+}

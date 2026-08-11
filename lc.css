@@ -1,0 +1,34 @@
+/* ==========================================================================
+   lc-bricks — ponto de entrada de CSS
+   Kit de protótipos do BNG LinkCare. v0.1.0
+
+   Uma linha no <head> carrega tudo:
+     <link rel="stylesheet" href="lc.css">
+
+   Ordem dos imports importa: layers.css declara a ordem de cascata e precisa
+   vir primeiro (@layer só vale se declarado antes do uso).
+
+   Os DOIS temas são carregados sempre. É de propósito: trocar de tema é mudar
+   um atributo no <html>, sem recarregar nada.
+
+     <html data-lc-theme="legacy">   reproduz o painel PHP (AdminLTE/BS3)
+     <html data-lc-theme="modern">   reproduz o console React (Tailwind/slate)
+
+   Sem o atributo, vale legacy.
+   ========================================================================== */
+
+@import url('styles/layers.css');
+
+/* Primitivos: escalas cruas. NENHUM componente lê estes. */
+@import url('tokens/primitivos.css');
+
+/* Temas: cada um define o contrato inteiro. Seletores mutuamente exclusivos,
+   então a ordem entre eles não importa (ver comentário em legacy.css). */
+@import url('styles/temas/legacy.css');
+@import url('styles/temas/modern.css');
+
+/* Camada nativa: estiliza <button>, <input>, <table>… via classes .lc-* */
+@import url('styles/native.css');
+
+/* Utilitários */
+@import url('styles/utilities.css');

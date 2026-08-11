@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teste de tema — lc-bricks</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+  </head>
+  <body class="lc">
+    <div class="lc-page-body">
+      <h1 class="lc-h1">Teste de tema</h1>
+      <p class="lc-quiet" style="max-width: 70ch">
+        É o portão da fase 0 (doc 06). Afirma três coisas: que os dois temas definem o contrato
+        inteiro, que trocar de tema <strong>muda de fato</strong> a aparência, e que as
+        combinações de cor passam contraste. Enquanto isto não valer, a arquitetura de
+        multi-tema existe só no papel.
+      </p>
+      <div id="saida"></div>
+    </div>
+
+    <script type="module">
+      import { check, inherited, render } from './harness.js';
+
+      const root = document.documentElement;
+      const val = (token) => getComputedStyle(root).getPropertyValue(token).trim();
+
+      /* ── Descobre o contrato lendo as folhas de estilo ───────────────────────
+         Sem lista fixa: o teste lê os nomes declarados pelos temas. Assim ele não
+         envelhece quando um token novo entra. */
+      function tokensDeclarados() {
+        const nomes = new Set();
+        const visitar = (sheet) => {
+          let rules;
+          try {
+            rules = sheet.cssRules;
+          } catch {
+            return; // folha cross-origin
+          }
+          for (const rule of rules) {
+            if (rule.styleSheet) visitar(rule.styleSheet); // @import
+            if (rule.selectorText?.includes('lc-theme')) {
+              for (const prop of rule.style) {
+                if (prop.startsWith('--lc-') && !prop.startsWith('--lc-_')) nomes.add(prop);
+              }
+            }
+          }
+        };
+        for (const sheet of document.styleSheets) visitar(sheet);
+        return [...nomes].sort();
+      }
+
+      const contrato = tokensDeclarados();
+      check('O contrato foi descoberto nas folhas de estilo', contrato.length > 50, `${contrato.length} tokens`);
+
+      /* ── 1. Os dois temas definem TUDO ───────────────────────────────────── */
+      for (const tema of ['legacy', 'modern']) {
+        root.setAttribute('data-lc-theme', tema);
+        const vazios = contrato.filter((t) => val(t) === '');
+        check(
+          `Tema "${tema}" define o contrato inteiro`,
+          vazios.length === 0,
+          vazios.length ? `sem valor: ${vazios.join(', ')}` : `${contrato.length} tokens resolvem`,
+        );
+      }
+
+      /* ── 2. Trocar de tema muda de fato ──────────────────────────────────────
+         Sem isto, um tema poderia "existir" copiando o outro, e o swap passaria
+         no teste sem fazer nada. */
+      const devemDiferir = [
+        '--lc-radius-control',
+        '--lc-radius-card',
+        '--lc-control-height',
+        '--lc-shadow-card',
+        '--lc-color-brand-fill-normal',
+        '--lc-color-surface-page',
+        '--lc-color-border-normal',
+        '--lc-font-family',
+        '--lc-space-m',
+        '--lc-accent-bar-width',
+        '--lc-focus-ring-width',
+      ];
+
+      root.setAttribute('data-lc-theme', 'legacy');
+      const antes = Object.fromEntries(devemDiferir.map((t) => [t, val(t)]));
+      root.setAttribute('data-lc-theme', 'modern');
+      const depois = Object.fromEntries(devemDiferir.map((t) => [t, val(t)]));
+
+      const iguais = devemDiferir.filter((t) => antes[t] === depois[t]);
+      check(
+        'Trocar o tema muda forma, densidade, cor, elevação e tipografia',
+        iguais.length === 0,
+        iguais.length ? `não mudaram: ${iguais.join(', ')}` : `${devemDiferir.length} propriedades mudaram`,
+      );
+
+      /* Densidade tipográfica é a exceção MEDIDA: admin é 14px nos dois runtimes
+         (doc 08 §8.3). Afirmar a igualdade evita que alguém "conserte" isso. */
+      root.setAttribute('data-lc-theme', 'legacy');
+      const fonteLegacy = val('--lc-font-size-m');
+      root.setAttribute('data-lc-theme', 'modern');
+      check(
+        'Base tipográfica é 14px nos DOIS temas (achado do doc 08 §8.3, não descuido)',
+        fonteLegacy === val('--lc-font-size-m') && fonteLegacy === '14px',
+        `legacy ${fonteLegacy} · modern ${val('--lc-font-size-m')}`,
+      );
+
+      /* ── 3. Contraste ────────────────────────────────────────────────────── */
+      function luminancia(cor) {
+        const el = document.createElement('div');
+        el.style.color = cor;
+        document.body.append(el);
+        const [r, g, b] = getComputedStyle(el).color.match(/\d+(\.\d+)?/g).map(Number);
+        el.remove();
+        const lin = (c) => {
+          const s = c / 255;
+          return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+        };
+        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      }
+
+      function razao(a, b) {
+        const [l1, l2] = [luminancia(a), luminancia(b)].sort((x, y) => y - x);
+        return (l1 + 0.05) / (l2 + 0.05);
+      }
+
+      const pares = [
+        ['texto normal sobre a página', '--lc-color-text-normal', '--lc-color-surface-page'],
+        ['texto fraco sobre card', '--lc-color-text-quiet', '--lc-color-surface-card'],
+        ['texto de marca sobre card', '--lc-color-brand-text', '--lc-color-surface-card'],
+        ['texto de erro sobre card', '--lc-color-danger-text', '--lc-color-surface-card'],
+        ['texto sobre marca sólida', '--lc-color-brand-on-loud', '--lc-color-brand-fill-normal'],
+      ];
+
+      /* Contraste é `inherited`, não `check`: os dois temas são reprodução MEDIDA
+         do que o produto é hoje, então uma razão baixa aqui é defeito do produto,
+         não do kit. Reprovar a suíte por isso empurraria para "consertar" a cor
+         no tema — e aí o protótipo deixaria de parecer com o sistema que ele
+         existe para representar. A lista alimenta a decisão de design; o veredicto
+         HERDADO mantém tudo visível. Ver o cabeçalho de harness.js. */
+      const pares2 = [
+        ...pares,
+        ['texto sobre aviso sólido', '--lc-color-warning-on-loud', '--lc-color-warning-fill-normal'],
+      ];
+
+      for (const tema of ['legacy', 'modern']) {
+        root.setAttribute('data-lc-theme', tema);
+        for (const [rotulo, fg, bg] of pares2) {
+          const r = razao(val(fg), val(bg));
+          inherited(
+            `[${tema}] ${rotulo} passa AA (4.5:1)`,
+            r >= 4.5,
+            `${r.toFixed(2)}:1 — ${val(fg)} sobre ${val(bg)}`,
+          );
+        }
+      }
+
+      root.setAttribute('data-lc-theme', 'legacy');
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>
