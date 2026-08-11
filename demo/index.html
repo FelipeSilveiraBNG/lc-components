@@ -3,155 +3,886 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>lc-bricks v0.1.0 — vitrine</title>
+    <title>lc-bricks v0.1.0 — documentação</title>
     <link rel="stylesheet" href="../lc.css" />
     <script type="module" src="../components/loader.js"></script>
     <style>
-      .barra {
+      /* ======================================================================
+         Layout de DOCUMENTAÇÃO — inspirado em webawesome.com/docs.
+
+         Três colunas: navegação agrupada à esquerda, prosa no meio, sumário
+         "nesta página" à direita. Cabeçalho de duas faixas, grudado no topo.
+
+         ── Sobre literais nesta folha ────────────────────────────────────────
+         AGENTS.md regra 4 proíbe literal de cor e medida no PROTÓTIPO, e é a
+         regra certa: literal quebra na troca de tema, que é a razão do kit
+         existir. Duas exceções conscientes aqui, ambas de GEOMETRIA DE PÁGINA,
+         não de design:
+
+           1. Largura das colunas (`--doc-lateral`, `--doc-sumario`) e medida de
+              leitura (`68ch`). Não existe token para isso porque não é decisão
+              de tema — é decisão de layout desta página. O arquivo anterior já
+              fazia o mesmo (`minmax(320px, 1fr)`, `max-width: 72ch`).
+           2. A paleta do bloco de código, isolada em `.doc-codigo` e comentada
+              lá embaixo.
+
+         Todo o RESTO — cor, espaço, raio, fonte, sombra — sai do contrato.
+         ====================================================================== */
+      :root {
+        --doc-lateral: 15rem;
+        --doc-sumario: 14rem;
+        --doc-topo-altura: 6.5rem;
+      }
+
+      /* ── O modal antes do upgrade ─────────────────────────────────────────
+         `lc-modal` usa `display: contents` no host, então até os custom
+         elements sofrerem upgrade o conteúdo do modal fica VISÍVEL e focável no
+         fim do documento. Duas consequências ruins: um flash do markup cru, e —
+         a pior — o `autofocus` do campo lá dentro dispara nessa janela e o
+         navegador rola a página até o fim, fazendo a doc abrir no meio.
+
+         `:not(:defined)` casa exatamente nessa janela. Escondido, o campo deixa
+         de ser candidato a `autofocus`, e o problema não acontece em vez de ser
+         desfeito depois — corrigir por `scrollTo` não funciona, porque o flush
+         de `autofocus` do navegador acontece DEPOIS dos scripts de módulo.
+
+         O `autofocus` continua no markup de propósito: é ele que escolhe o foco
+         inicial quando o modal abre de verdade (lc-modal.js:114).
+         -------------------------------------------------------------------- */
+      lc-modal:not(:defined) {
+        display: none;
+      }
+
+      /* ── Pular para o conteúdo: primeiro foco tabulável da página ───────── */
+      .doc-pular {
+        position: absolute;
+        top: var(--lc-space-xs);
+        left: var(--lc-space-xs);
+        z-index: 3;
+        padding: var(--lc-space-xs) var(--lc-space-s);
+        border-radius: var(--lc-radius-control);
+        background: var(--lc-color-brand-fill-normal);
+        color: var(--lc-color-brand-on-loud);
+        text-decoration: none;
+        transform: translateY(-200%);
+      }
+      .doc-pular:focus {
+        transform: none;
+      }
+
+      /* ══ CABEÇALHO ═══════════════════════════════════════════════════════
+         Duas faixas, como no Web Awesome: a de cima carrega a marca, a de
+         baixo a navegação. Grudadas juntas para o sumário à direita ter uma
+         referência estável de offset. */
+      .doc-topo {
         position: sticky;
         top: 0;
-        z-index: 1;
+        z-index: 2;
+      }
+
+      .doc-marca {
         display: flex;
         align-items: center;
         gap: var(--lc-space-s);
+        padding: var(--lc-space-s) var(--lc-space-l);
+        border-bottom: var(--lc-border-width) solid var(--lc-color-border-quiet);
+        background: var(--lc-color-surface-sunken);
+      }
+      .doc-marca__nome {
+        /* Sem isto o nome quebra em duas linhas em tela estreita. */
+        white-space: nowrap;
+        font-family: var(--lc-font-family-heading);
+        font-size: var(--lc-font-size-l);
+        font-weight: var(--lc-font-weight-bold);
+        letter-spacing: 0.02em;
+      }
+
+      .doc-nav {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-m);
         flex-wrap: wrap;
-        padding: var(--lc-space-s) var(--lc-space-m);
+        padding: var(--lc-space-xs) var(--lc-space-l);
         border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
         background: var(--lc-color-surface-card);
       }
-      .grade {
-        display: grid;
-        gap: var(--lc-space-m);
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        align-items: start;
+      .doc-nav a {
+        padding: var(--lc-space-2xs) 0;
+        border-bottom: 2px solid transparent;
+        color: var(--lc-color-text-normal);
+        font-size: var(--lc-font-size-s);
+        font-weight: var(--lc-font-weight-semibold);
+        text-decoration: none;
       }
-      .amostra {
+      .doc-nav a:hover {
+        color: var(--lc-color-brand-text);
+      }
+      .doc-nav a[aria-current='true'] {
+        border-bottom-color: var(--lc-color-brand-border);
+        color: var(--lc-color-brand-text);
+      }
+
+      /* ══ CASCO DE TRÊS COLUNAS ══════════════════════════════════════════ */
+      .doc-casco {
+        display: grid;
+        grid-template-columns: var(--doc-lateral) minmax(0, 1fr) var(--doc-sumario);
+        gap: var(--lc-space-xl);
+        align-items: start;
+        max-width: 84rem;
+        margin: 0 auto;
+        padding: var(--lc-space-l);
+      }
+
+      /* ── Navegação lateral ─────────────────────────────────────────────── */
+      .doc-lateral {
+        position: sticky;
+        top: var(--doc-topo-altura);
+        max-height: calc(100vh - var(--doc-topo-altura) - var(--lc-space-l));
+        overflow-y: auto;
+        padding-inline-end: var(--lc-space-xs);
+      }
+      .doc-grupo + .doc-grupo {
+        margin-top: var(--lc-space-l);
+      }
+      .doc-grupo__titulo {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-2xs);
+        margin-bottom: var(--lc-space-xs);
+        color: var(--lc-color-text-normal);
+        font-size: var(--lc-font-size-xs);
+        font-weight: var(--lc-font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .doc-grupo ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        /* A régua vertical que o Web Awesome usa para amarrar o grupo. */
+        border-inline-start: var(--lc-border-width) solid var(--lc-color-border-normal);
+      }
+      .doc-grupo a {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-2xs);
+        padding: var(--lc-space-2xs) var(--lc-space-s);
+        /* Compensa a régua do <ul> para o acento do item ativo cair sobre ela. */
+        margin-inline-start: calc(-1 * var(--lc-border-width));
+        border-inline-start: 2px solid transparent;
+        color: var(--lc-color-text-normal);
+        font-size: var(--lc-font-size-s);
+        text-decoration: none;
+      }
+      .doc-grupo a:hover {
+        background: var(--lc-color-neutral-fill-quiet);
+      }
+      .doc-grupo a[aria-current='true'] {
+        border-inline-start-color: var(--lc-color-brand-border);
+        color: var(--lc-color-brand-text);
+        font-weight: var(--lc-font-weight-semibold);
+      }
+      /* Selo de natureza: o kit distingue CLASSE de COMPONENTE, e essa
+         distinção é a regra de ouro nº 1 do AGENTS.md. Vale na navegação. */
+      .doc-selo {
+        padding: 0 var(--lc-space-3xs);
+        border-radius: var(--lc-radius-pill);
+        font-size: var(--lc-font-size-2xs);
+        font-weight: var(--lc-font-weight-bold);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      /* Na lateral o selo encosta na direita, alinhando a coluna de selos. No
+         título ele fica junto do texto, então o `auto` não pode ser global. */
+      .doc-grupo .doc-selo {
+        margin-inline-start: auto;
+      }
+      .doc-selo--classe {
+        background: var(--lc-color-neutral-fill-quiet);
+        color: var(--lc-color-neutral-text);
+      }
+      .doc-selo--componente {
+        background: var(--lc-color-brand-fill-quiet);
+        color: var(--lc-color-brand-text);
+      }
+
+      /* ── Coluna de prosa ──────────────────────────────────────────────── */
+      .doc-conteudo {
+        min-width: 0;
+      }
+      .doc-lede {
+        max-width: 68ch;
+        color: var(--lc-color-text-quiet);
+        font-size: var(--lc-font-size-l);
+        line-height: var(--lc-line-height-relaxed);
+      }
+      .doc-secao {
+        /* Sem isto o cabeçalho grudado cobre o título ao pular por âncora. */
+        scroll-margin-top: var(--doc-topo-altura);
+      }
+      .doc-secao + .doc-secao {
+        margin-top: var(--lc-space-2xl);
+        padding-top: var(--lc-space-2xl);
+        border-top: var(--lc-border-width) solid var(--lc-color-border-quiet);
+      }
+      .doc-h2 {
         display: flex;
         align-items: center;
         gap: var(--lc-space-s);
         flex-wrap: wrap;
+        margin: 0 0 var(--lc-space-s);
+        font-family: var(--lc-font-family-heading);
+        font-size: var(--lc-font-size-2xl);
+        font-weight: var(--lc-font-weight-bold);
+        line-height: var(--lc-line-height-tight);
       }
-      code {
-        font-size: var(--lc-font-size-xs);
+      .doc-h3 {
+        margin: var(--lc-space-l) 0 var(--lc-space-xs);
+        font-size: var(--lc-font-size-xl);
+        font-weight: var(--lc-font-weight-semibold);
+      }
+      .doc-conteudo p {
+        max-width: 68ch;
+        margin: 0 0 var(--lc-space-s);
+      }
+      /* Chip de código inline: fundo tintado, como no Web Awesome. */
+      .doc-conteudo :not(pre) > code {
+        padding: 0 var(--lc-space-3xs);
+        border-radius: var(--lc-radius-control);
+        background: var(--lc-color-surface-sunken);
+        color: var(--lc-color-text-normal);
+        font-size: var(--lc-font-size-s);
+      }
+      /* Âncora do título, revelada no hover — convenção de página de docs. */
+      .doc-ancora {
         color: var(--lc-color-text-quiet);
+        font-size: var(--lc-font-size-m);
+        font-weight: var(--lc-font-weight-normal);
+        text-decoration: none;
+        opacity: 0;
+      }
+      .doc-h2:hover .doc-ancora,
+      .doc-ancora:focus-visible {
+        opacity: 1;
+      }
+
+      /* ── Exemplo: preview em cima, código embaixo, um bloco só ─────────── */
+      .doc-exemplo {
+        margin: var(--lc-space-m) 0 var(--lc-space-l);
+        border: var(--lc-border-width) solid var(--lc-color-border-normal);
+        border-radius: var(--lc-radius-card);
+        overflow: hidden;
+      }
+      .doc-preview {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        flex-wrap: wrap;
+        padding: var(--lc-space-m);
+        background: var(--lc-color-surface-card);
+      }
+      /* Exemplo de formulário/tabela empilha em vez de enfileirar. */
+      .doc-preview--bloco {
+        display: block;
+      }
+      .doc-exemplo .doc-codigo {
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        border-top: var(--lc-border-width) solid var(--lc-color-border-normal);
+      }
+
+      /* ── Bloco de código ──────────────────────────────────────────────────
+         AQUI ficam os únicos literais de cor da página, e de propósito:
+
+         O contrato não tem superfície escura porque NENHUM dos dois produtos
+         reais tem — inventar `--lc-color-surface-code` seria acrescentar ao
+         contrato uma cor que não foi medida em lugar nenhum, exatamente o que
+         o cabeçalho de primitivos.css proíbe ("nada aqui foi inventado").
+
+         E um bloco de código é deliberadamente IGUAL nos dois temas: ele não
+         representa a tela do produto, representa o código-fonte. Então não ter
+         token é a resposta certa, não uma lacuna.
+
+         Prefixo `--cod-` em vez de `--lc-` para não se passar por contrato.
+         -------------------------------------------------------------------- */
+      .doc-codigo {
+        --cod-fundo: #2b303b;
+        --cod-texto: #e6e9ef;
+        --cod-comentario: #99a3b3;
+        --cod-tag: #7dd3fc;
+        --cod-atributo: #d8b4fe;
+        --cod-texto-string: #9ae6b4;
+
+        position: relative;
+        margin: var(--lc-space-m) 0;
+        padding: var(--lc-space-s) var(--lc-space-m);
+        border-radius: var(--lc-radius-card);
+        background: var(--cod-fundo);
+        color: var(--cod-texto);
+        font-size: var(--lc-font-size-s);
+        line-height: var(--lc-line-height-relaxed);
+        overflow-x: auto;
+        tab-size: 2;
+      }
+      .doc-codigo code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      .tok-comentario {
+        color: var(--cod-comentario);
+      }
+      .tok-tag {
+        color: var(--cod-tag);
+      }
+      .tok-atributo {
+        color: var(--cod-atributo);
+      }
+      .tok-string {
+        color: var(--cod-texto-string);
+      }
+      .tok-pontuacao {
+        color: var(--cod-comentario);
+      }
+
+      .doc-copiar {
+        position: absolute;
+        top: var(--lc-space-2xs);
+        right: var(--lc-space-2xs);
+        padding: var(--lc-space-3xs) var(--lc-space-xs);
+        border: var(--lc-border-width) solid rgb(255 255 255 / 0.25);
+        border-radius: var(--lc-radius-control);
+        background: rgb(255 255 255 / 0.1);
+        color: var(--cod-texto);
+        font-family: inherit;
+        font-size: var(--lc-font-size-2xs);
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity var(--lc-transition-fast);
+      }
+      .doc-codigo:hover .doc-copiar,
+      .doc-copiar:focus-visible {
+        opacity: 1;
+      }
+
+      /* ── Sumário "nesta página" ───────────────────────────────────────── */
+      .doc-sumario {
+        position: sticky;
+        top: var(--doc-topo-altura);
+        max-height: calc(100vh - var(--doc-topo-altura) - var(--lc-space-l));
+        overflow-y: auto;
+        font-size: var(--lc-font-size-s);
+      }
+      .doc-sumario__titulo {
+        margin-bottom: var(--lc-space-xs);
+        color: var(--lc-color-text-normal);
+        font-size: var(--lc-font-size-xs);
+        font-weight: var(--lc-font-weight-bold);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .doc-sumario ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-inline-start: var(--lc-border-width) solid var(--lc-color-border-normal);
+      }
+      .doc-sumario a {
+        display: block;
+        padding: var(--lc-space-3xs) var(--lc-space-s);
+        margin-inline-start: calc(-1 * var(--lc-border-width));
+        border-inline-start: 2px solid transparent;
+        color: var(--lc-color-text-quiet);
+        text-decoration: none;
+      }
+      .doc-sumario a:hover {
+        color: var(--lc-color-text-normal);
+      }
+      .doc-sumario a[aria-current='true'] {
+        border-inline-start-color: var(--lc-color-brand-border);
+        color: var(--lc-color-brand-text);
+        font-weight: var(--lc-font-weight-semibold);
+      }
+
+      /* ── Tabela de tokens ─────────────────────────────────────────────── */
+      .doc-amostra-cor {
+        display: inline-block;
+        width: var(--lc-space-m);
+        height: var(--lc-space-m);
+        border: var(--lc-border-width) solid var(--lc-color-border-loud);
+        border-radius: var(--lc-radius-control);
+        vertical-align: middle;
+      }
+      .doc-valor {
+        color: var(--lc-color-text-quiet);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: var(--lc-font-size-xs);
+      }
+
+      /* ── Rodapé ───────────────────────────────────────────────────────── */
+      .doc-rodape {
+        margin-top: var(--lc-space-2xl);
+        border-top: var(--lc-border-width) solid var(--lc-color-border-normal);
+        background: var(--lc-color-surface-card);
+      }
+      .doc-rodape__interno {
+        display: flex;
+        align-items: baseline;
+        gap: var(--lc-space-m);
+        flex-wrap: wrap;
+        max-width: 84rem;
+        margin: 0 auto;
+        padding: var(--lc-space-m) var(--lc-space-l);
+        font-size: var(--lc-font-size-s);
+      }
+
+      /* ══ RESPONSIVO ══════════════════════════════════════════════════════
+         Duas quebras. O sumário some primeiro: é o mais dispensável, porque
+         repete o que a lateral já dá. A lateral vira faixa no topo do
+         conteúdo em vez de desaparecer — sem ela não há navegação nenhuma. */
+      @media (max-width: 68rem) {
+        .doc-casco {
+          grid-template-columns: var(--doc-lateral) minmax(0, 1fr);
+        }
+        .doc-sumario {
+          display: none;
+        }
+      }
+      @media (max-width: 52rem) {
+        .doc-casco {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        /* A tagline é a primeira coisa a sair: em 420px ela ocupava três linhas
+           e empurrava o seletor de tema, que é o controle que importa aqui. */
+        .doc-marca__desc {
+          display: none;
+        }
+        .doc-lateral {
+          position: static;
+          max-height: none;
+          overflow: visible;
+          padding-bottom: var(--lc-space-m);
+          border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
+        }
       }
     </style>
   </head>
+
   <body class="lc">
-    <!-- ══ O seletor de tema É o artefato ═══════════════════════════════════
-         Um tema serve para prototipar. Dois servem para ARGUMENTAR: a mesma tela
-         em dois futuros, num clique, na frente de quem decide. Ver doc 07 §1. -->
-    <div class="barra lc-no-print">
-      <strong>lc-bricks v0.1.0</strong>
-      <span class="lc-grow"></span>
-      <span class="lc-quiet">tema:</span>
-      <div class="lc-btn-group">
-        <button class="lc-btn lc-btn--sm lc-btn--brand" id="t-legacy">legacy (PHP)</button>
-        <button class="lc-btn lc-btn--sm" id="t-modern">modern (React)</button>
+    <a class="doc-pular" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="doc-topo lc-no-print">
+      <div class="doc-marca">
+        <span class="doc-marca__nome">lc-bricks</span>
+        <span class="lc-badge">v0.1.0</span>
+        <span class="lc-quiet doc-marca__desc">kit de protótipos do BNG LinkCare</span>
+
+        <span class="lc-grow"></span>
+
+        <!-- ══ O seletor de tema É o artefato ═══════════════════════════════
+             Um tema serve para prototipar. Dois servem para ARGUMENTAR: a mesma
+             tela em dois futuros, num clique, na frente de quem decide. -->
+        <span class="lc-quiet">tema:</span>
+        <div class="lc-btn-group">
+          <button class="lc-btn lc-btn--sm lc-btn--brand" id="t-legacy">legacy (PHP)</button>
+          <button class="lc-btn lc-btn--sm" id="t-modern">modern (React)</button>
+        </div>
       </div>
-    </div>
 
-    <div class="lc-page-body">
-      <h1 class="lc-h1">Vitrine</h1>
-      <p class="lc-quiet" style="max-width: 72ch">
-        Cinco componentes e a camada nativa, nos dois temas. Nada aqui muda de código quando o
-        tema troca — só os tokens. Os dois temas são <strong>reprodução medida</strong>:
-        <code>legacy</code> é o painel PHP (AdminLTE/BS3), <code>modern</code> é o console React
-        (Tailwind/slate). Nenhum dos dois é proposta de design.
-      </p>
+      <nav class="doc-nav" aria-label="Seções principais">
+        <a href="#instalacao">Começando</a>
+        <a href="#botoes">Camada nativa</a>
+        <a href="#switch">Componentes</a>
+        <a href="#tokens">Tokens</a>
+        <span class="lc-grow"></span>
+        <a href="../test/tema.html">Suíte de testes</a>
+      </nav>
+    </header>
 
-      <div class="grade">
-        <!-- ── Camada nativa ──────────────────────────────────────────── -->
-        <div class="lc-card lc-card--brand">
-          <div class="lc-card__header">Botões <code>.lc-btn</code></div>
-          <div class="lc-card__body lc-stack">
-            <div class="amostra">
+    <div class="doc-casco">
+      <!-- ══ NAVEGAÇÃO LATERAL ═══════════════════════════════════════════ -->
+      <aside class="doc-lateral lc-no-print">
+        <nav aria-label="Navegação da documentação" id="lateral">
+          <div class="doc-grupo">
+            <div class="doc-grupo__titulo">
+              <lc-icon name="info"></lc-icon> Começando
+            </div>
+            <ul>
+              <li><a href="#instalacao">Instalação</a></li>
+              <li><a href="#uso">Regras de ouro</a></li>
+            </ul>
+          </div>
+
+          <div class="doc-grupo">
+            <div class="doc-grupo__titulo">
+              <lc-icon name="check"></lc-icon> Camada nativa
+            </div>
+            <ul>
+              <li>
+                <a href="#botoes">Botões <span class="doc-selo doc-selo--classe">classe</span></a>
+              </li>
+              <li>
+                <a href="#campos">Campos <span class="doc-selo doc-selo--classe">classe</span></a>
+              </li>
+              <li>
+                <a href="#avisos"
+                  >Avisos e chips <span class="doc-selo doc-selo--classe">classe</span></a
+                >
+              </li>
+              <li>
+                <a href="#tabela">Tabela <span class="doc-selo doc-selo--classe">classe</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-grupo">
+            <div class="doc-grupo__titulo">
+              <lc-icon name="plus"></lc-icon> Componentes
+            </div>
+            <ul>
+              <li>
+                <a href="#switch"
+                  >lc-switch <span class="doc-selo doc-selo--componente">comp</span></a
+                >
+              </li>
+              <li>
+                <a href="#dropdown"
+                  >lc-dropdown <span class="doc-selo doc-selo--componente">comp</span></a
+                >
+              </li>
+              <li>
+                <a href="#icone">lc-icon <span class="doc-selo doc-selo--componente">comp</span></a>
+              </li>
+              <li>
+                <a href="#modal">lc-modal <span class="doc-selo doc-selo--componente">comp</span></a>
+              </li>
+              <li>
+                <a href="#toast">lc-toast <span class="doc-selo doc-selo--componente">comp</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="doc-grupo">
+            <div class="doc-grupo__titulo">
+              <lc-icon name="search"></lc-icon> Referência
+            </div>
+            <ul>
+              <li><a href="#tokens">Tokens</a></li>
+              <li><a href="#eventos">Eventos</a></li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- ══ CONTEÚDO ════════════════════════════════════════════════════ -->
+      <main class="doc-conteudo" id="conteudo">
+        <h1 class="lc-h1">Documentação</h1>
+        <p class="doc-lede">
+          Cinco componentes e uma camada nativa, nos dois temas. Nada nesta página muda de código
+          quando o tema troca — só os tokens.
+        </p>
+
+        <!-- ── Instalação ──────────────────────────────────────────────── -->
+        <section class="doc-secao" id="instalacao">
+          <h2 class="doc-h2">
+            Instalação <a class="doc-ancora" href="#instalacao" aria-label="Link para Instalação">#</a>
+          </h2>
+          <p>
+            Uma linha de CSS e uma de JavaScript. Sem build, sem
+            <code>package.json</code>, sem dependência de runtime. A página
+            <strong>precisa ser servida por HTTP</strong> — ES modules não funcionam em
+            <code>file://</code>.
+          </p>
+
+          <pre class="doc-codigo"><code>&lt;!doctype html&gt;
+&lt;html lang="pt-BR" data-lc-theme="legacy"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
+    &lt;link rel="stylesheet" href="../lc.css" /&gt;
+    &lt;script type="module" src="../components/loader.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body class="lc"&gt;
+    &lt;div class="lc-page-body"&gt;…&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+          <div class="lc-alert lc-alert--warning">
+            <lc-icon name="warning"></lc-icon>
+            <span>
+              <code>class="lc"</code> no <code>&lt;body&gt;</code> é o que aplica fundo, cor e
+              tipografia do tema. Sem ela a página fica branca com Times New Roman.
+            </span>
+          </div>
+
+          <p>
+            O atributo <code>data-lc-theme</code> no <code>&lt;html&gt;</code> escolhe o tema:
+            <code>legacy</code> reproduz o painel PHP (AdminLTE/BS3), <code>modern</code> reproduz o
+            console React (Tailwind/slate). Sem o atributo, vale <code>legacy</code>. Os dois temas
+            são carregados sempre — trocar é mudar um atributo, sem recarregar nada.
+          </p>
+        </section>
+
+        <!-- ── Regras de ouro ──────────────────────────────────────────── -->
+        <section class="doc-secao" id="uso">
+          <h2 class="doc-h2">
+            Regras de ouro <a class="doc-ancora" href="#uso" aria-label="Link para Regras de ouro">#</a>
+          </h2>
+          <p>
+            São seis, e a primeira explica a arquitetura inteira do kit. Os selos
+            <span class="doc-selo doc-selo--classe">classe</span> e
+            <span class="doc-selo doc-selo--componente">comp</span> na navegação à esquerda marcam
+            de que lado cada coisa está.
+          </p>
+
+          <div class="lc-alert lc-alert--brand">
+            <lc-icon name="info"></lc-icon>
+            <span>
+              <strong>Botão, campo, card, alert, badge e tabela são CLASSE, não tag.</strong>
+              Não existe <code>&lt;lc-button&gt;</code>; existe <code>.lc-btn</code>. Custom element
+              só onde há <em>comportamento</em>. O alvo do kit é reproduzir telas que já existem em
+              HTML simples: portar uma view do legado tem que ser renomear classe, não reescrever em
+              componente.
+            </span>
+          </div>
+
+          <ol>
+            <li>Nunca reestilize componente por dentro — use atributo, <code>::part()</code> ou a custom property documentada.</li>
+            <li>
+              Tag custom nunca é self-closing. <code>&lt;lc-icon name="x"&gt;&lt;/lc-icon&gt;</code>,
+              jamais <code>&lt;lc-icon /&gt;</code> — o parser engole o resto do markup.
+            </li>
+            <li>
+              Nenhum valor literal de cor ou medida no protótipo. Use token
+              (<code>var(--lc-space-m)</code>). Literal quebra na troca de tema, que é a razão de o
+              kit existir.
+            </li>
+            <li>Textos de UI em pt-BR.</li>
+            <li>Ícone sempre por <code>&lt;lc-icon&gt;</code>, nunca SVG inline nem emoji.</li>
+          </ol>
+        </section>
+
+        <!-- ── Botões ──────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="botoes">
+          <h2 class="doc-h2">
+            Botões
+            <span class="doc-selo doc-selo--classe">classe</span>
+            <a class="doc-ancora" href="#botoes" aria-label="Link para Botões">#</a>
+          </h2>
+          <p>
+            O default é o <code>.btn-default</code> do legado (branco com borda), o segundo mais
+            usado lá. O sólido de marca é <code>.lc-btn--brand</code>, o mais usado de todos.
+          </p>
+
+          <div class="doc-exemplo">
+            <template>
               <button class="lc-btn lc-btn--brand">Salvar</button>
               <button class="lc-btn">Cancelar</button>
               <button class="lc-btn lc-btn--quiet">Ver mais</button>
-            </div>
-            <div class="amostra">
               <button class="lc-btn lc-btn--success">Aprovar</button>
               <button class="lc-btn lc-btn--warning">Revisar</button>
               <button class="lc-btn lc-btn--danger">Excluir</button>
-            </div>
-            <div class="amostra">
+            </template>
+          </div>
+
+          <h3 class="doc-h3">Tamanhos e estados</h3>
+          <div class="doc-exemplo">
+            <template>
               <button class="lc-btn lc-btn--sm">Pequeno</button>
+              <button class="lc-btn">Padrão</button>
               <button class="lc-btn lc-btn--lg">Grande</button>
               <button class="lc-btn" disabled>Desabilitado</button>
-            </div>
-            <p class="lc-quiet">
-              Não existe <code>&lt;lc-button&gt;</code>: botão não tem comportamento, então é
-              classe (doc 07 §4.2).
-            </p>
+              <button class="lc-btn lc-btn--brand" aria-disabled="true">aria-disabled</button>
+            </template>
           </div>
-        </div>
 
-        <div class="lc-card">
-          <div class="lc-card__header">Campos <code>.lc-field</code></div>
-          <div class="lc-card__body">
-            <div class="lc-field">
-              <label class="lc-label" for="nome">Nome do paciente</label>
-              <input class="lc-input" id="nome" placeholder="Digite o nome" />
-            </div>
-            <div class="lc-field">
-              <label class="lc-label" for="uni">Unidade</label>
-              <select class="lc-select" id="uni">
-                <option>Hospital Central</option>
-                <option>Unidade Norte</option>
-              </select>
-            </div>
-            <div class="lc-field lc-field--error">
-              <label class="lc-label" for="cpf">CPF</label>
-              <input class="lc-input" id="cpf" value="123" />
-              <span class="lc-error">CPF inválido.</span>
+          <p>
+            Passe o mouse nas variantes sólidas: cada uma escurece para a própria cor
+            (<code>fill-loud</code>), e as desabilitadas não reagem.
+          </p>
+        </section>
+
+        <!-- ── Campos ──────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="campos">
+          <h2 class="doc-h2">
+            Campos
+            <span class="doc-selo doc-selo--classe">classe</span>
+            <a class="doc-ancora" href="#campos" aria-label="Link para Campos">#</a>
+          </h2>
+          <p>
+            <code>.lc-field</code> agrupa rótulo, controle e mensagem.
+            <code>.lc-field--error</code> no grupo tinge a borda e libera o
+            <code>.lc-error</code>.
+          </p>
+
+          <div class="doc-exemplo">
+            <div class="doc-preview doc-preview--bloco">
+              <template>
+                <div class="lc-field">
+                  <label class="lc-label" for="nome">Nome do paciente</label>
+                  <input class="lc-input" id="nome" placeholder="Digite o nome" />
+                </div>
+                <div class="lc-field">
+                  <label class="lc-label" for="uni">Unidade</label>
+                  <select class="lc-select" id="uni">
+                    <option>Hospital Central</option>
+                    <option>Unidade Norte</option>
+                  </select>
+                </div>
+                <div class="lc-field lc-field--error">
+                  <label class="lc-label" for="cpf">CPF</label>
+                  <input class="lc-input" id="cpf" value="123" />
+                  <span class="lc-error">CPF inválido.</span>
+                </div>
+              </template>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="lc-card">
-          <div class="lc-card__header">Avisos e chips</div>
-          <div class="lc-card__body lc-stack">
-            <div class="lc-alert lc-alert--brand">Registro salvo com sucesso.</div>
-            <div class="lc-alert lc-alert--warning">
-              Outro usuário está editando este registro.
+        <!-- ── Avisos e chips ──────────────────────────────────────────── -->
+        <section class="doc-secao" id="avisos">
+          <h2 class="doc-h2">
+            Avisos e chips
+            <span class="doc-selo doc-selo--classe">classe</span>
+            <a class="doc-ancora" href="#avisos" aria-label="Link para Avisos e chips">#</a>
+          </h2>
+          <p>
+            <code>.lc-alert</code> unifica o <code>.alert</code> e o <code>.callout</code> do
+            legado, que eram a mesma coisa com ênfase diferente.
+            <code>.lc-alert--banner</code> é o antigo callout, com a barra na lateral.
+          </p>
+
+          <div class="doc-exemplo">
+            <div class="doc-preview doc-preview--bloco">
+              <template>
+                <div class="lc-alert lc-alert--brand">Registro salvo com sucesso.</div>
+                <div class="lc-alert lc-alert--warning">
+                  Outro usuário está editando este registro.
+                </div>
+                <div class="lc-alert lc-alert--danger lc-alert--banner">
+                  Falha ao consultar o CEP.
+                </div>
+              </template>
             </div>
-            <div class="lc-alert lc-alert--danger lc-alert--banner">
-              Falha ao consultar o CEP.
-            </div>
-            <div class="amostra">
+          </div>
+
+          <div class="doc-exemplo">
+            <template>
               <span class="lc-badge lc-badge--success">Ativo</span>
               <span class="lc-badge lc-badge--warning">Pendente</span>
               <span class="lc-badge lc-badge--danger">Cancelado</span>
               <span class="lc-badge">Inativo</span>
+            </template>
+          </div>
+        </section>
+
+        <!-- ── Tabela ──────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="tabela">
+          <h2 class="doc-h2">
+            Tabela
+            <span class="doc-selo doc-selo--classe">classe</span>
+            <a class="doc-ancora" href="#tabela" aria-label="Link para Tabela">#</a>
+          </h2>
+          <p>
+            Modificadores: <code>--striped</code>, <code>--hover</code>, <code>--bordered</code>,
+            <code>--condensed</code>. O menu de ações na última linha usa top layer, então não é
+            recortado pela tabela.
+          </p>
+
+          <div class="doc-exemplo">
+            <div class="doc-preview doc-preview--bloco">
+              <template>
+                <table class="lc-table lc-table--striped lc-table--hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Paciente</th>
+                      <th>Unidade</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Ana Souza</td>
+                      <td>Hospital Central</td>
+                      <td><span class="lc-badge lc-badge--success">Agendada</span></td>
+                      <td>
+                        <lc-dropdown placement="bottom-end">
+                          <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                          <button class="lc-menu-item" data-value="ver">Ver</button>
+                          <button class="lc-menu-item" data-value="editar">Editar</button>
+                        </lc-dropdown>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Bruno Lima</td>
+                      <td>Unidade Norte</td>
+                      <td><span class="lc-badge lc-badge--warning">Pendente</span></td>
+                      <td>
+                        <lc-dropdown placement="bottom-end">
+                          <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
+                          <button class="lc-menu-item" data-value="ver">Ver</button>
+                          <button class="lc-menu-item" data-variant="danger" data-value="x">
+                            Cancelar
+                          </button>
+                        </lc-dropdown>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </template>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- ── Componentes ────────────────────────────────────────────── -->
-        <div class="lc-card lc-card--success">
-          <div class="lc-card__header">
-            <span>&lt;lc-switch&gt;</span>
-            <span class="lc-badge lc-badge--brand">form-associated</span>
-          </div>
-          <div class="lc-card__body">
-            <form id="form-demo" class="lc-stack">
-              <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
-              <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
-              <lc-switch disabled>Desabilitado</lc-switch>
-              <div class="amostra">
-                <button class="lc-btn lc-btn--brand lc-btn--sm" type="submit">Enviar</button>
-                <button class="lc-btn lc-btn--sm" type="reset">Reset</button>
-              </div>
-              <output class="lc-hint" id="saida-form">FormData aparece aqui</output>
-            </form>
-          </div>
-        </div>
+        <!-- ── lc-switch ───────────────────────────────────────────────── -->
+        <section class="doc-secao" id="switch">
+          <h2 class="doc-h2">
+            <code>lc-switch</code>
+            <span class="doc-selo doc-selo--componente">comp</span>
+            <a class="doc-ancora" href="#switch" aria-label="Link para lc-switch">#</a>
+          </h2>
+          <p>
+            É cidadão do <code>&lt;form&gt;</code> nativo: entra no <code>FormData</code>, responde
+            a <code>reset()</code> e participa da validação. Desligado
+            <strong>não entra</strong> no <code>FormData</code> — igual ao checkbox nativo.
+          </p>
 
-        <div class="lc-card">
-          <div class="lc-card__header">&lt;lc-dropdown&gt; · &lt;lc-icon&gt;</div>
-          <div class="lc-card__body lc-stack">
-            <div class="amostra">
+          <div class="doc-exemplo">
+            <div class="doc-preview doc-preview--bloco">
+              <template>
+                <form id="form-demo" class="lc-stack">
+                  <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
+                  <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
+                  <lc-switch disabled>Desabilitado</lc-switch>
+                  <div class="lc-row">
+                    <button class="lc-btn lc-btn--brand lc-btn--sm" type="submit">Enviar</button>
+                    <button class="lc-btn lc-btn--sm" type="reset">Reset</button>
+                  </div>
+                  <output class="lc-hint" id="saida-form">FormData aparece aqui</output>
+                </form>
+              </template>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── lc-dropdown ─────────────────────────────────────────────── -->
+        <section class="doc-secao" id="dropdown">
+          <h2 class="doc-h2">
+            <code>lc-dropdown</code>
+            <span class="doc-selo doc-selo--componente">comp</span>
+            <a class="doc-ancora" href="#dropdown" aria-label="Link para lc-dropdown">#</a>
+          </h2>
+          <p>
+            <code>placement</code>: <code>bottom-start</code> (default),
+            <code>bottom-end</code>, <code>top-start</code>, <code>top-end</code>. Fecha por clique
+            fora e por Esc sozinho.
+          </p>
+
+          <div class="doc-exemplo">
+            <template>
               <lc-dropdown>
                 <button slot="trigger" class="lc-btn">
                   Ações <lc-icon name="chevron-down"></lc-icon>
@@ -167,103 +898,216 @@
                   <lc-icon name="trash"></lc-icon> Excluir
                 </button>
               </lc-dropdown>
-
               <lc-dropdown placement="bottom-end">
                 <button slot="trigger" class="lc-btn lc-btn--quiet">Alinhado à direita</button>
                 <button class="lc-menu-item" data-value="a">Opção A</button>
                 <button class="lc-menu-item" data-value="b">Opção B</button>
               </lc-dropdown>
-            </div>
-            <p class="lc-quiet">
-              O painel abre no <strong>top layer</strong>: não é recortado por contêiner com
-              overflow, funciona dentro de modal e na última linha de tabela. Era o bug
-              estrutural nº 1 do legado.
-            </p>
-            <div class="amostra">
+            </template>
+          </div>
+
+          <div class="lc-alert lc-alert--success">
+            <lc-icon name="success"></lc-icon>
+            <span>
+              O painel abre no <strong>top layer</strong> nativo: não é recortado por contêiner com
+              overflow, funciona dentro de modal e na última linha de tabela que rola, sem
+              configuração e sem <code>z-index</code>. Era o bug estrutural nº 1 do legado.
+            </span>
+          </div>
+        </section>
+
+        <!-- ── lc-icon ─────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="icone">
+          <h2 class="doc-h2">
+            <code>lc-icon</code>
+            <span class="doc-selo doc-selo--componente">comp</span>
+            <a class="doc-ancora" href="#icone" aria-label="Link para lc-icon">#</a>
+          </h2>
+          <p>
+            Com <code>label</code> o ícone é semântico; sem, é decorativo. Nome inexistente rende um
+            <strong>marcador visível</strong> e um aviso no console — nunca um espaço vazio, que é
+            como ícone quebrado passa despercebido.
+          </p>
+
+          <div class="doc-exemplo">
+            <template>
               <lc-icon name="user" label="Usuário"></lc-icon>
               <lc-icon name="calendar"></lc-icon>
               <lc-icon name="search"></lc-icon>
+              <lc-icon name="check"></lc-icon>
+              <lc-icon name="trash"></lc-icon>
               <lc-icon name="fa-times" library="fa4"></lc-icon>
               <lc-icon name="nao-existe"></lc-icon>
-              <code>← o último é nome inválido: marcador visível, nunca vazio</code>
-            </div>
+            </template>
           </div>
-        </div>
+          <p class="lc-quiet">O último tem nome inválido, de propósito.</p>
+        </section>
 
-        <div class="lc-card">
-          <div class="lc-card__header">&lt;lc-modal&gt; · &lt;lc-toast&gt;</div>
-          <div class="lc-card__body lc-stack">
-            <div class="amostra">
-              <!-- Abre sem uma linha de JS: invocador por data-attribute -->
+        <!-- ── lc-modal ────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="modal">
+          <h2 class="doc-h2">
+            <code>lc-modal</code>
+            <span class="doc-selo doc-selo--componente">comp</span>
+            <a class="doc-ancora" href="#modal" aria-label="Link para lc-modal">#</a>
+          </h2>
+          <p>
+            <code>data-lc-modal="open &lt;id&gt;"</code> abre e fecha
+            <strong>sem uma linha de JS</strong> — é o que permite protótipo navegável. Fecha pelo
+            ×, pelo fundo e por Esc; os três passam pelo mesmo <code>lc-hide</code>, que é
+            cancelável e diz a origem em <code>detail.source</code>.
+          </p>
+
+          <div class="doc-exemplo">
+            <template>
               <button class="lc-btn lc-btn--brand" data-lc-modal="open m1">
                 Abrir modal (sem JS)
               </button>
+            </template>
+          </div>
+        </section>
+
+        <!-- ── lc-toast ────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="toast">
+          <h2 class="doc-h2">
+            <code>lc-toast</code>
+            <span class="doc-selo doc-selo--componente">comp</span>
+            <a class="doc-ancora" href="#toast" aria-label="Link para lc-toast">#</a>
+          </h2>
+          <p>
+            Chamado por função, não por markup: <code>lc.toast(mensagem, opções)</code>. Variantes
+            <code>brand</code>, <code>success</code>, <code>warning</code>, <code>danger</code>,
+            <code>neutral</code>. <code>duration: 0</code> não fecha sozinho. Aparece acima de modal
+            aberto.
+          </p>
+
+          <div class="doc-exemplo">
+            <template>
               <button class="lc-btn" onclick="lc.toast('Registro salvo.', { variant: 'success' })">
-                Toast de sucesso
+                Sucesso
               </button>
               <button
                 class="lc-btn"
                 onclick="lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' })"
               >
-                Toast de erro
+                Erro com título
               </button>
-            </div>
-            <p class="lc-quiet">
-              O botão do modal usa <code>data-lc-modal="open m1"</code> — convenção do Web
-              Awesome que permite protótipo navegável sem JavaScript.
-            </p>
+              <button class="lc-btn" onclick="lc.toast('Processando…', { duration: 0 })">
+                Não fecha sozinho
+              </button>
+            </template>
           </div>
-        </div>
+        </section>
 
-        <!-- ── Tabela ─────────────────────────────────────────────────── -->
-        <div class="lc-card" style="grid-column: 1 / -1">
-          <div class="lc-card__header">Tabela <code>.lc-table</code></div>
-          <div class="lc-card__body">
-            <table class="lc-table lc-table--striped lc-table--hover">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Paciente</th>
-                  <th>Unidade</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Ana Souza</td>
-                  <td>Hospital Central</td>
-                  <td><span class="lc-badge lc-badge--success">Agendada</span></td>
-                  <td>
-                    <lc-dropdown placement="bottom-end">
-                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
-                      <button class="lc-menu-item" data-value="ver">Ver</button>
-                      <button class="lc-menu-item" data-value="editar">Editar</button>
-                    </lc-dropdown>
-                  </td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>Bruno Lima</td>
-                  <td>Unidade Norte</td>
-                  <td><span class="lc-badge lc-badge--warning">Pendente</span></td>
-                  <td>
-                    <lc-dropdown placement="bottom-end">
-                      <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
-                      <button class="lc-menu-item" data-value="ver">Ver</button>
-                      <button class="lc-menu-item" data-variant="danger" data-value="x">
-                        Cancelar
-                      </button>
-                    </lc-dropdown>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- ── Tokens ──────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="tokens">
+          <h2 class="doc-h2">
+            Tokens <a class="doc-ancora" href="#tokens" aria-label="Link para Tokens">#</a>
+          </h2>
+          <p>
+            Os valores abaixo são lidos do tema <strong>ao vivo</strong>, com
+            <code>getComputedStyle</code>. Troque o tema no cabeçalho e a coluna de valor muda junto
+            — é a prova de que o contrato é o que os componentes leem, não uma tabela de
+            documentação que envelhece.
+          </p>
+
+          <table class="lc-table lc-table--condensed lc-table--striped" id="tabela-tokens">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Valor no tema atual</th>
+                <th>Uso</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="lc-alert">
+            <lc-icon name="info"></lc-icon>
+            <span>
+              <strong>Todo token existe nos dois temas</strong> — o
+              <code>tools/check-contrato.mjs</code> reprova se não. Um token que só um tema define é
+              um buraco que aparece meses depois, na tela que ninguém estava olhando.
+            </span>
           </div>
-        </div>
-      </div>
+        </section>
+
+        <!-- ── Eventos ─────────────────────────────────────────────────── -->
+        <section class="doc-secao" id="eventos">
+          <h2 class="doc-h2">
+            Eventos <a class="doc-ancora" href="#eventos" aria-label="Link para Eventos">#</a>
+          </h2>
+          <p>
+            Todos borbulham e atravessam o shadow boundary — pode escutar no
+            <code>document</code>.
+          </p>
+
+          <table class="lc-table lc-table--condensed">
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Origem</th>
+                <th><code>detail</code></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>lc-change</code></td>
+                <td><code>lc-switch</code></td>
+                <td><code>{ checked, value }</code></td>
+              </tr>
+              <tr>
+                <td><code>lc-select</code></td>
+                <td><code>lc-dropdown</code> — cancelável, mantém aberto</td>
+                <td><code>{ value, item }</code></td>
+              </tr>
+              <tr>
+                <td><code>lc-show</code> / <code>lc-after-show</code></td>
+                <td><code>lc-modal</code>, <code>lc-dropdown</code></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td><code>lc-hide</code> / <code>lc-after-hide</code></td>
+                <td><code>lc-modal</code>, <code>lc-dropdown</code> — <code>lc-hide</code> cancelável</td>
+                <td><code>{ source }</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+
+      <!-- ══ SUMÁRIO ═════════════════════════════════════════════════════ -->
+      <aside class="doc-sumario lc-no-print">
+        <div class="doc-sumario__titulo">Nesta página</div>
+        <nav aria-label="Sumário desta página" id="sumario">
+          <ul>
+            <li><a href="#instalacao">Instalação</a></li>
+            <li><a href="#uso">Regras de ouro</a></li>
+            <li><a href="#botoes">Botões</a></li>
+            <li><a href="#campos">Campos</a></li>
+            <li><a href="#avisos">Avisos e chips</a></li>
+            <li><a href="#tabela">Tabela</a></li>
+            <li><a href="#switch">lc-switch</a></li>
+            <li><a href="#dropdown">lc-dropdown</a></li>
+            <li><a href="#icone">lc-icon</a></li>
+            <li><a href="#modal">lc-modal</a></li>
+            <li><a href="#toast">lc-toast</a></li>
+            <li><a href="#tokens">Tokens</a></li>
+            <li><a href="#eventos">Eventos</a></li>
+          </ul>
+        </nav>
+      </aside>
     </div>
+
+    <footer class="doc-rodape lc-no-print">
+      <div class="doc-rodape__interno">
+        <strong>lc-bricks</strong>
+        <span class="lc-quiet">Kit de protótipos do BNG LinkCare · v0.1.0</span>
+        <span class="lc-grow"></span>
+        <a class="lc-link" href="../test/tema.html">Tema</a>
+        <a class="lc-link" href="../test/formulario.html">Formulário</a>
+        <a class="lc-link" href="../test/clipping.html">Clipping</a>
+      </div>
+    </footer>
 
     <lc-modal id="m1" label="Editar paciente">
       <div class="lc-field">
@@ -275,8 +1119,7 @@
         <input class="lc-input" id="m-uni" value="Hospital Central" />
       </div>
       <p class="lc-quiet">
-        Fecha pelo ×, pelo clique no fundo e por Esc — os três passam pelo mesmo evento
-        cancelável <code>lc-hide</code>, com a origem em <code>detail.source</code>.
+        O dropdown abaixo está DENTRO do modal e ainda assim não é recortado — top layer.
       </p>
       <lc-dropdown>
         <button slot="trigger" class="lc-btn lc-btn--sm">Dropdown dentro do modal</button>
@@ -292,38 +1135,281 @@
     </lc-modal>
 
     <script type="module">
+      /* ══════════════════════════════════════════════════════════════════════
+         1. TEMA
+         ══════════════════════════════════════════════════════════════════ */
       const root = document.documentElement;
       const btnLegacy = document.getElementById('t-legacy');
       const btnModern = document.getElementById('t-modern');
 
-      function aplicar(tema) {
+      function aplicarTema(tema) {
         root.setAttribute('data-lc-theme', tema);
         btnLegacy.classList.toggle('lc-btn--brand', tema === 'legacy');
         btnModern.classList.toggle('lc-btn--brand', tema === 'modern');
         localStorage.setItem('lc-tema', tema);
+        preencherTokens();
+      }
+      btnLegacy.addEventListener('click', () => aplicarTema('legacy'));
+      btnModern.addEventListener('click', () => aplicarTema('modern'));
+
+      /* ══════════════════════════════════════════════════════════════════════
+         2. EXEMPLOS: um <template> gera o preview E o código
+
+         O markup do exemplo é escrito UMA vez, dentro de um <template>. O
+         preview sai de um clone; o bloco de código sai do mesmo innerHTML. Não
+         existe cópia manual do markup na página, então não existe como o
+         código exibido divergir do que está rodando ao lado — que é o defeito
+         clássico de página de documentação.
+
+         <template> também é inerte: os custom elements lá dentro não sofrem
+         upgrade, então o código mostrado é o que foi AUTORADO, sem atributos
+         que os componentes acrescentam em runtime.
+         ══════════════════════════════════════════════════════════════════ */
+      function desindentar(txt) {
+        const linhas = txt.replace(/^\n/, '').replace(/\s+$/, '').split('\n');
+        const recuos = linhas.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length);
+        const min = recuos.length ? Math.min(...recuos) : 0;
+        return linhas.map((l) => l.slice(min)).join('\n');
       }
 
-      btnLegacy.addEventListener('click', () => aplicar('legacy'));
-      btnModern.addEventListener('click', () => aplicar('modern'));
-      aplicar(localStorage.getItem('lc-tema') ?? 'legacy');
+      /* Realce de sintaxe em um passe único.
 
-      // Mostra o FormData para provar que o switch é cidadão do <form> nativo.
+         Por que tokenizar em vez de encadear .replace(): replace em cadeia
+         reprocessa o que o passe anterior já marcou, e aí um `class="x"` dentro
+         de um <span> de tag vira HTML quebrado. Aqui cada trecho do fonte é
+         escapado UMA vez, no momento em que é emitido.
+
+         O padrão de comentário HTML está escrito com escapes (`<!\-\-`) por um
+         motivo que custou um bom tempo de depuração: a sequência literal de
+         ABERTURA de comentário HTML, escrita aqui dentro, joga o tokenizador em
+         "script data escaped"; se um `-` seguido de outro caractere de tag vier
+         depois, ele vai para "double escaped", e nesse estado a tag de
+         fechamento deste próprio elemento deixa de fechá-lo. O parser então
+         engole o resto do documento como se fosse código, e o navegador
+         reporta um erro de sintaxe sem dizer por quê. Não escreva essas duas
+         sequências literalmente aqui — nem em comentário. */
+      const RE_TOKENS = new RegExp(
+        String.raw`(<!\-\-[\s\S]*?\-\->)|(<\/?)([a-zA-Z][\w-]*)((?:\s+[\w:.\-]+(?:\s*=\s*(?:"[^"]*"|'[^']*'))?)*)(\s*\/?>)`,
+        'g',
+      );
+
+      const escapar = (s) =>
+        s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      function realcar(fonte) {
+        let saida = '';
+        let i = 0;
+        let m;
+        RE_TOKENS.lastIndex = 0;
+        while ((m = RE_TOKENS.exec(fonte)) !== null) {
+          saida += escapar(fonte.slice(i, m.index));
+          if (m[1]) {
+            saida += `<span class="tok-comentario">${escapar(m[1])}</span>`;
+          } else {
+            saida += `<span class="tok-pontuacao">${escapar(m[2])}</span>`;
+            saida += `<span class="tok-tag">${escapar(m[3])}</span>`;
+            /* Os espaços ENTRE atributos não casam com o padrão e passam
+               inalterados — espaço não precisa de escape. */
+            saida += m[4].replace(
+              /([\w:.\-]+)(\s*=\s*)?("[^"]*"|'[^']*')?/g,
+              (todo, nome, igual, valor) => {
+                if (!nome) return escapar(todo);
+                let r = `<span class="tok-atributo">${escapar(nome)}</span>`;
+                if (igual) r += escapar(igual);
+                if (valor) r += `<span class="tok-string">${escapar(valor)}</span>`;
+                return r;
+              },
+            );
+            saida += `<span class="tok-pontuacao">${escapar(m[5])}</span>`;
+          }
+          i = m.index + m[0].length;
+        }
+        return saida + escapar(fonte.slice(i));
+      }
+
+      function botaoCopiar(texto) {
+        const b = document.createElement('button');
+        b.className = 'doc-copiar';
+        b.type = 'button';
+        b.textContent = 'copiar';
+        b.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(texto);
+            b.textContent = 'copiado';
+          } catch {
+            /* Sem clipboard (contexto não seguro, permissão negada): não vale
+               quebrar a página por causa de uma conveniência. */
+            b.textContent = 'falhou';
+          }
+          setTimeout(() => (b.textContent = 'copiar'), 1500);
+        });
+        return b;
+      }
+
+      for (const exemplo of document.querySelectorAll('.doc-exemplo')) {
+        const tpl = exemplo.querySelector('template');
+        if (!tpl) continue;
+
+        const fonte = desindentar(tpl.innerHTML);
+
+        /* O preview já pode existir no markup (quando precisa de modificador,
+           como --bloco); se não existe, criamos. */
+        let preview = exemplo.querySelector('.doc-preview');
+        if (!preview) {
+          preview = document.createElement('div');
+          preview.className = 'doc-preview';
+          exemplo.prepend(preview);
+        }
+        preview.append(tpl.content.cloneNode(true));
+        tpl.remove();
+
+        const pre = document.createElement('pre');
+        pre.className = 'doc-codigo';
+        const code = document.createElement('code');
+        code.innerHTML = realcar(fonte);
+        pre.append(code, botaoCopiar(fonte));
+        exemplo.append(pre);
+      }
+
+      /* Os blocos escritos à mão (instalação) também ganham realce e botão. */
+      for (const pre of document.querySelectorAll('.doc-codigo')) {
+        if (pre.closest('.doc-exemplo')) continue;
+        const code = pre.querySelector('code');
+        const fonte = code.textContent;
+        code.innerHTML = realcar(fonte);
+        pre.append(botaoCopiar(fonte));
+      }
+
+      /* ══════════════════════════════════════════════════════════════════════
+         3. FORMULÁRIO: prova que o switch entra no FormData
+
+         O form vem de um <template>, então só existe depois do clone acima.
+         ══════════════════════════════════════════════════════════════════ */
       const form = document.getElementById('form-demo');
-      const saida = document.getElementById('saida-form');
-      function mostrar() {
-        saida.textContent = `FormData: ${JSON.stringify(Object.fromEntries(new FormData(form)))}`;
+      const saidaForm = document.getElementById('saida-form');
+      if (form && saidaForm) {
+        const mostrar = () => {
+          const dados = Object.fromEntries(new FormData(form));
+          saidaForm.textContent = `FormData: ${JSON.stringify(dados)}`;
+        };
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          mostrar();
+        });
+        form.addEventListener('lc-change', mostrar);
+        form.addEventListener('reset', () => setTimeout(mostrar, 0));
+        /* Espera o upgrade dos custom elements antes da primeira leitura. */
+        customElements.whenDefined('lc-switch').then(mostrar);
       }
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        mostrar();
-      });
-      form.addEventListener('lc-change', mostrar);
-      form.addEventListener('reset', () => setTimeout(mostrar, 0));
-      setTimeout(mostrar, 100);
 
+      /* ══════════════════════════════════════════════════════════════════════
+         4. TABELA DE TOKENS, lida ao vivo do tema
+         ══════════════════════════════════════════════════════════════════ */
+      const TOKENS = [
+        ['--lc-color-brand-fill-normal', 'preenchimento sólido do botão primário'],
+        ['--lc-color-brand-fill-loud', 'o mesmo botão em hover'],
+        ['--lc-color-brand-text', 'a cor de marca legível como TEXTO'],
+        ['--lc-color-surface-page', 'fundo da página'],
+        ['--lc-color-surface-card', 'fundo de card e de campo'],
+        ['--lc-color-text-normal', 'texto padrão'],
+        ['--lc-color-text-quiet', 'texto secundário'],
+        ['--lc-color-border-normal', 'borda padrão'],
+        ['--lc-space-m', 'espaçamento de referência'],
+        ['--lc-radius-control', 'raio de botão e campo'],
+        ['--lc-control-height', 'altura de controle'],
+        ['--lc-font-family', 'família de texto'],
+        ['--lc-font-size-m', 'corpo de texto'],
+        ['--lc-shadow-card', 'elevação de card'],
+      ];
+
+      const corpoTokens = document.querySelector('#tabela-tokens tbody');
+
+      function preencherTokens() {
+        if (!corpoTokens) return;
+        const estilo = getComputedStyle(root);
+        corpoTokens.textContent = '';
+        for (const [token, uso] of TOKENS) {
+          const valor = estilo.getPropertyValue(token).trim();
+          const tr = document.createElement('tr');
+
+          const tdToken = document.createElement('td');
+          const codigo = document.createElement('code');
+          codigo.textContent = token;
+          tdToken.append(codigo);
+
+          const tdValor = document.createElement('td');
+          /* Amostra só para token de cor: para `14px` um quadrado não diz nada. */
+          if (token.includes('-color-')) {
+            const amostra = document.createElement('span');
+            amostra.className = 'doc-amostra-cor';
+            amostra.style.background = valor;
+            tdValor.append(amostra, ' ');
+          }
+          const span = document.createElement('span');
+          span.className = 'doc-valor';
+          span.textContent = valor;
+          tdValor.append(span);
+
+          const tdUso = document.createElement('td');
+          tdUso.className = 'lc-quiet';
+          tdUso.textContent = uso;
+
+          tr.append(tdToken, tdValor, tdUso);
+          corpoTokens.append(tr);
+        }
+      }
+
+      /* ══════════════════════════════════════════════════════════════════════
+         5. ITEM ATIVO na lateral e no sumário
+
+         IntersectionObserver em vez de listener de scroll: o navegador só nos
+         chama quando o cruzamento muda, em vez de a cada pixel rolado.
+
+         `rootMargin` recua o topo pela altura do cabeçalho grudado, senão a
+         seção conta como visível enquanto ainda está escondida atrás dele.
+
+         A altura é MEDIDA, não escrita: `rootMargin` só aceita px e %, então
+         não dá para reusar `--doc-topo-altura` (que está em rem). Medir também
+         acerta quando o cabeçalho quebra em duas linhas em tela estreita.
+         ══════════════════════════════════════════════════════════════════ */
+      const secoes = [...document.querySelectorAll('.doc-secao[id]')];
+      const linksNav = [...document.querySelectorAll('#lateral a, #sumario a, .doc-nav a')];
+
+      function marcarAtivo(id) {
+        for (const a of linksNav) {
+          const alvo = a.getAttribute('href') === `#${id}`;
+          if (alvo) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        }
+      }
+
+      const alturaTopo = document.querySelector('.doc-topo').offsetHeight;
+
+      const visiveis = new Set();
+      const observador = new IntersectionObserver(
+        (entradas) => {
+          for (const e of entradas) {
+            if (e.isIntersecting) visiveis.add(e.target);
+            else visiveis.delete(e.target);
+          }
+          /* Entre as visíveis, a que está mais alto manda — é a que o leitor
+             está de fato lendo. */
+          const ativa = secoes.find((s) => visiveis.has(s));
+          if (ativa) marcarAtivo(ativa.id);
+        },
+        { rootMargin: `-${alturaTopo + 8}px 0px -70% 0px` },
+      );
+      for (const s of secoes) observador.observe(s);
+
+      /* ══════════════════════════════════════════════════════════════════════
+         6. Ação de menu vira toast, para o dropdown provar que emite evento
+         ══════════════════════════════════════════════════════════════════ */
       document.addEventListener('lc-select', (e) =>
         lc.toast(`Ação: ${e.detail.value}`, { variant: 'brand' }),
       );
+
+      /* Arranque. */
+      aplicarTema(localStorage.getItem('lc-tema') ?? 'legacy');
     </script>
   </body>
 </html>
