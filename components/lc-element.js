@@ -1,5 +1,5 @@
 /*
- * LcElement — classe base de TODO componente do lc-bricks.
+ * LcElement — classe base de TODO componente do lc-components.
  *
  * REGRA, copiada do Web Awesome ("Never extend LitElement directly"):
  * nenhum componente estende `HTMLElement` direto. Estende esta classe.

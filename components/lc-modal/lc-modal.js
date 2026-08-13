@@ -154,7 +154,7 @@ if (!globalThis.__lcModalInvoker) {
     const [action, id] = trigger.getAttribute('data-lc-modal').trim().split(/\s+/);
     const target = id ? document.getElementById(id) : trigger.closest('lc-modal');
     if (!(target instanceof LcModal)) {
-      console.warn(`[lc-bricks] data-lc-modal="${action} ${id ?? ''}": alvo não encontrado.`);
+      console.warn(`[lc-components] data-lc-modal="${action} ${id ?? ''}": alvo não encontrado.`);
       return;
     }
 

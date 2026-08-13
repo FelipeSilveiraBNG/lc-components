@@ -52,7 +52,7 @@ export class LcIcon extends LcElement {
 
     if (!paths && this.name) {
       console.warn(
-        `[lc-bricks] <lc-icon>: "${this.name}" não existe na biblioteca "${this.library}". ` +
+        `[lc-components] <lc-icon>: "${this.name}" não existe na biblioteca "${this.library}". ` +
           `Renderizando marcador. Registre o ícone em library.system.js ou corrija o nome.`,
       );
     }

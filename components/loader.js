@@ -26,7 +26,7 @@ function load(tagName) {
 
   import(url).catch(() => {
     console.warn(
-      `[lc-bricks] autoloader: não encontrei "${tagName}" em ${url}.\n` +
+      `[lc-components] autoloader: não encontrei "${tagName}" em ${url}.\n` +
         `Confira o nome da tag (tag <lc-*> nunca é self-closing: use ` +
         `<${tagName}></${tagName}>) e se o componente existe no kit.`,
     );

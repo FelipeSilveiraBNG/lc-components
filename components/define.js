@@ -53,9 +53,9 @@ export function define(tag, ctor) {
 
 function report() {
   console.warn(
-    `[lc-bricks] ${collided.length} tag(s) já estavam registradas e foram ignoradas: ` +
+    `[lc-components] ${collided.length} tag(s) já estavam registradas e foram ignoradas: ` +
       `${collided.join(', ')}.\n` +
-      `Há mais de uma cópia do lc-bricks nesta página. Mantenha um único ` +
+      `Há mais de uma cópia do lc-components nesta página. Mantenha um único ` +
       `<script type="module"> do kit — as tags acima seguem usando a definição da ` +
       `cópia que carregou primeiro.`,
   );

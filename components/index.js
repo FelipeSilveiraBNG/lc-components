@@ -1,5 +1,5 @@
 /*
- * lc-bricks — agregador. Importar isto registra todas as tags <lc-*>.
+ * lc-components — agregador. Importar isto registra todas as tags <lc-*>.
  *
  *   <link rel="stylesheet" href="lc.css">
  *   <script type="module" src="components/index.js"></script>
@@ -11,7 +11,7 @@
  *
  * Carregue o kit UMA VEZ por página. Duas URLs diferentes são dois grafos de
  * módulo e ambos tentam registrar as mesmas tags; a primeira vence e a segunda
- * emite aviso `[lc-bricks]` no console. Ver define.js.
+ * emite aviso `[lc-components]` no console. Ver define.js.
  */
 
 export * from './lc-element.js';

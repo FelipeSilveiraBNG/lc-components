@@ -1,5 +1,5 @@
 /*
- * docs.js — o casco da documentação multi-página do lc-bricks.
+ * docs.js — o casco da documentação multi-página do lc-components.
  *
  * A documentação é MULTI-PÁGINA: cada tópico é um .html carregado de verdade,
  * com navegação do navegador, URL própria, histórico e botão voltar. Não é
@@ -126,7 +126,7 @@ function montarTopo() {
   const marca = el(
     'div',
     { class: 'doc-marca' },
-    el('a', { class: 'doc-marca__nome', href: 'index.html', texto: 'lc-bricks' }),
+    el('a', { class: 'doc-marca__nome', href: 'index.html', texto: 'lc-components' }),
     el('lc-badge', { texto: VERSAO }),
     el('span', {
       class: 'lc-quiet doc-marca__desc',
@@ -279,7 +279,7 @@ function montarRodape() {
     el(
       'div',
       { class: 'doc-rodape__interno' },
-      el('strong', { texto: 'lc-bricks' }),
+      el('strong', { texto: 'lc-components' }),
       el('span', {
         class: 'lc-quiet',
         texto: `Kit de protótipos do BNG LinkCare · ${VERSAO}`,

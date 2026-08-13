@@ -33,7 +33,7 @@ ao repositório dele antes de decidir: `shoelace-style/webawesome`, branch `next
 - **e** `src/styles/native.css`, com 1.442 linhas estilizando `table`, `button`, `input`,
   `textarea` nativos, com modificadores em classe como `table.wa-hover-rows`.
 
-A estrutura de `styles/` do lc-bricks — `layers.css` + `native.css` + `utilities.css` — é a do WA,
+A estrutura de `styles/` do lc-components — `layers.css` + `native.css` + `utilities.css` — é a do WA,
 arquivo por arquivo. Portanto: **a partir deste ADR, o kit não pode mais justificar esta parte da
 arquitetura apontando para o Web Awesome.** A justificativa é nossa, e está abaixo. Registrar isto
 é o ponto principal deste documento: quem vier depois vai encontrar o WA fazendo o contrário e

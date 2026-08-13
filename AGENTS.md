@@ -1,6 +1,6 @@
-# lc-bricks — guia para agentes de IA
+# lc-components — guia para agentes de IA
 
-Como **consumir** o lc-bricks ao gerar protótipo do BNG LinkCare. Leia antes de escrever
+Como **consumir** o lc-components ao gerar protótipo do BNG LinkCare. Leia antes de escrever
 qualquer HTML.
 
 (Formato herdado do `me-bricks`, onde esse arquivo é o que mais evita HTML errado de primeira.
@@ -304,5 +304,5 @@ Nesta ordem:
 3. **Erro de sintaxe** em algum componente — a exceção aborta o módulo e nenhuma tag se
    registra. Rode `node tools/check-syntax.mjs`. (Já aconteceu: backtick dentro do template
    literal do CSS.)
-4. **Duas cópias do kit** na página — procure o aviso `[lc-bricks]` no console.
+4. **Duas cópias do kit** na página — procure o aviso `[lc-components]` no console.
 5. **Tag self-closing** (`<lc-icon />`) — o parser engole o resto do markup.
