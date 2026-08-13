@@ -23,24 +23,33 @@
         São seis, e a primeira explica a arquitetura inteira do kit.
       </p>
 
-      <h2 class="doc-h2">Classe, não tag</h2>
+      <h2 class="doc-h2">Componente é tag</h2>
       <lc-alert variant="brand">
-        <lc-icon name="info"></lc-icon>
+        <lc-icon slot="icon" name="info"></lc-icon>
         <span>
-          <strong>Botão, campo, card, alert, badge e tabela são CLASSE, não tag.</strong>
-          Existe <code>&lt;lc-button&gt;</code>, e não uma classe. Custom element
-          onde há <em>comportamento</em>.
+          <strong>Não existe classe de componente.</strong> Botão, campo, card, alerta, chip e item
+          de menu são <code>&lt;lc-button&gt;</code>, <code>&lt;lc-input&gt;</code>,
+          <code>&lt;lc-card&gt;</code>, <code>&lt;lc-alert&gt;</code>,
+          <code>&lt;lc-badge&gt;</code>, <code>&lt;lc-menu-item&gt;</code>.
         </span>
       </lc-alert>
       <p>
-        O alvo do kit é reproduzir telas que já existem em HTML simples. Portar uma view do legado
-        tem que ser <strong>renomear classe</strong>, não reescrever em componente — se fosse
-        preciso reescrever, ninguém portaria.
+        Uma forma só de usar o kit: quem escreve protótipo não decide, a cada elemento, se procura
+        classe ou tag. E erro de uso passa a aparecer — <code>&lt;lc-buton&gt;</code> fica visível na
+        tela e no console, enquanto <code>class="lc-bton"</code> não produzia nada e atravessava
+        revisão.
       </p>
       <p>
-        Os selos <span class="doc-selo doc-selo--classe">classe</span> e
-        <span class="doc-selo doc-selo--componente">comp</span> na navegação à esquerda marcam de que
-        lado cada coisa está.
+        O custo está registrado no ADR 0001, e é real: portar uma view do legado deixou de ser
+        renomear classe e passou a ser reescrever markup.
+      </p>
+      <p>
+        <strong>Duas exceções.</strong> A tabela continua
+        <code>&lt;table class="lc-table"&gt;</code> — marcada com
+        <span class="doc-selo doc-selo--classe">classe</span> na navegação — porque o parser HTML
+        expulsa elemento desconhecido de dentro de <code>&lt;table&gt;</code>. E utilitários e
+        tipografia (<code>.lc-stack</code>, <code>.lc-quiet</code>, <code>.lc-h1</code>) seguem
+        classe, porque não são componentes disfarçados.
       </p>
 
       <h2 class="doc-h2">As outras cinco</h2>

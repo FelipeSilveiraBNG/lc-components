@@ -36,26 +36,35 @@ const NAV = [
       { arquivo: 'regras.html', rotulo: 'Regras de ouro' },
     ],
   },
-  {
-    grupo: 'Camada nativa',
-    icone: 'check',
-    itens: [
-      { arquivo: 'botoes.html', rotulo: 'Botões', selo: 'classe' },
-      { arquivo: 'campos.html', rotulo: 'Campos', selo: 'classe' },
-      { arquivo: 'avisos.html', rotulo: 'Avisos e chips', selo: 'classe' },
-      { arquivo: 'tabela.html', rotulo: 'Tabela', selo: 'classe' },
-    ],
-  },
+  /*
+   * ── Por que só a tabela tem selo ──────────────────────────────────────────
+   * Antes do ADR 0001 metade do kit era classe e metade componente, e o selo
+   * `classe`/`comp` em cada item era informação de verdade — o leitor precisava
+   * saber de que lado estava antes de escrever markup.
+   *
+   * Agora tudo é componente, com UMA exceção. Marcar doze itens com "comp" para
+   * distinguir de um só seria ruído: o selo passaria a ser decoração, que é
+   * exatamente o que a doc não deve ter. Então o selo sobrou onde carrega
+   * informação — na tabela, que é o caso estranho e precisa se anunciar.
+   */
   {
     grupo: 'Componentes',
     icone: 'plus',
     itens: [
-      { arquivo: 'switch.html', rotulo: 'lc-switch', selo: 'comp' },
-      { arquivo: 'dropdown.html', rotulo: 'lc-dropdown', selo: 'comp' },
-      { arquivo: 'icone.html', rotulo: 'lc-icon', selo: 'comp' },
-      { arquivo: 'modal.html', rotulo: 'lc-modal', selo: 'comp' },
-      { arquivo: 'toast.html', rotulo: 'lc-toast', selo: 'comp' },
+      { arquivo: 'botoes.html', rotulo: 'Botões' },
+      { arquivo: 'campos.html', rotulo: 'Campos' },
+      { arquivo: 'avisos.html', rotulo: 'Avisos e chips' },
+      { arquivo: 'switch.html', rotulo: 'lc-switch' },
+      { arquivo: 'dropdown.html', rotulo: 'lc-dropdown' },
+      { arquivo: 'icone.html', rotulo: 'lc-icon' },
+      { arquivo: 'modal.html', rotulo: 'lc-modal' },
+      { arquivo: 'toast.html', rotulo: 'lc-toast' },
     ],
+  },
+  {
+    grupo: 'Camada nativa',
+    icone: 'check',
+    itens: [{ arquivo: 'tabela.html', rotulo: 'Tabela', selo: 'classe' }],
   },
   {
     grupo: 'Referência',

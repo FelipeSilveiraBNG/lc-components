@@ -23,8 +23,8 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">lc-bricks</h1>
       <p class="doc-lede">
-        Cinco componentes e uma camada nativa, nos dois temas. Nada nesta documentação muda de
-        código quando o tema troca — só os tokens.
+        Treze componentes, nos dois temas. Nada nesta documentação muda de código quando o tema
+        troca — só os tokens.
       </p>
 
       <h2 class="doc-h2">Instalação</h2>
@@ -48,7 +48,7 @@
 &lt;/html&gt;</code></pre>
 
       <lc-alert variant="warning">
-        <lc-icon name="warning"></lc-icon>
+        <lc-icon slot="icon" name="warning"></lc-icon>
         <span>
           <code>class="lc"</code> no <code>&lt;body&gt;</code> é o que aplica fundo, cor e
           tipografia do tema. Sem ela a página fica branca com Times New Roman.
@@ -68,19 +68,78 @@
       </p>
 
       <lc-alert variant="brand">
-        <lc-icon name="info"></lc-icon>
+        <lc-icon slot="icon" name="info"></lc-icon>
         <span>
           Os dois temas são <strong>reprodução medida</strong>, não proposta de design. Nenhum valor
           neles foi inventado: cada um saiu do código do produto correspondente.
         </span>
       </lc-alert>
 
-      <h2 class="doc-h2">Como esta documentação é organizada</h2>
+      <h2 class="doc-h2">Componente é tag</h2>
       <p>
-        A navegação à esquerda separa o que é <span class="doc-selo doc-selo--classe">classe</span>
-        do que é <span class="doc-selo doc-selo--componente">comp</span>. Não é decoração: é a regra
-        de ouro nº 1 do kit, e ela decide como você escreve o markup.
+        Não existe classe de componente. Botão é <code>&lt;lc-button&gt;</code>, campo é
+        <code>&lt;lc-input&gt;</code>, aviso é <code>&lt;lc-alert&gt;</code>. Se você conhece o kit
+        de antes e está procurando <code>.lc-btn</code> ou <code>.lc-field</code>, eles não existem <!-- lc-permite-classe -->
+        mais.
       </p>
+
+      <pre class="doc-codigo"><code>&lt;!-- antes --&gt;                          &lt;!-- agora --&gt;
+&lt;button class="lc-btn lc-btn--brand"&gt;   &lt;lc-button variant="brand"&gt;<!-- lc-permite-classe -->
+&lt;div class="lc-field"&gt;                  &lt;lc-input label="Nome"&gt;<!-- lc-permite-classe -->
+  &lt;label class="lc-label"&gt;Nome&lt;/label&gt;<!-- lc-permite-classe -->
+  &lt;input class="lc-input" /&gt;<!-- lc-permite-classe -->
+&lt;/div&gt;
+&lt;span class="lc-badge lc-badge--ok"&gt;    &lt;lc-badge variant="success"&gt;</code></pre><!-- lc-permite-classe -->
+
+      <p>
+        A troca foi decidida e justificada no
+        <strong>ADR 0001</strong> (<code>docs/adr/0001-aposentar-a-camada-de-classes.md</code>), que
+        registra também o que se perdeu: portar uma tela do legado deixou de ser renomear classe.
+      </p>
+
+      <h2 class="doc-h2">A exceção: tabela</h2>
+      <p>
+        <code>&lt;table class="lc-table"&gt;</code> continua sendo classe, e é a
+        <strong>única</strong> — marcada com
+        <span class="doc-selo doc-selo--classe">classe</span> na navegação à esquerda.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          Não é inconsistência esquecida. O parser HTML <strong>expulsa</strong> elemento
+          desconhecido de dentro de <code>&lt;table&gt;</code>, <code>&lt;tbody&gt;</code> e
+          <code>&lt;tr&gt;</code>: um <code>&lt;lc-row&gt;</code> viraria irmão da tabela e a tabela
+          ficaria vazia. Foi medido, não suposto — e o Web Awesome, referência de convenções do kit,
+          também não tem componente de tabela.
+        </span>
+      </lc-alert>
+
+      <p>
+        Utilitários e tipografia também continuam classe: <code>.lc-stack</code>,
+        <code>.lc-row</code>, <code>.lc-quiet</code>, <code>.lc-h1</code>. Não são componentes
+        disfarçados.
+      </p>
+
+      <h2 class="doc-h2">Duas armadilhas que valem saber antes</h2>
+      <lc-alert variant="danger">
+        <lc-icon slot="icon" name="danger"></lc-icon>
+        <span>
+          <strong><code>&lt;lc-button&gt;</code> não submete por omissão.</strong> O
+          <code>type</code> padrão é <code>button</code>, o oposto do
+          <code>&lt;button&gt;</code> nativo. Dentro de um <code>&lt;form&gt;</code> escreva
+          <code>type="submit"</code> — senão nada acontece e nada avisa.
+        </span>
+      </lc-alert>
+
+      <p>
+        <strong>Erro de campo não é markup, é validade.</strong> Não existe atributo
+        <code>error</code>. A mensagem vem da validação nativa
+        (<code>required</code>, <code>type</code>, <code>pattern</code>) e regra de negócio usa
+        <code>setCustomValidity()</code>. Detalhes em <a class="lc-link" href="campos.html">Campos</a>.
+      </p>
+
+      <h2 class="doc-h2">Como esta documentação é organizada</h2>
       <p>
         Cada página é um arquivo carregado de verdade, com URL própria — dá para linkar uma seção
         específica e o botão voltar funciona.
