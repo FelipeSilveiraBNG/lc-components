@@ -127,7 +127,7 @@ function montarTopo() {
     'div',
     { class: 'doc-marca' },
     el('a', { class: 'doc-marca__nome', href: 'index.html', texto: 'lc-bricks' }),
-    el('span', { class: 'lc-badge', texto: VERSAO }),
+    el('lc-badge', { texto: VERSAO }),
     el('span', {
       class: 'lc-quiet doc-marca__desc',
       texto: 'kit de protótipos do BNG LinkCare',
@@ -138,10 +138,10 @@ function montarTopo() {
        em dois futuros, num clique, na frente de quem decide. */
     el('span', { class: 'lc-quiet', texto: 'tema:' }),
     el(
-      'div',
-      { class: 'lc-btn-group' },
-      el('button', { class: 'lc-btn lc-btn--sm', id: 't-legacy', texto: 'legacy (PHP)' }),
-      el('button', { class: 'lc-btn lc-btn--sm', id: 't-modern', texto: 'modern (React)' }),
+      'lc-button-group',
+      { label: 'Tema' },
+      el('lc-button', { id: 't-legacy', size: 'small', texto: 'legacy (PHP)' }),
+      el('lc-button', { id: 't-modern', size: 'small', texto: 'modern (React)' }),
     ),
   );
 
@@ -436,10 +436,18 @@ function ligarTema() {
   const btnLegacy = document.getElementById('t-legacy');
   const btnModern = document.getElementById('t-modern');
 
+  /* O grupo não gerencia seleção por decisão de projeto (ver o JSDoc de
+     lc-button-group), então quem marca o tema ativo é esta função: `variant` para
+     o olho, `aria-pressed` para o leitor de tela — antes só havia o primeiro. */
+  function marcar(botao, ativo) {
+    botao.setAttribute('variant', ativo ? 'brand' : 'neutral');
+    botao.setAttribute('aria-pressed', String(ativo));
+  }
+
   function aplicar(tema) {
     raiz.setAttribute('data-lc-theme', tema);
-    btnLegacy.classList.toggle('lc-btn--brand', tema === 'legacy');
-    btnModern.classList.toggle('lc-btn--brand', tema === 'modern');
+    marcar(btnLegacy, tema === 'legacy');
+    marcar(btnModern, tema === 'modern');
     /* Persistido porque a doc é multi-página: sem isto, escolher `modern` e
        clicar num link voltaria para `legacy` na página seguinte. */
     localStorage.setItem('lc-tema', tema);
