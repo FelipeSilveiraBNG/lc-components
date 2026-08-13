@@ -34,6 +34,14 @@ branca com Times New Roman.
 
 1. **Botão, campo, card, alert, badge e tabela são CLASSE, não tag.** Não existe
    `<lc-button>`. Use `<button class="lc-btn">`. Componente só onde há comportamento.
+
+   > ⚠️ **Esta regra está sendo revertida.** O
+   > [ADR 0001](docs/adr/0001-aposentar-a-camada-de-classes.md) decidiu aposentar a camada de
+   > classes: cada uma dessas classes virará custom element, uma fase por vez. **Continue usando a
+   > classe enquanto a tag não existir** — a regra acima vale para tudo que ainda não migrou, e é
+   > verdade hoje. Conforme cada tag entrar, esta lista encolhe. Duas coisas NÃO mudam:
+   > `.lc-table` continua classe (o parser HTML proíbe componentizar linha e célula) e os
+   > utilitários (`.lc-stack`, `.lc-quiet`, `.lc-h1`…) continuam classes.
 2. **Nunca reestilize componente por dentro.** Use atributo, `::part()` ou a custom property
    documentada no JSDoc do componente.
 3. **Tag custom nunca é self-closing.** `<lc-icon name="x"></lc-icon>`, jamais `<lc-icon />` —
