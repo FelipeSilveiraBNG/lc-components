@@ -29,9 +29,10 @@
 
       <h2 class="doc-h2">Instalação</h2>
       <p>
-        Uma linha de CSS e uma de JavaScript. Sem build, sem <code>package.json</code>, sem
-        dependência de runtime. A página <strong>precisa ser servida por HTTP</strong> — ES modules
-        não funcionam em <code>file://</code>.
+        Uma linha de CSS e uma de JavaScript, direto do CDN. Sem build, sem
+        <code>package.json</code>, sem dependência de runtime. A página
+        <strong>precisa ser servida por HTTP</strong> — ES modules não funcionam em
+        <code>file://</code>.
       </p>
 
       <pre class="doc-codigo"><code>&lt;!doctype html&gt;
@@ -39,13 +40,30 @@
   &lt;head&gt;
     &lt;meta charset="utf-8" /&gt;
     &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
-    &lt;link rel="stylesheet" href="../lc.css" /&gt;
-    &lt;script type="module" src="../components/loader.js"&gt;&lt;/script&gt;
+    &lt;link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/FelipeSilveiraBNG/lc-components@0.1.0/lc.css"
+    /&gt;
+    &lt;script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/FelipeSilveiraBNG/lc-components@0.1.0/components/loader.js"
+    &gt;&lt;/script&gt;
   &lt;/head&gt;
   &lt;body class="lc"&gt;
     &lt;div class="lc-page-body"&gt;…&lt;/div&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
+
+      <p>
+        A versão está fixada em <code>@0.1.0</code> de propósito: numa tag fixada o jsDelivr entrega
+        cache imutável. <code>@main</code> também funciona, mas aí o CDN segura o arquivo por ~12h e
+        cada commit fica esperando invalidação.
+      </p>
+      <p>
+        Clonou o kit para servir local? Então os caminhos são relativos ao seu arquivo —
+        <code>lc.css</code> e <code>components/loader.js</code> ficam na raiz do repositório — e um
+        <code>npx serve .</code> resolve. Foi assim que esta documentação foi escrita.
+      </p>
 
       <lc-alert variant="warning">
         <lc-icon slot="icon" name="warning"></lc-icon>
