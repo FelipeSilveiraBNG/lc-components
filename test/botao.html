@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-button — teste</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+  </head>
+
+  <body class="lc">
+    <div class="lc-page-body">
+      <h1 class="lc-h1">lc-button</h1>
+      <p class="lc-quiet">
+        Fase 3 do ADR 0001. O foco dos casos é o que dá errado num botão que é custom element:
+        submeter formulário, ser reconhecido como <em>submitter</em>, e não reagir quando
+        desabilitado.
+      </p>
+
+      <div class="lc-row" style="margin-bottom: var(--lc-space-m)">
+        <lc-button>Cancelar</lc-button>
+        <lc-button variant="brand">Salvar</lc-button>
+        <lc-button variant="success">Aprovar</lc-button>
+        <lc-button variant="warning">Revisar</lc-button>
+        <lc-button variant="danger">Excluir</lc-button>
+        <lc-button appearance="plain">Ver mais</lc-button>
+      </div>
+
+      <div class="lc-row" style="margin-bottom: var(--lc-space-m)">
+        <lc-button size="small">Pequeno</lc-button>
+        <lc-button size="large">Grande</lc-button>
+        <lc-button disabled>Desabilitado</lc-button>
+        <lc-button variant="brand" aria-disabled="true">aria-disabled</lc-button>
+      </div>
+
+      <lc-button-group label="Período" style="margin-bottom: var(--lc-space-m)">
+        <lc-button id="g1">Dia</lc-button>
+        <lc-button id="g2">Semana</lc-button>
+        <lc-button id="g3">Mês</lc-button>
+      </lc-button-group>
+
+      <!-- Formulário de comparação: o componente e o nativo, lado a lado, com os
+           mesmos campos. É o que prova paridade em vez de "parece funcionar". -->
+      <form id="f-comp">
+        <input type="hidden" name="registro" value="42" />
+        <lc-button type="submit" name="acao" value="salvar" id="b-submit">Enviar</lc-button>
+        <lc-button type="reset" id="b-reset">Limpar</lc-button>
+        <lc-button id="b-sem-tipo">Sem type</lc-button>
+        <input class="lc-input" name="nome" id="campo" value="inicial" />
+      </form>
+
+      <form id="f-nativo">
+        <input type="hidden" name="registro" value="42" />
+        <button type="submit" name="acao" value="salvar">Enviar nativo</button>
+        <input name="nome" value="inicial" />
+      </form>
+
+      <div id="saida"></div>
+    </div>
+
+    <script type="module">
+      import { check, render } from './harness.js';
+
+      await Promise.all(
+        ['lc-button', 'lc-button-group'].map((t) => customElements.whenDefined(t)),
+      );
+
+      const $ = (s) => document.querySelector(s);
+      const parte = (host, nome) => host.shadowRoot.querySelector(`[part~="${nome}"]`);
+
+      /* ── 1. Estrutura ─────────────────────────────────────────────────────── */
+      const botao = $('lc-button');
+      check('<lc-button> montou shadow root com part base', !!parte(botao, 'base'), '');
+      check(
+        'o nó interno é um <button> de verdade (foco e teclado de graça)',
+        parte(botao, 'base').tagName === 'BUTTON',
+        parte(botao, 'base').tagName,
+      );
+
+      /* ── 2. O padrão de type é `button`, e isso é armadilha documentada ────── */
+      check(
+        'type padrão é "button" (oposto do <button> nativo) — armadilha do ADR',
+        $('#b-sem-tipo').type === 'button',
+        $('#b-sem-tipo').type,
+      );
+
+      /* ── 3. Submit de verdade, com submitter ───────────────────────────────
+         O caso central da fase. Comparamos o FormData do componente com o do
+         <button> nativo: precisa ser IGUAL, incluindo o par name/value do
+         submitter, que é o que `requestSubmit()` sem argumento não daria. */
+      function capturar(form, disparar) {
+        return new Promise((resolve) => {
+          form.addEventListener(
+            'submit',
+            (e) => {
+              e.preventDefault();
+              resolve({
+                dados: Object.fromEntries(new FormData(form, e.submitter)),
+                submitter: e.submitter?.tagName?.toLowerCase() ?? null,
+                submitterNome: e.submitter?.name ?? null,
+                submitterValor: e.submitter?.value ?? null,
+              });
+            },
+            { once: true },
+          );
+          disparar();
+        });
+      }
+
+      const doComponente = await capturar($('#f-comp'), () => $('#b-submit').click());
+      const doNativo = await capturar($('#f-nativo'), () =>
+        $('#f-nativo button[type="submit"]').click(),
+      );
+
+      check(
+        'lc-button type="submit" submete o formulário',
+        !!doComponente.dados,
+        JSON.stringify(doComponente.dados),
+      );
+      check(
+        'o par name/value do submitter entra no FormData',
+        doComponente.dados.acao === 'salvar',
+        `acao=${doComponente.dados.acao}`,
+      );
+      check(
+        'FormData do lc-button é IGUAL ao do <button> nativo',
+        JSON.stringify(doComponente.dados) === JSON.stringify(doNativo.dados),
+        `componente ${JSON.stringify(doComponente.dados)} · nativo ${JSON.stringify(doNativo.dados)}`,
+      );
+      check(
+        'o submitter registrado é um <button> em light DOM',
+        doComponente.submitter === 'button' && doComponente.submitterNome === 'acao',
+        `${doComponente.submitter} name=${doComponente.submitterNome}`,
+      );
+
+      /* ── 4. O botão auxiliar não fica no DOM ─────────────────────────────────
+         Se sobrasse, o formulário ganharia um submitter fantasma a cada clique. */
+      check(
+        'o <button> auxiliar é removido depois do submit',
+        $('#f-comp').querySelectorAll('button').length === 0,
+        `${$('#f-comp').querySelectorAll('button').length} sobrando`,
+      );
+
+      /* ── 5. Reset ─────────────────────────────────────────────────────────── */
+      const campo = $('#campo');
+      campo.value = 'alterado';
+      $('#b-reset').click();
+      await new Promise((r) => setTimeout(r, 0));
+      check(
+        'lc-button type="reset" volta o campo ao valor inicial',
+        campo.value === 'inicial',
+        `valor=${campo.value}`,
+      );
+
+      /* ── 6. `type` padrão NÃO submete — a armadilha, verificada ────────────── */
+      let submeteuSemTipo = false;
+      $('#f-comp').addEventListener('submit', () => (submeteuSemTipo = true), { once: true });
+      $('#b-sem-tipo').click();
+      await new Promise((r) => setTimeout(r, 20));
+      check(
+        'lc-button SEM type não submete (é a armadilha, e é intencional)',
+        submeteuSemTipo === false,
+        submeteuSemTipo ? 'submeteu' : 'não submeteu',
+      );
+
+      /* ── 7. Desabilitado não dispara clique ───────────────────────────────── */
+      for (const [rotulo, sel] of [
+        ['disabled', 'lc-button[disabled]'],
+        ['aria-disabled', 'lc-button[aria-disabled="true"]'],
+      ]) {
+        let clicou = false;
+        const el = document.querySelector(sel);
+        el.addEventListener('click', () => (clicou = true));
+        el.click();
+        await new Promise((r) => setTimeout(r, 0));
+        check(`${rotulo} bloqueia o handler de clique`, clicou === false, clicou ? 'rodou' : 'bloqueado');
+      }
+
+      /* ── 8. Hover não deixa o botão branco ──────────────────────────────────
+         O bug que abriu esta refatoração: a regra genérica vencia a da variante e
+         o sólido virava cinza-claro com texto branco. Aqui só existe uma regra de
+         hover, lendo `--fundo-hover`. Verificamos o VALOR da variável por variante,
+         que é o que a regra aplica. */
+      const esperado = {
+        brand: '--lc-color-brand-fill-loud',
+        success: '--lc-color-success-fill-loud',
+        warning: '--lc-color-warning-fill-loud',
+        danger: '--lc-color-danger-fill-loud',
+      };
+      const raiz = document.documentElement;
+      for (const [variante, token] of Object.entries(esperado)) {
+        const base = parte(document.querySelector(`lc-button[variant="${variante}"]`), 'base');
+        const usado = getComputedStyle(base).getPropertyValue('--fundo-hover').trim();
+        const doToken = getComputedStyle(raiz).getPropertyValue(token).trim();
+        check(
+          `hover de variant="${variante}" usa ${token}, não o cinza neutro`,
+          usado === doToken && usado.length > 0,
+          `${usado} vs ${doToken}`,
+        );
+      }
+
+      /* ── 9. O grupo achata as junções via custom property ─────────────────── */
+      const meio = parte($('#g2'), 'base');
+      const primeiro = parte($('#g1'), 'base');
+      const estiloMeio = getComputedStyle(meio);
+      const estiloPrimeiro = getComputedStyle(primeiro);
+      check(
+        'lc-button-group zera o raio do botão do meio',
+        parseFloat(estiloMeio.borderStartStartRadius) === 0 &&
+          parseFloat(estiloMeio.borderStartEndRadius) === 0,
+        `meio: ${estiloMeio.borderStartStartRadius}/${estiloMeio.borderStartEndRadius}`,
+      );
+      check(
+        'e mantém o raio externo do primeiro',
+        parseFloat(estiloPrimeiro.borderStartStartRadius) > 0,
+        estiloPrimeiro.borderStartStartRadius,
+      );
+      check(
+        'o grupo anuncia role="group" com o rótulo',
+        parte($('lc-button-group'), 'base').getAttribute('aria-label') === 'Período',
+        parte($('lc-button-group'), 'base').getAttribute('aria-label'),
+      );
+
+      /* ── 10. Foco delegado ────────────────────────────────────────────────── */
+      $('#g1').focus();
+      check(
+        'host.focus() foca o botão interno',
+        $('#g1').shadowRoot.activeElement === parte($('#g1'), 'base'),
+        String($('#g1').shadowRoot.activeElement?.tagName),
+      );
+
+      /* ── 11. Lê o contrato: troca de tema move a cor ───────────────────────── */
+      const alvo = parte(document.querySelector('lc-button[variant="brand"]'), 'base');
+      /* O botão tem `transition` no background, então ler logo depois de trocar o
+         tema devolve o valor ANTIGO — a leitura pegaria o meio da animação. Este
+         mesmo engano já custou uma investigação errada no kit; esperar a transição
+         assentar é o que torna a medição honesta. */
+      const assentar = () => new Promise((r) => setTimeout(r, 400));
+      raiz.setAttribute('data-lc-theme', 'legacy');
+      await assentar();
+      const legacy = getComputedStyle(alvo).backgroundColor;
+      raiz.setAttribute('data-lc-theme', 'modern');
+      await assentar();
+      const modern = getComputedStyle(alvo).backgroundColor;
+      check('trocar tema muda a cor do botão (lê o contrato)', legacy !== modern, `${legacy} · ${modern}`);
+      raiz.setAttribute('data-lc-theme', 'legacy');
+
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>

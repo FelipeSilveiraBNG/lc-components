@@ -33,3 +33,5 @@ import './lc-toast/lc-toast.js';
 import './lc-badge/lc-badge.js';
 import './lc-alert/lc-alert.js';
 import './lc-card/lc-card.js';
+import './lc-button/lc-button.js';
+import './lc-button-group/lc-button-group.js';

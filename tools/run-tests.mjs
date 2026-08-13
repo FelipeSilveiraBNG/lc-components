@@ -22,6 +22,7 @@ const PAGINAS = [
   'formulario.html',
   /* Componentes que substituem a camada de classes (ADR 0001). */
   'componentes-basicos.html',
+  'botao.html',
 ];
 
 /* Import de diretório não funciona em ESM: precisa apontar para o index.js. */
