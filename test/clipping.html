@@ -18,8 +18,8 @@
       </p>
 
       <!-- Cenário 1: dentro de contêiner com overflow, na ÚLTIMA linha -->
-      <div class="lc-card">
-        <div class="lc-card__header">Tabela que rola — última linha</div>
+      <lc-card>
+        <span slot="header">Tabela que rola — última linha</span>
         <div style="max-height: 140px; overflow: auto" id="scroller">
           <table class="lc-table lc-table--striped">
             <tbody>
@@ -30,28 +30,28 @@
                 <td>Último Paciente</td>
                 <td>
                   <lc-dropdown id="dd-tabela" placement="bottom-end">
-                    <button slot="trigger" class="lc-btn lc-btn--sm">Ações</button>
-                    <button class="lc-menu-item" data-value="editar">Editar</button>
-                    <button class="lc-menu-item" data-value="excluir" data-variant="danger">Excluir</button>
+                    <lc-button slot="trigger" size="small">Ações</lc-button>
+                    <lc-menu-item value="editar">Editar</lc-menu-item>
+                    <lc-menu-item value="excluir" variant="danger">Excluir</lc-menu-item>
                   </lc-dropdown>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
+      </lc-card>
 
       <!-- Cenário 2: dentro de modal -->
-      <button class="lc-btn lc-btn--brand" data-lc-modal="open modal-teste">Abrir modal</button>
+      <lc-button data-lc-modal="open modal-teste" variant="brand">Abrir modal</lc-button>
       <lc-modal id="modal-teste" label="Dropdown dentro de modal">
         <p>O painel precisa aparecer acima do modal, e o Esc deve fechar o menu primeiro.</p>
         <lc-dropdown id="dd-modal">
-          <button slot="trigger" class="lc-btn">Escolher unidade</button>
-          <button class="lc-menu-item" data-value="1">Hospital Central</button>
-          <button class="lc-menu-item" data-value="2">Unidade Norte</button>
+          <lc-button slot="trigger">Escolher unidade</lc-button>
+          <lc-menu-item value="1">Hospital Central</lc-menu-item>
+          <lc-menu-item value="2">Unidade Norte</lc-menu-item>
         </lc-dropdown>
         <div slot="footer">
-          <button class="lc-btn" data-lc-modal="close modal-teste">Fechar</button>
+          <lc-button data-lc-modal="close modal-teste">Fechar</lc-button>
         </div>
       </lc-modal>
 

@@ -35,7 +35,7 @@
 
       <div class="doc-exemplo">
         <template>
-          <button class="lc-btn lc-btn--brand" data-lc-modal="open m1">Editar paciente</button>
+          <lc-button data-lc-modal="open m1" variant="brand">Editar paciente</lc-button>
         </template>
       </div>
 
@@ -60,37 +60,31 @@
         por dentro.
       </p>
 
-      <div class="lc-alert lc-alert--brand">
+      <lc-alert variant="brand">
         <lc-icon name="info"></lc-icon>
         <span>
           O modal aberto tem um <code>lc-dropdown</code> dentro. Abra os dois: o menu não é recortado
           pelo diálogo, porque os dois estão no top layer. No legado isso exigia
           <code>z-index</code> e ainda quebrava.
         </span>
-      </div>
+      </lc-alert>
     </main>
 
     <lc-modal id="m1" label="Editar paciente">
-      <div class="lc-field">
-        <label class="lc-label" for="m-nome">Nome</label>
-        <input class="lc-input" id="m-nome" value="Ana Souza" autofocus />
-      </div>
-      <div class="lc-field">
-        <label class="lc-label" for="m-uni">Unidade</label>
-        <input class="lc-input" id="m-uni" value="Hospital Central" />
-      </div>
+      <lc-input label="Nome" id="m-nome" value="Ana Souza" autofocus></lc-input>
+      <lc-input label="Unidade" id="m-uni" value="Hospital Central"></lc-input>
       <lc-dropdown>
-        <button slot="trigger" class="lc-btn lc-btn--sm">
+        <lc-button slot="trigger" size="small">
           Dropdown dentro do modal <lc-icon name="chevron-down"></lc-icon>
-        </button>
-        <button class="lc-menu-item" data-value="funciona">Funciona</button>
-        <button class="lc-menu-item" data-value="sem-z-index">Sem z-index</button>
+        </lc-button>
+        <lc-menu-item value="funciona">Funciona</lc-menu-item>
+        <lc-menu-item value="sem-z-index">Sem z-index</lc-menu-item>
       </lc-dropdown>
       <div slot="footer">
-        <button class="lc-btn" data-lc-modal="close m1">Cancelar</button>
-        <button class="lc-btn lc-btn--brand" onclick="lc.toast('Salvo.', { variant: 'success' })">
+        <lc-button data-lc-modal="close m1">Cancelar</lc-button>
+        <lc-button onclick="lc.toast('Salvo.', { variant: 'success' })" variant="brand">
           Salvar
-        </button>
+        </lc-button>
       </div>
     </lc-modal>
   </body>

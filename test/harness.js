@@ -56,7 +56,7 @@ export function render(target = document.body) {
     const tr = document.createElement('tr');
     const color =
       r.verdict === 'PASS' ? 'success' : r.verdict === 'FAIL' ? 'danger' : 'warning';
-    tr.innerHTML = `<td>${r.name}</td><td><span class="lc-badge lc-badge--${color}">${r.verdict}</span></td><td class="lc-quiet">${r.detail}</td>`;
+    tr.innerHTML = `<td>${r.name}</td><td><lc-badge variant="${color}">${r.verdict}</lc-badge></td><td class="lc-quiet">${r.detail}</td>`;
     tbody.append(tr);
   }
 

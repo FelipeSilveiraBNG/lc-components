@@ -1,14 +1,31 @@
 /* ==========================================================================
-   CAMADA NATIVA — estiliza elemento nativo via classes `.lc-*`.
+   CAMADA NATIVA — o que sobrou dela.
 
-   Existe porque o alvo do kit é reproduzir telas que JÁ existem em HTML simples
-   (07 §4.2). Portar uma view do legado é renomear classe, não reescrever em
-   componente. Regra: custom element só onde há COMPORTAMENTO.
+   Este arquivo tinha 445 linhas e estilizava botão, campo, card, alert, badge e
+   tabela por classe. O ADR 0001 aposentou essa camada: cada um daqueles virou
+   custom element, e 49 blocos de regra saíram daqui.
 
-   Consequência declarada: NÃO existe `<lc-button>`. Existe `.lc-btn`.
+   ── O que FICA, e por quê ─────────────────────────────────────────────────
 
-   REGRA R5: nenhum literal de cor ou medida aqui. Tudo vem do contrato de
-   tokens, e `tools/check-contrato.mjs` reprova o que escapar.
+   1. TABELA (`.lc-table` e os quatro modificadores). Não é escolha, é limite da
+      plataforma: o modo de inserção "in table" do parser HTML EXPULSA elemento
+      desconhecido de dentro de `<table>`, `<tbody>` e `<tr>`. Um `<lc-row>` viraria
+      irmão da tabela e a tabela ficaria vazia — medido no Chromium, transcrito no
+      ADR. Não há polyfill: o dano acontece no parse, antes de qualquer script.
+      O Web Awesome chegou à mesma conclusão e também não tem componente de tabela.
+
+   2. PÁGINA e TIPOGRAFIA (`.lc-page`, `.lc-page-body`, `.lc-h1`, `.lc-h2`,
+      `.lc-quiet`, `.lc-link`). Não são componentes disfarçados: são utilitários.
+      Um `<lc-heading>` no lugar de `<h1 class="lc-h1">` destruiria o outline do
+      documento sem devolver encapsulamento nenhum.
+
+   Se você está procurando `.lc-btn`, `.lc-input`, `.lc-card`, `.lc-alert` ou
+   `.lc-badge`: eles não existem mais. Use `<lc-button>`, `<lc-input>`,
+   `<lc-card>`, `<lc-alert>`, `<lc-badge>`. O `tools/check-sem-classes.mjs`
+   reprova quem voltar a usá-los.
+
+   REGRA R5 continua: nenhum literal de cor ou medida aqui. Tudo vem do contrato
+   de tokens, e `tools/check-contrato.mjs` reprova o que escapar.
    ========================================================================== */
 
 @layer lc-native {
@@ -57,351 +74,15 @@
     text-decoration: underline;
   }
 
-  /* ── Anel de foco ────────────────────────────────────────────────────────
-     Uma implementação para os dois temas. O Bootstrap 3 usa brilho de
-     box-shadow e o console React usa outline; um `outline` com cor translúcida
-     e 3px cobre os dois, e a diferença sai dos tokens.
+  /* ── Anel de foco dos elementos que continuam nativos ─────────────────────
+     A regra original cobria `.lc-btn`, `.lc-input` e companhia; agora cada
+     componente aplica o próprio anel a partir dos mesmos tokens. O que sobra é o
+     link dentro de tabela, que continua sendo `<a>` puro.
      -------------------------------------------------------------------- */
-  .lc-btn:focus-visible,
-  .lc-input:focus-visible,
-  .lc-select:focus-visible,
-  .lc-textarea:focus-visible,
-  .lc-table a:focus-visible {
+  .lc-table a:focus-visible,
+  a.lc-link:focus-visible {
     outline: var(--lc-focus-ring-width) solid var(--lc-focus-ring-color);
     outline-offset: var(--lc-focus-ring-offset);
-  }
-
-  /* ══ BOTÃO ═══════════════════════════════════════════════════════════════
-     Default = o `.btn-default` do legado (branco com borda), que é o segundo
-     mais usado (53×). O sólido de marca é `.lc-btn--brand` (91× no legado).
-     -------------------------------------------------------------------- */
-  .lc-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--lc-space-2xs);
-    box-sizing: border-box;
-    min-height: var(--lc-control-height);
-    padding: 0 var(--lc-control-padding-x);
-    border: var(--lc-border-width) solid var(--lc-color-border-loud);
-    border-radius: var(--lc-radius-control);
-    background: var(--lc-color-surface-card);
-    color: var(--lc-color-text-normal);
-    font-family: inherit;
-    font-size: var(--lc-font-size-m);
-    font-weight: var(--lc-font-weight-medium);
-    line-height: 1;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-      background var(--lc-transition-fast),
-      border-color var(--lc-transition-fast),
-      color var(--lc-transition-fast);
-  }
-
-  /* ── Hover: a guarda precisa ser IDÊNTICA aqui e em toda variante ────────
-     `:not()` herda a especificidade do argumento, então esta guarda dupla vale
-     2 na coluna de classe. Se uma variante guardar só `:not(:disabled)`, ela
-     fica em 3 contra os 4 daqui e PERDE — o botão sólido recebia cinza neutro
-     no hover com o texto ainda branco (1,07:1 no legacy, 1,10:1 no modern:
-     branco no quase-branco). Com a guarda igual em todas, empatam em 4 e as
-     variantes vencem por virem depois neste arquivo. Ao acrescentar variante,
-     copie a guarda inteira.
-     -------------------------------------------------------------------- */
-  .lc-btn:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-neutral-fill-quiet);
-  }
-
-  .lc-btn:disabled,
-  .lc-btn[aria-disabled='true'] {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-
-  /* Variantes sólidas. Cada uma troca três tokens e nada mais. */
-  .lc-btn--brand,
-  .lc-btn--success,
-  .lc-btn--warning,
-  .lc-btn--danger {
-    border-color: transparent;
-    color: var(--lc-color-brand-on-loud);
-  }
-
-  .lc-btn--brand {
-    background: var(--lc-color-brand-fill-normal);
-    color: var(--lc-color-brand-on-loud);
-  }
-  .lc-btn--brand:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-brand-fill-loud);
-  }
-
-  .lc-btn--success {
-    background: var(--lc-color-success-fill-normal);
-    color: var(--lc-color-success-on-loud);
-  }
-  .lc-btn--success:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-success-fill-loud);
-  }
-
-  .lc-btn--warning {
-    background: var(--lc-color-warning-fill-normal);
-    color: var(--lc-color-warning-on-loud);
-  }
-  .lc-btn--warning:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-warning-fill-loud);
-  }
-
-  .lc-btn--danger {
-    background: var(--lc-color-danger-fill-normal);
-    color: var(--lc-color-danger-on-loud);
-  }
-  .lc-btn--danger:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-danger-fill-loud);
-  }
-
-  /* Variante de contorno: hierarquia por forma, não por tinta. */
-  .lc-btn--quiet {
-    border-color: transparent;
-    background: transparent;
-    color: var(--lc-color-brand-text);
-  }
-  .lc-btn--quiet:hover:not(:disabled):not([aria-disabled='true']) {
-    background: var(--lc-color-brand-fill-quiet);
-  }
-
-  .lc-btn--sm {
-    min-height: var(--lc-control-height-sm);
-    padding: 0 var(--lc-space-s);
-    font-size: var(--lc-font-size-s);
-  }
-
-  .lc-btn--lg {
-    min-height: var(--lc-control-height-lg);
-    padding: 0 var(--lc-space-l);
-    font-size: var(--lc-font-size-xl);
-  }
-
-  .lc-btn--block {
-    display: flex;
-    width: 100%;
-  }
-
-  .lc-btn-group {
-    display: inline-flex;
-  }
-  .lc-btn-group > .lc-btn:not(:first-child) {
-    border-start-start-radius: 0;
-    border-end-start-radius: 0;
-    margin-inline-start: calc(-1 * var(--lc-border-width));
-  }
-  .lc-btn-group > .lc-btn:not(:last-child) {
-    border-start-end-radius: 0;
-    border-end-end-radius: 0;
-  }
-
-  /* ══ CAMPOS DE FORMULÁRIO ════════════════════════════════════════════════ */
-  .lc-field {
-    display: block;
-    margin-bottom: var(--lc-space-m);
-  }
-
-  .lc-label {
-    display: block;
-    margin-bottom: var(--lc-space-2xs);
-    color: var(--lc-color-text-normal);
-    font-size: var(--lc-font-size-s);
-    font-weight: var(--lc-font-weight-semibold);
-  }
-
-  .lc-input,
-  .lc-select,
-  .lc-textarea {
-    box-sizing: border-box;
-    width: 100%;
-    min-height: var(--lc-control-height);
-    padding: 0 var(--lc-control-padding-x);
-    border: var(--lc-border-width) solid var(--lc-color-border-loud);
-    border-radius: var(--lc-radius-control);
-    background: var(--lc-color-surface-card);
-    color: var(--lc-color-text-normal);
-    font-family: inherit;
-    font-size: var(--lc-font-size-m);
-    line-height: var(--lc-line-height-normal);
-    transition:
-      border-color var(--lc-transition-fast),
-      box-shadow var(--lc-transition-fast);
-  }
-
-  .lc-textarea {
-    min-height: calc(var(--lc-control-height) * 2.5);
-    padding: var(--lc-space-xs) var(--lc-control-padding-x);
-    resize: vertical;
-  }
-
-  .lc-input::placeholder,
-  .lc-textarea::placeholder {
-    color: var(--lc-color-text-quiet);
-  }
-
-  .lc-input:disabled,
-  .lc-select:disabled,
-  .lc-textarea:disabled {
-    background: var(--lc-color-surface-sunken);
-    cursor: not-allowed;
-  }
-
-  .lc-field--error .lc-input,
-  .lc-field--error .lc-select,
-  .lc-field--error .lc-textarea {
-    border-color: var(--lc-color-danger-border);
-  }
-
-  .lc-error {
-    display: block;
-    margin-top: var(--lc-space-3xs);
-    color: var(--lc-color-danger-text);
-    font-size: var(--lc-font-size-xs);
-  }
-
-  .lc-hint {
-    display: block;
-    margin-top: var(--lc-space-3xs);
-    color: var(--lc-color-text-quiet);
-    font-size: var(--lc-font-size-xs);
-  }
-
-  /* ══ CARD ════════════════════════════════════════════════════════════════
-     Unifica `.box` (AdminLTE) e `.portlet` (Metronic), que eram redundantes
-     (02 §C, item 5). A barra de acento no topo é o que o `.box` usa para
-     sinalizar variante; a largura dela é token, porque os dois temas a tratam
-     com peso diferente.
-     -------------------------------------------------------------------- */
-  .lc-card {
-    box-sizing: border-box;
-    margin-bottom: var(--lc-space-l);
-    border: var(--lc-border-width) solid var(--lc-color-border-quiet);
-    border-top: var(--lc-accent-bar-width) solid var(--lc-color-border-normal);
-    border-radius: var(--lc-radius-card);
-    background: var(--lc-color-surface-card);
-    box-shadow: var(--lc-shadow-card);
-  }
-
-  .lc-card--brand {
-    border-top-color: var(--lc-color-brand-border);
-  }
-  .lc-card--success {
-    border-top-color: var(--lc-color-success-border);
-  }
-  .lc-card--warning {
-    border-top-color: var(--lc-color-warning-border);
-  }
-  .lc-card--danger {
-    border-top-color: var(--lc-color-danger-border);
-  }
-
-  .lc-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--lc-space-s);
-    padding: var(--lc-space-s) var(--lc-space-m);
-    border-bottom: var(--lc-border-width) solid var(--lc-color-border-quiet);
-    font-size: var(--lc-font-size-xl);
-    font-weight: var(--lc-font-weight-semibold);
-  }
-
-  .lc-card__body {
-    padding: var(--lc-space-m);
-  }
-
-  .lc-card__footer {
-    display: flex;
-    align-items: center;
-    gap: var(--lc-space-s);
-    padding: var(--lc-space-s) var(--lc-space-m);
-    border-top: var(--lc-border-width) solid var(--lc-color-border-quiet);
-  }
-
-  /* ══ ALERT ═══════════════════════════════════════════════════════════════
-     Unifica `.alert` e `.callout` do legado — mesma coisa com ênfase
-     diferente (07 §7). `--banner` é o antigo callout (barra na lateral).
-     -------------------------------------------------------------------- */
-  .lc-alert {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--lc-space-xs);
-    box-sizing: border-box;
-    margin-bottom: var(--lc-space-l);
-    padding: var(--lc-space-s) var(--lc-space-m);
-    border: var(--lc-border-width) solid var(--lc-color-neutral-border);
-    border-radius: var(--lc-radius-control);
-    background: var(--lc-color-neutral-fill-quiet);
-    color: var(--lc-color-text-normal);
-    font-size: var(--lc-font-size-m);
-  }
-
-  .lc-alert--brand {
-    border-color: var(--lc-color-brand-border);
-    background: var(--lc-color-brand-fill-quiet);
-    color: var(--lc-color-brand-text);
-  }
-  .lc-alert--success {
-    border-color: var(--lc-color-success-border);
-    background: var(--lc-color-success-fill-quiet);
-    color: var(--lc-color-success-text);
-  }
-  .lc-alert--warning {
-    border-color: var(--lc-color-warning-border);
-    background: var(--lc-color-warning-fill-quiet);
-    color: var(--lc-color-warning-text);
-  }
-  .lc-alert--danger {
-    border-color: var(--lc-color-danger-border);
-    background: var(--lc-color-danger-fill-quiet);
-    color: var(--lc-color-danger-text);
-  }
-
-  .lc-alert--banner {
-    border-width: 0;
-    border-inline-start: var(--lc-accent-bar-width) solid currentColor;
-    border-radius: 0;
-  }
-
-  /* ══ BADGE (chip de status) ═══════════════════════════════════════════════ */
-  .lc-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--lc-space-3xs);
-    padding: var(--lc-space-3xs) var(--lc-space-xs);
-    border: var(--lc-border-width) solid var(--lc-color-neutral-border);
-    border-radius: var(--lc-radius-pill);
-    background: var(--lc-color-neutral-fill-quiet);
-    color: var(--lc-color-neutral-text);
-    font-size: var(--lc-font-size-xs);
-    font-weight: var(--lc-font-weight-semibold);
-    line-height: 1.4;
-    white-space: nowrap;
-  }
-
-  .lc-badge--brand {
-    border-color: var(--lc-color-brand-border);
-    background: var(--lc-color-brand-fill-quiet);
-    color: var(--lc-color-brand-text);
-  }
-  .lc-badge--success {
-    border-color: var(--lc-color-success-border);
-    background: var(--lc-color-success-fill-quiet);
-    color: var(--lc-color-success-text);
-  }
-  .lc-badge--warning {
-    border-color: var(--lc-color-warning-border);
-    background: var(--lc-color-warning-fill-quiet);
-    color: var(--lc-color-warning-text);
-  }
-  .lc-badge--danger {
-    border-color: var(--lc-color-danger-border);
-    background: var(--lc-color-danger-fill-quiet);
-    color: var(--lc-color-danger-text);
   }
 
   /* ══ TABELA ══════════════════════════════════════════════════════════════ */

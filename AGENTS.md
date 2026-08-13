@@ -32,16 +32,21 @@ branca com Times New Roman.
 
 ## Regras de ouro
 
-1. **Botão, campo, card, alert, badge e tabela são CLASSE, não tag.** Não existe
-   `<lc-button>`. Use `<button class="lc-btn">`. Componente só onde há comportamento.
+1. **Componente é TAG. Não existe classe de componente.** Botão, campo, card, alert, badge e
+   item de menu são `<lc-button>`, `<lc-input>`, `<lc-card>`, `<lc-alert>`, `<lc-badge>`,
+   `<lc-menu-item>`. Se você está procurando `.lc-btn` ou `.lc-field`, eles não existem mais — <!-- lc-permite-classe -->
+   ver o [ADR 0001](docs/adr/0001-aposentar-a-camada-de-classes.md).
 
-   > ⚠️ **Esta regra está sendo revertida.** O
-   > [ADR 0001](docs/adr/0001-aposentar-a-camada-de-classes.md) decidiu aposentar a camada de
-   > classes: cada uma dessas classes virará custom element, uma fase por vez. **Continue usando a
-   > classe enquanto a tag não existir** — a regra acima vale para tudo que ainda não migrou, e é
-   > verdade hoje. Conforme cada tag entrar, esta lista encolhe. Duas coisas NÃO mudam:
-   > `.lc-table` continua classe (o parser HTML proíbe componentizar linha e célula) e os
-   > utilitários (`.lc-stack`, `.lc-quiet`, `.lc-h1`…) continuam classes.
+   **Duas exceções, e são exceções de verdade:**
+
+   - **Tabela é `<table class="lc-table">`.** Não é inconsistência: o parser HTML EXPULSA
+     elemento desconhecido de dentro de `<table>`/`<tbody>`/`<tr>`, então `<lc-row>` viraria
+     irmão da tabela e a tabela ficaria vazia. Medido, não suposto. O Web Awesome também não tem
+     componente de tabela.
+   - **Utilitário e tipografia continuam classe:** `.lc-stack`, `.lc-row`, `.lc-grow`,
+     `.lc-quiet`, `.lc-h1`, `.lc-h2`, `.lc-page-body`, `.lc-cloak`, `.lc-no-print`.
+
+   O `tools/check-sem-classes.mjs` reprova quem usar classe aposentada.
 2. **Nunca reestilize componente por dentro.** Use atributo, `::part()` ou a custom property
    documentada no JSDoc do componente.
 3. **Tag custom nunca é self-closing.** `<lc-icon name="x"></lc-icon>`, jamais `<lc-icon />` —
@@ -56,58 +61,96 @@ branca com Times New Roman.
 ### Botões
 
 ```html
-<button class="lc-btn lc-btn--brand">Salvar</button>
-<button class="lc-btn">Cancelar</button>
-<button class="lc-btn lc-btn--quiet">Ver mais</button>
-<button class="lc-btn lc-btn--danger">Excluir</button>
-<button class="lc-btn lc-btn--sm">Pequeno</button>
-<button class="lc-btn lc-btn--block">Largura total</button>
-<button class="lc-btn" disabled>Desabilitado</button>
+<lc-button variant="brand">Salvar</lc-button>
+<lc-button>Cancelar</lc-button>
+<lc-button appearance="plain">Ver mais</lc-button>
+<lc-button variant="danger">Excluir</lc-button>
+<lc-button size="small">Pequeno</lc-button>
+<lc-button block>Largura total</lc-button>
+<lc-button disabled>Desabilitado</lc-button>
+
+<lc-button-group label="Período">
+  <lc-button>Dia</lc-button>
+  <lc-button>Semana</lc-button>
+</lc-button-group>
 ```
 
-Variantes: `--brand` `--success` `--warning` `--danger` `--quiet`. Tamanhos: `--sm` `--lg`.
+`variant`: `brand` `success` `warning` `danger` (padrão: neutro).
+`appearance`: `plain` remove tinta e borda. `size`: `small` `large`.
+
+> ⚠️ **`type` padrão é `button`, não `submit`** — o oposto do `<button>` nativo. Dentro de um
+> `<form>`, escreva `type="submit"` explicitamente, senão **nada acontece e nada avisa**.
+
+```html
+<form>
+  <lc-button type="submit" variant="brand">Enviar</lc-button>
+  <lc-button type="reset">Limpar</lc-button>
+</form>
+```
 
 ### Campo de formulário
 
-```html
-<div class="lc-field">
-  <label class="lc-label" for="nome">Nome do paciente</label>
-  <input class="lc-input" id="nome" placeholder="Digite o nome" />
-</div>
+O controle é dono do rótulo: **um** nó, não três. `label` e `hint` são atributo (ou slot, se
+precisar de HTML dentro).
 
-<!-- Erro -->
-<div class="lc-field lc-field--error">
-  <label class="lc-label" for="cpf">CPF</label>
-  <input class="lc-input" id="cpf" />
-  <span class="lc-error">CPF inválido.</span>
-</div>
+```html
+<lc-input label="Nome do paciente" name="nome" placeholder="Digite o nome"></lc-input>
+<lc-input label="CPF" name="cpf" required hint="Só números"></lc-input>
+<lc-input label="E-mail" name="email" type="email"></lc-input>
+
+<lc-select label="Unidade" name="unidade">
+  <option value="central">Hospital Central</option>
+  <option value="norte">Unidade Norte</option>
+</lc-select>
+
+<lc-textarea label="Observações" name="obs" rows="4"></lc-textarea>
 ```
+
+**Erro não é markup, é validade.** Não existe atributo `error`. A mensagem vem da validação
+nativa (`required`, `type`, `pattern`, `minlength`), e regra de negócio usa
+`setCustomValidity()`:
+
+```html
+<script>
+  document.querySelector('[name="cpf"]').setCustomValidity('CPF já cadastrado.');
+  // e para limpar:
+  document.querySelector('[name="cpf"]').resetValidity();
+</script>
+```
+
+O erro aparece ao **sair** do campo ou no submit, não a cada tecla. Evento: `lc-invalid`.
 
 ### Card
 
 ```html
-<div class="lc-card lc-card--brand">
-  <div class="lc-card__header">Dados do paciente</div>
-  <div class="lc-card__body">…</div>
-  <div class="lc-card__footer">
-    <button class="lc-btn lc-btn--brand">Salvar</button>
+<lc-card variant="brand">
+  <span slot="header">Dados do paciente</span>
+  …
+  <div slot="footer">
+    <lc-button variant="brand">Salvar</lc-button>
   </div>
-</div>
+</lc-card>
 ```
 
-Variantes de acento no topo: `--brand` `--success` `--warning` `--danger`.
+`variant`: `brand` `success` `warning` `danger`. Cabeçalho e rodapé **desaparecem sozinhos**
+quando o slot está vazio — não escreva div vazia para "manter a estrutura".
 
 ### Avisos e chips
 
 ```html
-<div class="lc-alert lc-alert--warning">Outro usuário está editando este registro.</div>
-<div class="lc-alert lc-alert--danger lc-alert--banner">Falha ao consultar o CEP.</div>
+<lc-alert variant="warning">
+  <lc-icon slot="icon" name="warning"></lc-icon>
+  Outro usuário está editando este registro.
+</lc-alert>
 
-<span class="lc-badge lc-badge--success">Ativo</span>
-<span class="lc-badge lc-badge--warning">Pendente</span>
+<lc-alert variant="danger" appearance="banner">Falha ao consultar o CEP.</lc-alert>
+
+<lc-badge variant="success">Ativo</lc-badge>
+<lc-badge variant="warning">Pendente</lc-badge>
 ```
 
-`--banner` é o antigo `.callout` do legado (barra na lateral em vez de borda em volta).
+`appearance="banner"` é o antigo `.callout` do legado (barra na lateral em vez de borda em
+volta). O ícone do alerta vai no **slot `icon`**, não como primeiro filho.
 
 ### Tabela
 
@@ -122,8 +165,8 @@ Variantes de acento no topo: `--brand` `--success` `--warning` `--danger`.
       <td>Ana Souza</td>
       <td>
         <lc-dropdown placement="bottom-end">
-          <button slot="trigger" class="lc-btn lc-btn--sm">···</button>
-          <button class="lc-menu-item" data-value="editar">Editar</button>
+          <lc-button slot="trigger" size="small">···</lc-button>
+          <lc-menu-item value="editar">Editar</lc-menu-item>
         </lc-dropdown>
       </td>
     </tr>
@@ -139,7 +182,7 @@ Modificadores: `--striped` `--hover` `--bordered` `--condensed`.
 <form id="f">
   <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
   <lc-switch name="termo" required>Aceito o termo</lc-switch>
-  <button class="lc-btn lc-btn--brand" type="submit">Enviar</button>
+  <lc-button variant="brand" type="submit">Enviar</lc-button>
 </form>
 <script>
   document.getElementById('f').addEventListener('submit', (e) => {
@@ -156,14 +199,14 @@ que o atributo declarava.
 
 ```html
 <lc-dropdown placement="bottom-start">
-  <button slot="trigger" class="lc-btn">
+  <lc-button slot="trigger">
     Ações <lc-icon name="chevron-down"></lc-icon>
-  </button>
-  <button class="lc-menu-item" data-value="editar">
+  </lc-button>
+  <lc-menu-item value="editar">
     <lc-icon name="pencil"></lc-icon> Editar
-  </button>
+  </lc-menu-item>
   <hr />
-  <button class="lc-menu-item" data-variant="danger" data-value="excluir">Excluir</button>
+  <lc-menu-item value="excluir" variant="danger">Excluir</lc-menu-item>
 </lc-dropdown>
 <script>
   document.addEventListener('lc-select', (e) => console.log(e.detail.value));
@@ -177,16 +220,13 @@ Fecha por clique fora e por Esc **sozinho** (top layer nativo). Funciona dentro 
 ### Modal — inclusive sem JavaScript
 
 ```html
-<button class="lc-btn lc-btn--brand" data-lc-modal="open m1">Editar</button>
+<lc-button variant="brand" data-lc-modal="open m1">Editar</lc-button>
 
 <lc-modal id="m1" label="Editar paciente">
-  <div class="lc-field">
-    <label class="lc-label" for="n">Nome</label>
-    <input class="lc-input" id="n" autofocus />
-  </div>
+  <lc-input label="Nome" id="n" autofocus></lc-input>
   <div slot="footer">
-    <button class="lc-btn" data-lc-modal="close m1">Cancelar</button>
-    <button class="lc-btn lc-btn--brand">Salvar</button>
+    <lc-button data-lc-modal="close m1">Cancelar</lc-button>
+    <lc-button variant="brand">Salvar</lc-button>
   </div>
 </lc-modal>
 ```
@@ -209,7 +249,7 @@ origem:
 ### Notificação
 
 ```html
-<button class="lc-btn" onclick="lc.toast('Registro salvo.', { variant: 'success' })">Salvar</button>
+<lc-button onclick="lc.toast('Registro salvo.', { variant: 'success' })">Salvar</lc-button>
 ```
 
 ```js

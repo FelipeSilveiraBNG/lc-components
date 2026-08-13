@@ -41,23 +41,23 @@
               <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
               <lc-switch disabled>Desabilitado</lc-switch>
               <div class="lc-row">
-                <button class="lc-btn lc-btn--brand lc-btn--sm" type="submit">Enviar</button>
-                <button class="lc-btn lc-btn--sm" type="reset">Reset</button>
+                <lc-button type="submit" variant="brand" size="small">Enviar</lc-button>
+                <lc-button type="reset" size="small">Reset</lc-button>
               </div>
-              <output class="lc-hint" id="saida-form">FormData aparece aqui</output>
+              <output class="lc-quiet" id="saida-form">FormData aparece aqui</output>
             </form>
           </template>
         </div>
       </div>
 
-      <div class="lc-alert lc-alert--success">
+      <lc-alert variant="success">
         <lc-icon name="success"></lc-icon>
         <span>
           Ser <em>form-associated</em> é o que separa este componente de uma <code>div</code> com
           aparência de interruptor: o protótipo pode enviar o formulário de verdade e você vê os
           dados que o backend receberia.
         </span>
-      </div>
+      </lc-alert>
 
       <h2 class="doc-h2">Evento</h2>
       <p>

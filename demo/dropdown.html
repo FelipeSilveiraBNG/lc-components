@@ -29,26 +29,26 @@
       <h2 class="doc-h2">Menu básico</h2>
       <p>
         O gatilho vai no <code>slot="trigger"</code>; os itens são
-        <code>.lc-menu-item</code> soltos. <code>data-variant="danger"</code> tinge o item
+        <code>&lt;lc-menu-item&gt;</code> soltos. <code>variant="danger"</code> tinge o item
         destrutivo, e <code>&lt;hr&gt;</code> separa grupos.
       </p>
 
       <div class="doc-exemplo">
         <template>
           <lc-dropdown>
-            <button slot="trigger" class="lc-btn">
+            <lc-button slot="trigger">
               Ações <lc-icon name="chevron-down"></lc-icon>
-            </button>
-            <button class="lc-menu-item" data-value="editar">
+            </lc-button>
+            <lc-menu-item value="editar">
               <lc-icon name="pencil"></lc-icon> Editar
-            </button>
-            <button class="lc-menu-item" data-value="duplicar">
+            </lc-menu-item>
+            <lc-menu-item value="duplicar">
               <lc-icon name="plus"></lc-icon> Duplicar
-            </button>
+            </lc-menu-item>
             <hr />
-            <button class="lc-menu-item" data-variant="danger" data-value="excluir">
+            <lc-menu-item variant="danger" value="excluir">
               <lc-icon name="trash"></lc-icon> Excluir
-            </button>
+            </lc-menu-item>
           </lc-dropdown>
         </template>
       </div>
@@ -62,31 +62,31 @@
       <div class="doc-exemplo">
         <template>
           <lc-dropdown placement="bottom-start">
-            <button slot="trigger" class="lc-btn lc-btn--sm">bottom-start</button>
-            <button class="lc-menu-item" data-value="a">Opção A</button>
-            <button class="lc-menu-item" data-value="b">Opção B</button>
+            <lc-button slot="trigger" size="small">bottom-start</lc-button>
+            <lc-menu-item value="a">Opção A</lc-menu-item>
+            <lc-menu-item value="b">Opção B</lc-menu-item>
           </lc-dropdown>
           <lc-dropdown placement="bottom-end">
-            <button slot="trigger" class="lc-btn lc-btn--sm">bottom-end</button>
-            <button class="lc-menu-item" data-value="a">Opção A</button>
-            <button class="lc-menu-item" data-value="b">Opção B</button>
+            <lc-button slot="trigger" size="small">bottom-end</lc-button>
+            <lc-menu-item value="a">Opção A</lc-menu-item>
+            <lc-menu-item value="b">Opção B</lc-menu-item>
           </lc-dropdown>
           <lc-dropdown placement="top-start">
-            <button slot="trigger" class="lc-btn lc-btn--sm">top-start</button>
-            <button class="lc-menu-item" data-value="a">Opção A</button>
-            <button class="lc-menu-item" data-value="b">Opção B</button>
+            <lc-button slot="trigger" size="small">top-start</lc-button>
+            <lc-menu-item value="a">Opção A</lc-menu-item>
+            <lc-menu-item value="b">Opção B</lc-menu-item>
           </lc-dropdown>
         </template>
       </div>
 
-      <div class="lc-alert lc-alert--success">
+      <lc-alert variant="success">
         <lc-icon name="success"></lc-icon>
         <span>
           O painel abre no <strong>top layer</strong> nativo: não é recortado por contêiner com
           overflow, funciona dentro de modal e na última linha de tabela que rola, sem
           <code>z-index</code>. Era o bug estrutural nº 1 do legado.
         </span>
-      </div>
+      </lc-alert>
 
       <h2 class="doc-h2">Evento cancelável</h2>
       <p>

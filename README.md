@@ -22,7 +22,7 @@ O levantamento e as decisões que originaram este kit estão em
   </head>
   <body class="lc">
     <div class="lc-page-body">
-      <button class="lc-btn lc-btn--brand">Salvar</button>
+      <lc-button variant="brand">Salvar</lc-button>
     </div>
   </body>
 </html>
@@ -63,11 +63,18 @@ escolheu. Quando existir, entra como terceiro tema sem tocar em componente nenhu
 
 ## O que tem no v0.1
 
-**Camada nativa** (classes CSS sobre elemento nativo — é onde 80% de uma tela é escrita):
-`.lc-btn` · `.lc-field`/`.lc-label`/`.lc-input`/`.lc-select`/`.lc-textarea` · `.lc-card` ·
-`.lc-alert` · `.lc-badge` · `.lc-table` · `.lc-btn-group` · utilitários.
+**Camada nativa** — o que sobrou dela depois do
+[ADR 0001](docs/adr/0001-aposentar-a-camada-de-classes.md), que aposentou as classes de
+componente: `<table class="lc-table">` e os quatro modificadores, mais tipografia
+(`.lc-h1`, `.lc-h2`, `.lc-quiet`, `.lc-link`), página (`.lc-page`, `.lc-page-body`) e
+utilitários (`.lc-stack`, `.lc-row`, `.lc-cloak`…).
 
-**Componentes** (custom elements — só onde há comportamento):
+A tabela fica como classe por limite da plataforma, não por escolha: o parser HTML expulsa
+elemento desconhecido de dentro de `<table>`/`<tbody>`/`<tr>`, então uma linha componentizada
+viraria irmã da tabela. O Web Awesome chegou à mesma conclusão e também não tem componente de
+tabela.
+
+**Componentes** (custom elements — tudo o que não é tabela nem utilitário):
 
 | Tag | O que faz | O que substitui do legado |
 |---|---|---|

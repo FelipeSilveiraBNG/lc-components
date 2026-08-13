@@ -46,7 +46,7 @@
         <lc-button type="submit" name="acao" value="salvar" id="b-submit">Enviar</lc-button>
         <lc-button type="reset" id="b-reset">Limpar</lc-button>
         <lc-button id="b-sem-tipo">Sem type</lc-button>
-        <input class="lc-input" name="nome" id="campo" value="inicial" />
+        <lc-input name="nome" id="campo" value="inicial"></lc-input>
       </form>
 
       <form id="f-nativo">
@@ -62,7 +62,7 @@
       import { check, render } from './harness.js';
 
       await Promise.all(
-        ['lc-button', 'lc-button-group'].map((t) => customElements.whenDefined(t)),
+        ['lc-button', 'lc-button-group', 'lc-input'].map((t) => customElements.whenDefined(t)),
       );
 
       const $ = (s) => document.querySelector(s);

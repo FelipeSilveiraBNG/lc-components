@@ -20,24 +20,25 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">Botões <span class="doc-selo doc-selo--classe">classe</span></h1>
       <p class="doc-lede">
-        <code>.lc-btn</code> e cinco variantes. Não existe <code>&lt;lc-button&gt;</code>: botão não
+        <!-- lc-permite-classe: cita o nome antigo de propósito, para quem migra reconhecer -->
+        <code>&lt;lc-button&gt;</code> e cinco variantes. Era a classe <code>.lc-btn</code> até o ADR 0001: o <!-- lc-permite-classe -->
         tem comportamento, então é classe.
       </p>
 
       <h2 class="doc-h2">Variantes</h2>
       <p>
         O default é o <code>.btn-default</code> do legado (branco com borda), o segundo mais usado
-        lá. O sólido de marca é <code>.lc-btn--brand</code>, o mais usado de todos.
+        lá. O sólido de marca é <code>variant="brand"</code>, o mais usado de todos.
       </p>
 
       <div class="doc-exemplo">
         <template>
-          <button class="lc-btn lc-btn--brand">Salvar</button>
-          <button class="lc-btn">Cancelar</button>
-          <button class="lc-btn lc-btn--quiet">Ver mais</button>
-          <button class="lc-btn lc-btn--success">Aprovar</button>
-          <button class="lc-btn lc-btn--warning">Revisar</button>
-          <button class="lc-btn lc-btn--danger">Excluir</button>
+          <lc-button variant="brand">Salvar</lc-button>
+          <lc-button>Cancelar</lc-button>
+          <lc-button appearance="plain">Ver mais</lc-button>
+          <lc-button variant="success">Aprovar</lc-button>
+          <lc-button variant="warning">Revisar</lc-button>
+          <lc-button variant="danger">Excluir</lc-button>
         </template>
       </div>
 
@@ -49,11 +50,11 @@
       <h2 class="doc-h2">Tamanhos e estados</h2>
       <div class="doc-exemplo">
         <template>
-          <button class="lc-btn lc-btn--sm">Pequeno</button>
-          <button class="lc-btn">Padrão</button>
-          <button class="lc-btn lc-btn--lg">Grande</button>
-          <button class="lc-btn" disabled>Desabilitado</button>
-          <button class="lc-btn lc-btn--brand" aria-disabled="true">aria-disabled</button>
+          <lc-button size="small">Pequeno</lc-button>
+          <lc-button>Padrão</lc-button>
+          <lc-button size="large">Grande</lc-button>
+          <lc-button disabled>Desabilitado</lc-button>
+          <lc-button aria-disabled="true" variant="brand">aria-disabled</lc-button>
         </template>
       </div>
 
@@ -67,12 +68,12 @@
       <div class="doc-exemplo">
         <div class="doc-preview doc-preview--bloco">
           <template>
-            <button class="lc-btn lc-btn--brand lc-btn--block">Largura total</button>
-            <div class="lc-btn-group">
-              <button class="lc-btn">Dia</button>
-              <button class="lc-btn">Semana</button>
-              <button class="lc-btn">Mês</button>
-            </div>
+            <lc-button variant="brand" block>Largura total</lc-button>
+            <lc-button-group>
+              <lc-button>Dia</lc-button>
+              <lc-button>Semana</lc-button>
+              <lc-button>Mês</lc-button>
+            </lc-button-group>
           </template>
         </div>
       </div>

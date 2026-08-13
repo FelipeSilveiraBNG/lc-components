@@ -17,16 +17,13 @@
         (doc 09 §3.7) — sem ela, cada tela reimplementaria a cola.
       </p>
 
-      <form id="f" class="lc-card">
-        <div class="lc-card__body lc-stack">
-          <div class="lc-field">
-            <label class="lc-label" for="nome">Nome</label>
-            <input class="lc-input" id="nome" name="nome" value="Ana Souza" />
-          </div>
+      <lc-card>
+        <form id="f" class="lc-stack">
+          <lc-input label="Nome" id="nome" name="nome" value="Ana Souza"></lc-input>
           <lc-switch name="noturno" value="sim" checked>Aceita plantão noturno</lc-switch>
           <lc-switch name="termo" required>Aceito o termo (obrigatório)</lc-switch>
-        </div>
-      </form>
+        </form>
+      </lc-card>
 
       <div id="saida"></div>
     </div>
@@ -35,7 +32,7 @@
       import { check, render } from './harness.js';
 
       const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-      await customElements.whenDefined('lc-switch');
+      await Promise.all(['lc-switch', 'lc-input', 'lc-card'].map((t) => customElements.whenDefined(t)));
       await espera(30);
 
       const form = document.getElementById('f');

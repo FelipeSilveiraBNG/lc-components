@@ -154,45 +154,46 @@
         }
       }
 
-      /* ── 4. Guarda de hover uniforme entre as variantes de botão ─────────────
-         É `check`, não `inherited`: aqui a responsabilidade é do KIT.
+      /* ── 4. UMA regra de hover no botão, não uma por variante ────────────────
+         Este caso nasceu de um bug real e mudou de forma junto com o kit.
 
-         `:not()` herda a especificidade do argumento. A regra genérica
-         `.lc-btn:hover:not(:disabled):not([aria-disabled='true'])` vale 4 na
-         coluna de classe; uma variante que guardasse só `:not(:disabled)` valeria
-         3 e PERDERIA a disputa, mesmo vindo depois. Foi o bug: todo botão sólido
-         recebia o cinza neutro no hover com o texto ainda branco — 1,07:1 no
-         legacy, 1,10:1 no modern, o botão sumia. Nos dois temas, porque a causa é
-         cascata, não token.
+         Antes: as regras de hover eram uma por variante
+         (`.lc-btn--brand:hover`) e disputavam especificidade com a genérica  lc-permite-classe
+         (`.lc-btn:hover`). A genérica tinha uma guarda `:not()` a mais, valia 4  lc-permite-classe
+         contra 3, e VENCIA — todo botão sólido ficava cinza-claro no hover com o
+         texto ainda branco: 1,07:1 no legacy, 1,10:1 no modern. Nos dois temas,
+         porque a causa era cascata e não token.
 
-         Afirmar a guarda IDÊNTICA em toda regra de hover de `.lc-btn` mantém o
-         empate em 4, e aí a ordem no arquivo desempata a favor da variante. */
-      const GUARDA = /:hover:not\(:disabled\):not\(\[aria-disabled=['"]true['"]\]\)$/;
-      const semGuarda = [];
-      const visitarHover = (sheet) => {
-        let rules;
-        try {
-          rules = sheet.cssRules;
-        } catch {
-          return; // folha cross-origin
-        }
-        for (const rule of rules) {
-          if (rule.styleSheet) visitarHover(rule.styleSheet); // @import
-          if (rule.cssRules && !rule.selectorText) visitarHover(rule); // @layer
-          /* Só as regras de hover do próprio botão. `.lc-btn-group > .lc-btn` e
-             `.lc-table--hover tr:hover` não disputam com a genérica. */
-          for (const sel of rule.selectorText?.split(',') ?? []) {
-            const s = sel.trim();
-            if (/^\.lc-btn[a-z-]*:hover/.test(s) && !GUARDA.test(s)) semGuarda.push(s);
+         Agora `.lc-btn` não existe (ADR 0001) e o `lc-button` resolve isso pela  lc-permite-classe
+         ESTRUTURA: uma única regra de hover lendo `--fundo-hover`, e cada variante
+         só troca o valor da variável. Então o que se afirma aqui deixou de ser
+         "as guardas são iguais" e passou a ser "existe uma regra de hover só" —
+         o invariante que torna a disputa impossível.
+
+         O efeito visível (cada variante escurecendo para a própria cor) é
+         verificado em test/botao.html. */
+      await customElements.whenDefined('lc-button');
+      const botao = document.createElement('lc-button');
+      botao.setAttribute('variant', 'brand');
+      document.body.append(botao);
+
+      const regrasDeHover = [];
+      for (const folha of botao.shadowRoot.adoptedStyleSheets ?? []) {
+        const visitar = (regras) => {
+          for (const r of regras) {
+            if (r.cssRules) visitar(r.cssRules); // @layer
+            const sel = r.selectorText;
+            if (sel?.includes(':hover')) regrasDeHover.push(sel.trim());
           }
-        }
-      };
-      for (const sheet of document.styleSheets) visitarHover(sheet);
+        };
+        visitar(folha.cssRules);
+      }
+      botao.remove();
 
       check(
-        'Toda regra de hover de .lc-btn usa a MESMA guarda (senão a variante perde da genérica)',
-        semGuarda.length === 0,
-        semGuarda.length ? `guarda divergente: ${semGuarda.join(' · ')}` : 'guarda uniforme',
+        'lc-button tem UMA regra de hover (variante troca a variável, não a regra)',
+        regrasDeHover.length === 1,
+        regrasDeHover.length ? regrasDeHover.join(' · ') : 'nenhuma encontrada',
       );
 
       root.setAttribute('data-lc-theme', 'legacy');

@@ -33,21 +33,18 @@
 
       <div class="doc-exemplo">
         <template>
-          <button class="lc-btn" onclick="lc.toast('Registro salvo.', { variant: 'success' })">
+          <lc-button onclick="lc.toast('Registro salvo.', { variant: 'success' })">
             Sucesso
-          </button>
-          <button
-            class="lc-btn"
-            onclick="lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' })"
-          >
+          </lc-button>
+          <lc-button onclick="lc.toast('Nenhum registro selecionado.', { variant: 'danger', title: 'Erro' })">
             Erro com título
-          </button>
-          <button class="lc-btn" onclick="lc.toast('Escala em revisão.', { variant: 'warning' })">
+          </lc-button>
+          <lc-button onclick="lc.toast('Escala em revisão.', { variant: 'warning' })">
             Aviso
-          </button>
-          <button class="lc-btn" onclick="lc.toast('Sincronizado.', { variant: 'neutral' })">
+          </lc-button>
+          <lc-button onclick="lc.toast('Sincronizado.', { variant: 'neutral' })">
             Neutro
-          </button>
+          </lc-button>
         </template>
       </div>
 
@@ -59,12 +56,12 @@
 
       <div class="doc-exemplo">
         <template>
-          <button class="lc-btn" onclick="lc.toast('Processando…', { duration: 0 })">
+          <lc-button onclick="lc.toast('Processando…', { duration: 0 })">
             Não fecha sozinho
-          </button>
-          <button class="lc-btn" onclick="lc.toast('Rápido.', { duration: 1000 })">
+          </lc-button>
+          <lc-button onclick="lc.toast('Rápido.', { duration: 1000 })">
             Um segundo
-          </button>
+          </lc-button>
         </template>
       </div>
 
