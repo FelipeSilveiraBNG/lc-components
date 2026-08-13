@@ -16,7 +16,13 @@ import { extname, join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
-const PAGINAS = ['tema.html', 'clipping.html', 'formulario.html'];
+const PAGINAS = [
+  'tema.html',
+  'clipping.html',
+  'formulario.html',
+  /* Componentes que substituem a camada de classes (ADR 0001). */
+  'componentes-basicos.html',
+];
 
 /* Import de diretório não funciona em ESM: precisa apontar para o index.js. */
 const PLAYWRIGHT =

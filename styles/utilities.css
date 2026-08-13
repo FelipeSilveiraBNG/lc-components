@@ -76,4 +76,35 @@
     flex: 1 1 auto;
     min-width: 0;
   }
+
+  /* ── Cloak: esconde até os custom elements subirem ────────────────────────
+     Portado de `webawesome/src/styles/utilities/fouce.css` (decisão C do ADR
+     0001). Aplique no `<html>` ou num contêiner:
+
+       <html class="lc-cloak">
+
+     Enquanto houver descendente `:not(:defined)`, a opacidade é 0. O truque está
+     no `step-end`: ele segura o valor inicial por dois segundos e então salta
+     para 1. Consequência — se o JS NUNCA carregar, o conteúdo aparece sozinho,
+     sem script nenhum. O teto de tempo existe para que rede lenta ou erro de
+     módulo degradem em página feia, não em página vazia.
+
+     Usa `opacity`, não `display` nem `visibility`, então o layout já está
+     calculado quando o conteúdo aparece: não há reflow nem salto.
+
+     Isto vale para o kit inteiro e substitui o remendo pontual que a doc tinha
+     para o `lc-modal` (`lc-modal:not(:defined) { display: none }`). Antes do ADR
+     só o modal precisava; agora que tudo é componente, o problema é da página. */
+  .lc-cloak:has(:not(:defined)) {
+    animation: 2s step-end lc-cloak-revelar;
+  }
+
+  @keyframes lc-cloak-revelar {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }

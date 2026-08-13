@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-badge · lc-alert · lc-card — teste</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+    <style>
+      .amostra {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        flex-wrap: wrap;
+        margin-bottom: var(--lc-space-m);
+      }
+    </style>
+  </head>
+
+  <body class="lc">
+    <div class="lc-page-body">
+      <h1 class="lc-h1">lc-badge · lc-alert · lc-card</h1>
+      <p class="lc-quiet">
+        Fase 2 do ADR 0001: os três primeiros componentes que substituem classe. Esta página é
+        autoafirmativa — renderiza os casos E publica o resultado em <code>window.__lcResults</code>.
+      </p>
+
+      <!-- ── Amostras visíveis, para humano ──────────────────────────────── -->
+      <div class="amostra">
+        <lc-badge>Inativo</lc-badge>
+        <lc-badge variant="brand">Em análise</lc-badge>
+        <lc-badge variant="success">Ativo</lc-badge>
+        <lc-badge variant="warning">Pendente</lc-badge>
+        <lc-badge variant="danger">Cancelado</lc-badge>
+      </div>
+
+      <lc-alert>Nenhum registro selecionado.</lc-alert>
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        Outro usuário está editando este registro.
+      </lc-alert>
+      <lc-alert variant="danger" appearance="banner">Falha ao consultar o CEP.</lc-alert>
+
+      <lc-card variant="brand" id="card-completo">
+        <span slot="header">Dados do paciente</span>
+        <p>Corpo do card.</p>
+        <div slot="footer"><button class="lc-btn lc-btn--brand">Salvar</button></div>
+      </lc-card>
+
+      <lc-card id="card-so-corpo">Card sem cabeçalho nem rodapé.</lc-card>
+
+      <div id="saida"></div>
+    </div>
+
+    <script type="module">
+      import { check, inherited, render } from './harness.js';
+
+      const raiz = document.documentElement;
+      await Promise.all(
+        ['lc-badge', 'lc-alert', 'lc-card', 'lc-icon'].map((t) => customElements.whenDefined(t)),
+      );
+
+      const $ = (s) => document.querySelector(s);
+      const parte = (host, nome) => host.shadowRoot.querySelector(`[part~="${nome}"]`);
+      const cor = (el, prop) => getComputedStyle(el).getPropertyValue(prop).trim();
+
+      /* ── 1. Registraram e montaram shadow root ───────────────────────────── */
+      for (const tag of ['lc-badge', 'lc-alert', 'lc-card']) {
+        const el = document.querySelector(tag);
+        check(`<${tag}> registrou e montou shadow root`, !!el?.shadowRoot, el?.tagName ?? 'ausente');
+      }
+
+      /* ── 2. Os parts documentados existem de fato ─────────────────────────
+         O check-anatomia garante isso estaticamente; aqui confirmamos em runtime,
+         porque é o que o consumidor vai mirar com ::part(). */
+      const partsEsperados = {
+        'lc-badge': ['base'],
+        'lc-alert': ['base', 'icon', 'message'],
+        'lc-card': ['base', 'header', 'body', 'footer'],
+      };
+      for (const [tag, partes] of Object.entries(partsEsperados)) {
+        const host = document.querySelector(tag);
+        const faltando = partes.filter((p) => !parte(host, p));
+        check(
+          `<${tag}> expõe os parts documentados`,
+          faltando.length === 0,
+          faltando.length ? `faltando: ${faltando.join(', ')}` : partes.join(', '),
+        );
+      }
+
+      /* ── 3. Slot default recebe o conteúdo ───────────────────────────────── */
+      const badge = $('lc-badge');
+      const atribuidos = parte(badge, 'base').querySelector('slot').assignedNodes();
+      check(
+        '<lc-badge> passa o texto pelo slot default',
+        atribuidos.map((n) => n.textContent).join('').includes('Inativo'),
+        atribuidos.length + ' nó(s)',
+      );
+
+      /* ── 4. Slot nomeado do lc-alert ─────────────────────────────────────── */
+      const alertaComIcone = document.querySelectorAll('lc-alert')[1];
+      const slotIcone = parte(alertaComIcone, 'icon').querySelector('slot');
+      check(
+        '<lc-alert> aceita ícone pelo slot icon',
+        slotIcone.assignedElements().some((e) => e.tagName.toLowerCase() === 'lc-icon'),
+        slotIcone.assignedElements().map((e) => e.tagName).join(','),
+      );
+
+      /* ── 5. Cabeçalho e rodapé desaparecem quando o slot está vazio ───────
+         É a diferença que justifica ser componente: na camada de classes, card
+         sem cabeçalho deixava faixa vazia com borda se o autor escrevesse a div. */
+      const completo = $('#card-completo');
+      const soCorpo = $('#card-so-corpo');
+      check(
+        '<lc-card> mostra cabeçalho quando o slot está preenchido',
+        getComputedStyle(parte(completo, 'header')).display !== 'none',
+        getComputedStyle(parte(completo, 'header')).display,
+      );
+      check(
+        '<lc-card> ESCONDE cabeçalho e rodapé vazios',
+        getComputedStyle(parte(soCorpo, 'header')).display === 'none' &&
+          getComputedStyle(parte(soCorpo, 'footer')).display === 'none',
+        `header=${getComputedStyle(parte(soCorpo, 'header')).display} ` +
+          `footer=${getComputedStyle(parte(soCorpo, 'footer')).display}`,
+      );
+
+      /* ── 6. variant muda cor de fato, e some para valor inválido ──────────
+         Sem isto, um `variant` poderia "existir" sem pintar nada. */
+      const b1 = document.querySelector('lc-badge:not([variant])');
+      const b2 = document.querySelector('lc-badge[variant="danger"]');
+      check(
+        'variant do lc-badge muda a cor do texto',
+        cor(parte(b1, 'base'), 'color') !== cor(parte(b2, 'base'), 'color'),
+        `${cor(parte(b1, 'base'), 'color')} vs ${cor(parte(b2, 'base'), 'color')}`,
+      );
+
+      /* ── 7. appearance=banner troca borda por barra lateral ──────────────── */
+      const banner = document.querySelector('lc-alert[appearance="banner"]');
+      const baseBanner = parte(banner, 'base');
+      const estiloBanner = getComputedStyle(baseBanner);
+      check(
+        'appearance="banner" usa barra lateral em vez de borda em volta',
+        parseFloat(estiloBanner.borderTopWidth) === 0 &&
+          parseFloat(estiloBanner.borderInlineStartWidth) > 0,
+        `topo=${estiloBanner.borderTopWidth} lateral=${estiloBanner.borderInlineStartWidth}`,
+      );
+
+      /* ── 8. Nenhum componente lê primitivo nem literal: troca de tema move ─
+         A prova de que o CSS dos componentes novos saiu do CONTRATO. */
+      const alvo = parte($('lc-badge[variant="success"]'), 'base');
+      raiz.setAttribute('data-lc-theme', 'legacy');
+      const legacy = cor(alvo, 'background-color');
+      raiz.setAttribute('data-lc-theme', 'modern');
+      const modern = cor(alvo, 'background-color');
+      check(
+        'trocar o tema muda a cor dos componentes novos (leem o contrato)',
+        legacy !== modern,
+        `legacy ${legacy} · modern ${modern}`,
+      );
+
+      /* ── 9. Contraste do texto sobre o fundo tintado ──────────────────────
+         `inherited`, não `check`: as cores são reprodução medida dos produtos.
+         Ver o cabeçalho de harness.js. */
+      function luminancia(c) {
+        const [r, g, b] = c.match(/\d+(\.\d+)?/g).map(Number);
+        const lin = (v) => {
+          const s = v / 255;
+          return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+        };
+        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      }
+      function razao(a, b) {
+        const [l1, l2] = [luminancia(a), luminancia(b)].sort((x, y) => y - x);
+        return (l1 + 0.05) / (l2 + 0.05);
+      }
+
+      for (const tema of ['legacy', 'modern']) {
+        raiz.setAttribute('data-lc-theme', tema);
+        for (const v of ['success', 'warning', 'danger', 'brand']) {
+          const base = parte(document.querySelector(`lc-badge[variant="${v}"]`), 'base');
+          const r = razao(cor(base, 'color'), cor(base, 'background-color'));
+          inherited(
+            `[${tema}] lc-badge ${v}: texto sobre fundo tintado passa AA (4.5:1)`,
+            r >= 4.5,
+            `${r.toFixed(2)}:1`,
+          );
+        }
+      }
+
+      raiz.setAttribute('data-lc-theme', 'legacy');
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>

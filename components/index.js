@@ -26,3 +26,10 @@ import './lc-switch/lc-switch.js';
 import './lc-dropdown/lc-dropdown.js';
 import './lc-modal/lc-modal.js';
 import './lc-toast/lc-toast.js';
+
+/* Componentes que substituem a camada de classes (ADR 0001). O autoloader os
+   encontra por convenção de caminho e não precisa saber deles; esta lista existe
+   para quem usa o index.js em vez do loader.js. */
+import './lc-badge/lc-badge.js';
+import './lc-alert/lc-alert.js';
+import './lc-card/lc-card.js';
