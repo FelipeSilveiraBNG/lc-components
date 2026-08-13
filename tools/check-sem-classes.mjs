@@ -113,17 +113,33 @@ for (const arquivo of arquivos) {
          (`lc-alert` a classe, `<lc-alert>` a tag), então o lint reprovava
          justamente o código correto.
 
-         Então procuramos USO como classe, em duas formas:
-           1. dentro de um `class="..."` — o código;
+         Então procuramos USO como classe, em quatro formas:
+           1. dentro de um `class="..."` — o código em HTML;
            2. com ponto na frente (`.lc-alert`) — seletor CSS e a prosa da
               documentação, porque doc que ensina classe morta é tão ruim quanto
-              código que a usa.
+              código que a usa;
+           3. markup montado em JS — `el('button', { class: 'lc-btn' })` e
+              `n.className = '...'`;
+           4. manipulação viva — `classList.toggle('lc-btn--brand', …)`.
 
-         `(?![a-z])` no fim deixa o modificador casar (`.lc-btn--brand`) sem que
-         `lc-btn` pegue outra classe que só COMECE igual. */
-      const emAtributo = new RegExp(`class="[^"]*(?<![\\w-])${classe}(?![a-z])`);
-      const comPonto = new RegExp(`\\.${classe}(?![a-z])`);
-      if (emAtributo.test(linha) || comPonto.test(linha)) {
+         As formas 3 e 4 não são hipótese: o cabeçalho de `demo/docs.js` monta o
+         seletor de tema por função, e por isso ele atravessou a fase 3 inteira
+         com `.lc-btn` — lint verde, botão sem estilo nenhum na tela. Um portão
+         que só enxerga HTML literal não cobre uma doc que se monta sozinha.
+
+         O par de lookaheads no fim separa MODIFICADOR de outra classe que só
+         começa igual: `(?![a-z])` barra `lc-btnzinho`, e `(?!-[a-z])` barra
+         `lc-btn-group` — traço simples seguido de letra é outro nome. O
+         modificador escapa dos dois porque tem traço DUPLO, e `.lc-btn--brand`
+         continua casando com `lc-btn`, que é o que queremos. Sem o segundo, um
+         uso de `lc-btn-group` era acusado duas vezes, uma delas mandando o autor
+         usar `<lc-button>` no lugar de um grupo. */
+      const q = `['"\`]`; /* as três aspas do JS */
+      const emAtributo = new RegExp(`class=${q}[^'"\`]*(?<![\\w-])${classe}(?![a-z])(?!-[a-z])`);
+      const comPonto = new RegExp(`\\.${classe}(?![a-z])(?!-[a-z])`);
+      const emJs = new RegExp(`class(?:Name)?\\s*[:=]\\s*${q}[^'"\`]*(?<![\\w-])${classe}(?![a-z])(?!-[a-z])`);
+      const emClassList = new RegExp(`classList\\.\\w+\\(\\s*${q}${classe}(?![a-z])(?!-[a-z])`);
+      if (emAtributo.test(linha) || comPonto.test(linha) || emJs.test(linha) || emClassList.test(linha)) {
         falhas.push({
           arquivo: rel(arquivo),
           linha: i + 1,
