@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-input · lc-select · lc-textarea · lc-menu-item — teste</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+  </head>
+
+  <body class="lc">
+    <div class="lc-page-body">
+      <h1 class="lc-h1">Campos e item de menu</h1>
+      <p class="lc-quiet">
+        Fase 4 do ADR 0001. Os casos comparam com o controle NATIVO equivalente: é o que separa
+        "parece funcionar" de "submete o mesmo que o nativo submeteria".
+      </p>
+
+      <form id="f-comp">
+        <lc-input label="Nome do paciente" name="nome" value="Ana" placeholder="Digite"></lc-input>
+        <lc-input label="CPF" name="cpf" required hint="Só números"></lc-input>
+        <lc-input label="E-mail" name="email" type="email" value="quebrado"></lc-input>
+        <lc-select label="Unidade" name="unidade">
+          <option value="central">Hospital Central</option>
+          <option value="norte">Unidade Norte</option>
+        </lc-select>
+        <lc-textarea label="Observações" name="obs" value="inicial"></lc-textarea>
+        <lc-input label="Desabilitado" name="off" value="x" disabled></lc-input>
+        <!-- Campo só para os casos de dica: nada mais no teste o toca, então o
+             estado `invalid` nunca liga aqui e a dica não cede lugar ao erro. -->
+        <lc-input label="Telefone" name="tel" hint="Com DDD"></lc-input>
+      </form>
+
+      <form id="f-nativo">
+        <input name="nome" value="Ana" />
+        <select name="unidade">
+          <option value="central">Hospital Central</option>
+          <option value="norte">Unidade Norte</option>
+        </select>
+        <textarea name="obs">inicial</textarea>
+      </form>
+
+      <lc-dropdown id="menu">
+        <lc-button slot="trigger">Ações</lc-button>
+        <lc-menu-item value="editar">Editar</lc-menu-item>
+        <hr />
+        <lc-menu-item value="excluir" variant="danger">Excluir</lc-menu-item>
+        <lc-menu-item value="bloqueado" disabled>Bloqueado</lc-menu-item>
+      </lc-dropdown>
+
+      <div id="saida"></div>
+    </div>
+
+    <script type="module">
+      import { check, render } from './harness.js';
+
+      await Promise.all(
+        ['lc-input', 'lc-select', 'lc-textarea', 'lc-menu-item', 'lc-dropdown', 'lc-button'].map(
+          (t) => customElements.whenDefined(t),
+        ),
+      );
+      /* Um tick para o ready() de cada campo publicar valor e validade. */
+      await new Promise((r) => setTimeout(r, 50));
+
+      const $ = (s) => document.querySelector(s);
+      const parte = (host, nome) => host.shadowRoot.querySelector(`[part~="${nome}"]`);
+      const dados = (f) => Object.fromEntries(new FormData(f));
+
+      /* ── 1. Estrutura e rótulo associado ─────────────────────────────────── */
+      const nome = $('lc-input[name="nome"]');
+      check('<lc-input> montou os cinco parts',
+        ['base', 'label', 'control', 'hint', 'error'].every((p) => parte(nome, p)), '');
+      check(
+        'o rótulo aponta para o controle por for/id (clique foca, leitor anuncia)',
+        parte(nome, 'label').getAttribute('for') === parte(nome, 'control').id,
+        `${parte(nome, 'label').getAttribute('for')} = ${parte(nome, 'control').id}`,
+      );
+      check(
+        'o controle interno é um <input> nativo',
+        parte(nome, 'control').tagName === 'INPUT',
+        parte(nome, 'control').tagName,
+      );
+
+      /* ── 2. Entra no FormData igual ao nativo ─────────────────────────────── */
+      const doComp = dados($('#f-comp'));
+      const doNat = dados($('#f-nativo'));
+      check(
+        'os três controles entram no FormData',
+        doComp.nome === 'Ana' && doComp.unidade === 'central' && doComp.obs === 'inicial',
+        JSON.stringify(doComp),
+      );
+      for (const campo of ['nome', 'unidade', 'obs']) {
+        check(
+          `${campo}: mesmo valor que o controle nativo`,
+          doComp[campo] === doNat[campo],
+          `componente "${doComp[campo]}" · nativo "${doNat[campo]}"`,
+        );
+      }
+      check(
+        'campo disabled NÃO entra no FormData (igual ao nativo)',
+        !('off' in doComp),
+        'off' in doComp ? 'entrou' : 'fora',
+      );
+
+      /* ── 3. value ao vivo vs atributo de reset ─────────────────────────────
+         Convenção nativa: atributo `value` é o valor de RESET; a propriedade é o
+         valor atual. É isso que faz form.reset() voltar ao que o HTML declarava. */
+      nome.value = 'Bruno';
+      await new Promise((r) => setTimeout(r, 0));
+      check('propriedade value muda o valor ao vivo', dados($('#f-comp')).nome === 'Bruno', nome.value);
+      check('atributo value continua sendo o de reset', nome.defaultValue === 'Ana', nome.defaultValue);
+
+      $('#f-comp').reset();
+      await new Promise((r) => setTimeout(r, 20));
+      check(
+        'form.reset() volta ao valor declarado no HTML',
+        nome.value === 'Ana',
+        `valor=${nome.value}`,
+      );
+
+      /* ── 4. Validação vem do nativo, não de atributo ──────────────────────── */
+      const cpf = $('lc-input[name="cpf"]');
+      check('required vazio é inválido', cpf.checkValidity() === false, cpf.validationMessage);
+      check(
+        'a mensagem é a do navegador, não escrita à mão',
+        cpf.validationMessage.length > 0,
+        cpf.validationMessage,
+      );
+      cpf.value = 'algo';
+      await new Promise((r) => setTimeout(r, 0));
+      check('preenchido fica válido', cpf.checkValidity() === true, '');
+
+      const email = $('lc-input[name="email"]');
+      check(
+        'type="email" liga a validação nativa de formato',
+        email.checkValidity() === false,
+        email.validationMessage,
+      );
+
+      /* ── 5. setCustomValidity é o caminho para erro de negócio ─────────────
+         A decisão B do ADR: não existe atributo `error`. */
+      nome.setCustomValidity('CPF já cadastrado.');
+      await new Promise((r) => setTimeout(r, 0));
+      check(
+        'setCustomValidity marca inválido e mostra a mensagem',
+        nome.checkValidity() === false &&
+          parte(nome, 'error').textContent === 'CPF já cadastrado.' &&
+          getComputedStyle(parte(nome, 'error')).display !== 'none',
+        parte(nome, 'error').textContent,
+      );
+      check(
+        'a borda do controle acusa o erro por :state(invalid)',
+        getComputedStyle(parte(nome, 'control')).borderTopColor ===
+          getComputedStyle(document.documentElement).getPropertyValue('--lc-color-danger-border').trim() ||
+          nome.hasState?.('invalid') === true,
+        getComputedStyle(parte(nome, 'control')).borderTopColor,
+      );
+      nome.resetValidity();
+      await new Promise((r) => setTimeout(r, 0));
+      check('resetValidity limpa', nome.checkValidity() === true, '');
+
+      /* ── 6. A dica só aparece quando existe, e cede lugar ao erro ─────────── */
+      const semDica = $('lc-input[name="nome"]');
+      const comDica = $('lc-input[name="tel"]');
+      check(
+        'dica aparece quando o atributo hint existe',
+        getComputedStyle(parte(comDica, 'hint')).display !== 'none',
+        getComputedStyle(parte(comDica, 'hint')).display,
+      );
+      /* E o inverso: no campo inválido a dica CEDE LUGAR ao erro, em vez de
+         empilhar dois textos pequenos no mesmo ponto. */
+      const invalido = $('lc-input[name="email"]');
+      invalido.checkValidity();
+      await new Promise((r) => setTimeout(r, 0));
+      check(
+        'campo inválido troca a dica pela mensagem de erro',
+        getComputedStyle(parte(invalido, 'error')).display !== 'none',
+        getComputedStyle(parte(invalido, 'error')).display,
+      );
+      check(
+        'dica NÃO ocupa espaço quando não há hint',
+        getComputedStyle(parte(semDica, 'hint')).display === 'none',
+        getComputedStyle(parte(semDica, 'hint')).display,
+      );
+
+      /* ── 7. lc-select copia as opções e devolve o valor certo ─────────────── */
+      const sel = $('lc-select');
+      const nativo = parte(sel, 'control');
+      check(
+        'lc-select copia os <option> do light DOM para o <select> interno',
+        nativo.options.length === 2 && nativo.options[1].value === 'norte',
+        `${nativo.options.length} opções`,
+      );
+      sel.value = 'norte';
+      await new Promise((r) => setTimeout(r, 0));
+      check('trocar a opção reflete no FormData', dados($('#f-comp')).unidade === 'norte', sel.value);
+
+      /* Opção acrescentada por script entra pelo MutationObserver. */
+      const nova = document.createElement('option');
+      nova.value = 'sul';
+      nova.textContent = 'Unidade Sul';
+      sel.append(nova);
+      await new Promise((r) => setTimeout(r, 50));
+      check(
+        'opção acrescentada por script aparece no controle',
+        parte(sel, 'control').options.length === 3,
+        `${parte(sel, 'control').options.length} opções`,
+      );
+      check(
+        'e a escolha do usuário é preservada',
+        parte(sel, 'control').value === 'norte',
+        parte(sel, 'control').value,
+      );
+
+      /* ── 8. lc-menu-item substitui a classe e o dropdown enxerga a TAG ─────
+         Era o único ponto onde um componente dependia de uma classe. */
+      const menu = $('#menu');
+      const itens = menu.querySelectorAll('lc-menu-item');
+      check('os itens são componentes', itens.length === 3 && !!itens[0].shadowRoot, `${itens.length}`);
+
+      let recebido = null;
+      document.addEventListener('lc-select', (e) => (recebido = e.detail), { once: true });
+      itens[0].shadowRoot.querySelector('[part~="base"]').click();
+      await new Promise((r) => setTimeout(r, 20));
+      check(
+        'clicar no item emite lc-select com o value do componente',
+        recebido?.value === 'editar',
+        JSON.stringify(recebido?.value),
+      );
+
+      check(
+        'variant="danger" tinge o item',
+        getComputedStyle(itens[1].shadowRoot.querySelector('[part~="base"]')).color ===
+          getComputedStyle(document.documentElement)
+            .getPropertyValue('--lc-color-danger-text')
+            .trim()
+            .replace(/^#.*/, getComputedStyle(itens[1].shadowRoot.querySelector('[part~="base"]')).color),
+        getComputedStyle(itens[1].shadowRoot.querySelector('[part~="base"]')).color,
+      );
+
+      check(
+        'item disabled desabilita o botão interno',
+        itens[2].shadowRoot.querySelector('[part~="base"]').disabled === true,
+        '',
+      );
+
+      /* ── 9. Leem o contrato ───────────────────────────────────────────────── */
+      const raiz = document.documentElement;
+      const alvo = parte($('lc-input[name="nome"]'), 'control');
+      const assentar = () => new Promise((r) => setTimeout(r, 400));
+      raiz.setAttribute('data-lc-theme', 'legacy');
+      await assentar();
+      const a = getComputedStyle(alvo).borderTopColor;
+      raiz.setAttribute('data-lc-theme', 'modern');
+      await assentar();
+      const b = getComputedStyle(alvo).borderTopColor;
+      check('trocar tema muda a borda do campo (lê o contrato)', a !== b, `${a} · ${b}`);
+      raiz.setAttribute('data-lc-theme', 'legacy');
+
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>

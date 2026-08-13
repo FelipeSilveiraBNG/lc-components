@@ -10,7 +10,7 @@ import styles from './lc-dropdown.css.js';
  * @since 0.1
  *
  * @slot trigger - O elemento que abre o menu (normalmente um `<button class="lc-btn">`).
- * @slot - Os itens. Use `<button class="lc-menu-item" data-value="x">`.
+ * @slot - Os itens. Use `<lc-menu-item value="x">`. Um `<hr>` separa grupos.
  *
  * @event lc-show - Vai abrir. Cancelável.
  * @event lc-after-show - Abriu.
@@ -75,7 +75,7 @@ export class LcDropdown extends LcElement {
       if (isOpen) {
         addEventListener('scroll', this.#reposition, { passive: true, capture: true });
         addEventListener('resize', this.#reposition);
-        this.#panel.querySelector('.lc-menu-item')?.focus?.();
+        this.#panel.querySelector('lc-menu-item')?.focus?.();
         this.emit(LC_AFTER_SHOW);
       } else {
         removeEventListener('scroll', this.#reposition, { capture: true });
@@ -86,11 +86,11 @@ export class LcDropdown extends LcElement {
 
     // Item acionado: cancelável, e por padrão fecha o menu.
     this.addEventListener('click', (event) => {
-      const item = event.target.closest?.('.lc-menu-item');
+      const item = event.target.closest?.('lc-menu-item');
       if (!item || !this.contains(item)) return;
       const ok = this.emit(LC_SELECT, {
         cancelable: true,
-        detail: { value: item.dataset.value ?? null, item },
+        detail: { value: item.value ?? item.dataset.value ?? null, item },
       });
       if (ok) this.open = false;
     });

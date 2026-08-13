@@ -16,6 +16,7 @@
 
 export * from './lc-element.js';
 export * from './lc-form-element.js';
+export * from './lc-campo.js';
 export * from './events.js';
 
 export { registerIconLibrary } from './lc-icon/library.system.js';
@@ -35,3 +36,7 @@ import './lc-alert/lc-alert.js';
 import './lc-card/lc-card.js';
 import './lc-button/lc-button.js';
 import './lc-button-group/lc-button-group.js';
+import './lc-input/lc-input.js';
+import './lc-textarea/lc-textarea.js';
+import './lc-select/lc-select.js';
+import './lc-menu-item/lc-menu-item.js';

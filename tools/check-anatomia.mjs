@@ -52,8 +52,21 @@ const capturar = (texto, re, grupo = 1) => {
 
 const falhas = [];
 
+/*
+ * O que é DEFINIÇÃO tem de sair do código, não da prosa.
+ *
+ * MEDIDO: o JSDoc do lc-select explica por que um `<slot>` não pode morar dentro
+ * de um `<select>`. Sem tirar os comentários, o lint leu aquela menção como um
+ * slot default de verdade e reprovou um componente correto.
+ *
+ * Um lint que dá falso positivo é pior que nenhum: ensina a ignorar o portão.
+ */
+const semComentarios = (texto) => texto.replace(/\/\*[\s\S]*?\*\//g, '');
+
 for (const { tag, js, css } of componentes()) {
   const fonteJs = readFileSync(js, 'utf8');
+  /* Doc sai do texto inteiro; definição sai do código sem comentários. */
+  const codigoJs = semComentarios(fonteJs);
   /* O CSS entra na leitura porque `::part()` e `::slotted()` de dentro do
      próprio componente também são uso — mas NÃO contam como definição. */
   const fonteCss = css ? readFileSync(css, 'utf8') : '';
@@ -63,11 +76,11 @@ for (const { tag, js, css } of componentes()) {
 
   /* `part="a b"` define DOIS parts. Por isso o split. */
   const reais = new Set();
-  for (const m of fonteJs.matchAll(/\bpart="([^"]+)"/g)) {
+  for (const m of codigoJs.matchAll(/\bpart="([^"]+)"/g)) {
     for (const nome of m[1].trim().split(/\s+/)) reais.add(nome);
   }
   /* Componente que cria nó por script usa setAttribute('part', '...'). */
-  for (const m of fonteJs.matchAll(/setAttribute\(\s*['"]part['"]\s*,\s*['"]([^'"]+)['"]/g)) {
+  for (const m of codigoJs.matchAll(/setAttribute\(\s*['"]part['"]\s*,\s*['"]([^'"]+)['"]/g)) {
     for (const nome of m[1].trim().split(/\s+/)) reais.add(nome);
   }
 
@@ -90,7 +103,7 @@ for (const { tag, js, css } of componentes()) {
   }
 
   /* Uso de ::part() dentro do próprio componente também precisa existir. */
-  for (const p of capturar(fonteCss, /::part\(\s*([a-z][a-z0-9-]*)\s*\)/g)) {
+  for (const p of capturar(semComentarios(fonteCss), /::part\(\s*([a-z][a-z0-9-]*)\s*\)/g)) {
     if (!reais.has(p)) {
       falhas.push(`${tag}: ${rel(css)} estiliza ::part(${p}), que nenhum nó define.`);
     }
@@ -104,7 +117,7 @@ for (const { tag, js, css } of componentes()) {
   }
 
   const slotsReais = new Set();
-  for (const m of fonteJs.matchAll(/<slot\b([^>]*)>/g)) {
+  for (const m of codigoJs.matchAll(/<slot\b([^>]*)>/g)) {
     const nome = m[1].match(/name="([^"]+)"/);
     slotsReais.add(nome ? nome[1] : '(default)');
   }

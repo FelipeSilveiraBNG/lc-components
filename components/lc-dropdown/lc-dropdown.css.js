@@ -35,38 +35,19 @@ export default /* css */ `
 
   .panel:not(:popover-open) { display: none; }
 
-  /* Estilo dos itens slotados. Item e um <button class="lc-menu-item"> em light
-     DOM — HTML simples, coerente com a camada nativa (07 §4.2). */
-  ::slotted(.lc-menu-item) {
-    display: flex;
-    align-items: center;
-    gap: var(--lc-space-xs);
-    box-sizing: border-box;
-    width: 100%;
-    min-height: var(--lc-control-height-sm);
-    padding: 0 var(--lc-space-s);
-    border: 0;
-    border-radius: var(--lc-radius-control);
-    background: transparent;
-    color: var(--lc-color-text-normal);
-    font: inherit;
-    text-align: start;
-    cursor: pointer;
-  }
+  /* ── O item saiu daqui ─────────────────────────────────────────────────────
+     Antes o item era um <button class="lc-menu-item"> em light DOM, e este
+     arquivo o estilizava por ::slotted(.lc-menu-item). Era o único lugar do kit
+     onde um COMPONENTE dependia de uma classe: se o autor escrevesse a classe
+     errada, o item aparecia sem estilo e sem responder ao clique, e nada
+     acusava.
 
-  ::slotted(.lc-menu-item:hover) {
-    background: var(--lc-color-neutral-fill-quiet);
-  }
+     Agora é <lc-menu-item>, que se estiliza. O que sobra aqui é só o que
+     pertence ao PAINEL — o separador. Ver ADR 0001.
 
-  ::slotted(.lc-menu-item:focus-visible) {
-    outline: var(--lc-focus-ring-width) solid var(--lc-focus-ring-color);
-    outline-offset: calc(-1 * var(--lc-focus-ring-width));
-  }
-
-  ::slotted(.lc-menu-item[data-variant='danger']) {
-    color: var(--lc-color-danger-text);
-  }
-
+     (Sem backtick neste comentário de propósito: o CSS mora num template
+     literal, e um backtick aqui encerraria a string e derrubaria o módulo. Foi o
+     que aconteceu ao escrever este comentário — o check-syntax pegou.) */
   ::slotted(hr) {
     margin: var(--lc-space-2xs) 0;
     border: 0;

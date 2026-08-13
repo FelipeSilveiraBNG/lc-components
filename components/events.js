@@ -36,3 +36,13 @@ export const LC_AFTER_HIDE = 'lc-after-hide';
 
 /** Item de menu acionado. Cancelável — preventDefault mantém o menu aberto. */
 export const LC_SELECT = 'lc-select';
+
+/**
+ * Controle foi verificado e não satisfaz as restrições.
+ *
+ * Existe porque o ADR 0001 decidiu que erro de campo é ESTADO DE VALIDADE, não
+ * um atributo que o autor preenche — o `.lc-error` da camada de classes era um
+ * `<span>` que podia dessincronizar do campo. Segue o `wa-invalid` do Web
+ * Awesome.
+ */
+export const LC_INVALID = 'lc-invalid';
