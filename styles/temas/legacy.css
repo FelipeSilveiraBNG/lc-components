@@ -98,10 +98,19 @@
   --lc-space-xl: 25px;
   --lc-space-2xl: 30px;
 
-  /* ── Forma — nome por PAPEL, não por tamanho (07 §6.2) ──────────────── */
-  --lc-radius-control: 4px; /* .btn, .form-control */
+  /* ── Forma — nome por PAPEL, não por tamanho (07 §6.2) ──────────────────
+     Os valores abaixo são MEDIDOS no painel de homologação, não herdados do
+     Bootstrap 3. É a diferença que mais aparecia: o BS3 arredonda controle e
+     painel em 4px, e o painel real é bem mais quadrado que isso.
+
+     Um token só não cobria controle e campo, porque o painel os trata
+     diferente — `.btn` em 3px e `.form-control` em 0px. Daí `-field` existir
+     separado de `-control`. */
+  --lc-radius-control: 3px; /* .btn e .alert (medidos) */
+  --lc-radius-field: 0px; /* .form-control (medido) */
   --lc-radius-card: 3px; /* .box */
-  --lc-radius-panel: 4px; /* .portlet */
+  --lc-radius-panel: 0px; /* .modal-content e .dropdown-menu (medidos) */
+  --lc-radius-badge: 3px; /* .label — retângulo, não pílula. Medido 2,6px */
   --lc-radius-pill: 999px;
   --lc-border-width: 1px;
   /* Barra de acento que sinaliza variante de contêiner. No legado é a borda

@@ -34,8 +34,8 @@ export default /* css */ `
     width: 100%;
     min-height: var(--lc-control-height);
     padding: 0 var(--lc-control-padding-x);
-    border: var(--lc-border-width) solid var(--lc-color-border-loud);
-    border-radius: var(--lc-radius-control);
+    border: var(--lc-border-width) solid var(--lc-color-border-normal);
+    border-radius: var(--lc-radius-field);
     background: var(--lc-color-surface-card);
     color: var(--lc-color-text-normal);
     font-family: var(--lc-font-family);

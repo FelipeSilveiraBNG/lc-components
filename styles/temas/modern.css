@@ -94,10 +94,16 @@
   --lc-space-xl: 32px;
   --lc-space-2xl: 40px;
 
-  /* ── Forma — rounded-lg (567 usos) e rounded-xl (291) ───────────────── */
+  /* ── Forma — rounded-lg (567 usos) e rounded-xl (291) ───────────────────
+     `-field` e `-badge` existem porque o legacy precisa distinguir campo de
+     botão e badge de pílula (ver legacy.css). Aqui não há distinção a fazer:
+     apontam para o mesmo valor dos vizinhos, e é de propósito — a paridade que
+     o `check-contrato.mjs` exige é de NOME, não de valor diferente. */
   --lc-radius-control: 8px;
+  --lc-radius-field: 8px;
   --lc-radius-card: 12px;
   --lc-radius-panel: 12px;
+  --lc-radius-badge: 999px;
   --lc-radius-pill: 999px;
   --lc-border-width: 1px;
   /* Mais discreta que no legacy: o console React sinaliza estado por tinta de

@@ -14,7 +14,7 @@ export default /* css */ `
     gap: var(--lc-space-3xs);
     padding: var(--lc-space-3xs) var(--lc-space-xs);
     border: var(--lc-border-width) solid var(--lc-color-neutral-border);
-    border-radius: var(--lc-radius-pill);
+    border-radius: var(--lc-radius-badge);
     background: var(--lc-color-neutral-fill-quiet);
     color: var(--lc-color-neutral-text);
     font-family: var(--lc-font-family);
