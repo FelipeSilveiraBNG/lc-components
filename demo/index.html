@@ -93,6 +93,44 @@
         </span>
       </lc-alert>
 
+      <h2 class="doc-h2">A terceira identidade: a marca</h2>
+      <p>
+        Existe um brandbook oficial do BNG LinkCare, e ele <strong>não é nenhum dos dois temas</strong>.
+        Suas cores e sua fonte estão no repositório, em <code>tokens/primitivos.css</code>, com nome
+        privado <code>--lc-_brand-*</code>. Estão registradas e <strong>desligadas</strong>: nenhum
+        tema aponta para elas.
+      </p>
+
+      <table class="lc-table lc-table--condensed lc-table--striped" id="tabela-marca">
+        <thead>
+          <tr>
+            <th>Primitivo</th>
+            <th>Valor · contraste no branco</th>
+            <th>Papel que ele pode ter</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <p>
+        A coluna de contraste é o que torna o mapeamento não óbvio. O turquesa é a cor de destaque
+        do brandbook, mas com <strong>1,74:1</strong> no branco ele reprova como texto e como borda
+        de 1px — e branco em cima dele reprova também. Ele é cor de superfície, e o par legível dele
+        é o verde escuro. Os quatro verdes cobrem os seis slots da família <code>brand</code> do
+        contrato sem inventar nenhum valor, com uma quebra de forma: <code>brand-on-loud</code>
+        teria de ser <strong>escuro</strong>, ao contrário dos dois temas atuais, onde é branco.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>Por que ainda não é tema.</strong> O brandbook define cor e tipografia e mais
+          nada — sem grade, raio, escala ou hierarquia visual. Virar tema exigiria inventar o resto,
+          que é exatamente o que este kit não faz. E Poppins seria a primeira webfont daqui: hoje os
+          dois temas rodam em stack de sistema.
+        </span>
+      </lc-alert>
+
       <h2 class="doc-h2">Componente é tag</h2>
       <p>
         Não existe classe de componente. Botão é <code>&lt;lc-button&gt;</code>, campo é

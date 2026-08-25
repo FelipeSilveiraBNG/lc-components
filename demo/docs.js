@@ -461,12 +461,58 @@ const TOKENS = [
   ['--lc-color-text-quiet', 'texto secundário'],
   ['--lc-color-border-normal', 'borda padrão'],
   ['--lc-space-m', 'espaçamento de referência'],
-  ['--lc-radius-control', 'raio de botão e campo'],
+  ['--lc-radius-control', 'raio de botão e alerta'],
+  ['--lc-radius-field', 'raio de campo — separado desde que o painel foi medido'],
   ['--lc-control-height', 'altura de controle'],
   ['--lc-font-family', 'família de texto'],
   ['--lc-font-size-m', 'corpo de texto'],
   ['--lc-shadow-card', 'elevação de card'],
 ];
+
+/* Os primitivos do brandbook. Contraste CALCULADO (WCAG 2.1) contra branco, e é
+   ele que decide o papel possível de cada cor — sem isso a tabela seria uma
+   lista de hex bonitos. */
+const MARCA = [
+  ['--lc-_brand-mint', '1,43:1', 'fundo tintado — o slot fill-quiet'],
+  ['--lc-_brand-turquoise', '1,74:1', 'A cor da marca. Só superfície: reprova como texto e como borda fina'],
+  ['--lc-_brand-teal', '3,09:1', 'hover e borda de componente — passa o mínimo de 3:1, não o de texto'],
+  ['--lc-_brand-green-deep', '8,04:1', 'texto, e o único legível SOBRE o turquesa (4,63:1)'],
+  ['--lc-_brand-blue', '6,80:1', 'prioritário do logo; o brandbook não afirma nada sobre interface'],
+  ['--lc-_stack-poppins', '—', 'a fonte da marca'],
+];
+
+/* Não entra em `ouvintesDeTema`: primitivo não muda quando o tema troca — é
+   justamente o que o separa do contrato. Uma passada só, na carga. */
+function preencherMarca() {
+  const corpo = document.querySelector('#tabela-marca tbody');
+  if (!corpo) return;
+  const estilo = getComputedStyle(raiz);
+  corpo.textContent = '';
+  for (const [token, contraste, papel] of MARCA) {
+    const valor = estilo.getPropertyValue(token).trim();
+
+    const tdValor = el('td');
+    if (valor.startsWith('#')) {
+      const amostra = el('span', { class: 'doc-amostra-cor' });
+      amostra.style.background = valor;
+      tdValor.append(amostra, ' ');
+    }
+    tdValor.append(el('span', { class: 'doc-valor', texto: valor }));
+    if (contraste !== '—') {
+      tdValor.append(' ', el('span', { class: 'lc-quiet', texto: `· ${contraste}` }));
+    }
+
+    corpo.append(
+      el(
+        'tr',
+        {},
+        el('td', {}, el('code', { texto: token })),
+        tdValor,
+        el('td', { class: 'lc-quiet', texto: papel }),
+      ),
+    );
+  }
+}
 
 function preencherTokens() {
   const corpo = document.querySelector('#tabela-tokens tbody');
@@ -601,6 +647,8 @@ if (!conteudo) {
   /* Registrado ANTES de ligarTema(): é ele que dispara a primeira passada, então
      registrar depois faria a tabela ser preenchida duas vezes. */
   ouvintesDeTema.push(preencherTokens);
+
+  preencherMarca();
 
   ligarTema();
   ligarSumario();
