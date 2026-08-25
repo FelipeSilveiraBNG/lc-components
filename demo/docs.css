@@ -124,7 +124,7 @@ lc-modal:not(:defined) {
   gap: var(--lc-space-2xs);
   margin-bottom: var(--lc-space-xs);
   color: var(--lc-color-text-normal);
-  font-size: var(--lc-font-size-xs);
+  font-size: var(--lc-font-size-s);
   font-weight: var(--lc-font-weight-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -140,12 +140,31 @@ lc-modal:not(:defined) {
   display: flex;
   align-items: center;
   gap: var(--lc-space-2xs);
-  padding: var(--lc-space-2xs) var(--lc-space-s);
+  /* O alvo de clique cresce junto com o texto: um degrau na escala de espaço
+     (`2xs` → `xs`).
+
+     A altura que sai daí é DIFERENTE EM CADA TEMA, e não por descuido: tanto a
+     escala de espaço quanto a entrelinha são do tema. `xs` é 5px no legacy e
+     8px no modern; a `line-height` é 1,43 contra 1,5. Medido, o item vai de
+     27px para 30px no legacy e de 28px para 37px no modern — e nos dois casos
+     para logo abaixo do `--lc-touch-target-min` daquele tema (34px e 38px).
+
+     O degrau seguinte (`s`) levaria a lateral a 716px no modern, que já rola
+     em tela de laptop. */
+  padding: var(--lc-space-xs) var(--lc-space-s);
   /* Compensa a régua do <ul> para o acento do item ativo cair sobre ela. */
   margin-inline-start: calc(-1 * var(--lc-border-width));
   border-inline-start: 2px solid transparent;
   color: var(--lc-color-text-normal);
-  font-size: var(--lc-font-size-s);
+  /* Um degrau na escala de tipo: 13px → 14px. É a única parte desta mudança
+     que NÃO varia com o tema — `--lc-font-size-m` é 14px nos dois, e o
+     modern.css anota que isso é dado, não descuido.
+
+     A lateral estava em 13px contra os 16px da prosa que ela indexa, distante
+     demais para o que é a primeira coisa que se faz na página. O sumário à
+     direita fica nos 13px de propósito: ele é secundário à lateral, e até
+     aqui os dois tinham o mesmo peso, o que não dizia isso. */
+  font-size: var(--lc-font-size-m);
   text-decoration: none;
 }
 .doc-grupo a:hover {
