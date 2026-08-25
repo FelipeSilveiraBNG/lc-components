@@ -32,7 +32,8 @@ const NAV = [
     grupo: 'Guia',
     icone: 'info',
     itens: [
-      { arquivo: 'index.html', rotulo: 'Instalação' },
+      { arquivo: 'index.html', rotulo: 'Início' },
+      { arquivo: 'instalacao.html', rotulo: 'Instalação' },
       { arquivo: 'tokens.html', rotulo: 'Tokens' },
       { arquivo: 'eventos.html', rotulo: 'Eventos' },
     ],

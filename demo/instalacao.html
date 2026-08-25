@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Instalação — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      /* Tema ANTES de pintar. `docs.js` é módulo, e módulo é deferido: esperar
+         por ele daria um flash do tema errado a CADA navegação, que é o defeito
+         mais visível de uma doc multi-página. Por isso este é script clássico. */
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Instalação</h1>
+      <p class="doc-lede">
+        Uma linha de CSS e uma de JavaScript. E o que mais vale saber antes de escrever a primeira
+        tela: os dois temas, a marca, e as duas armadilhas que pegam quem chega do legado.
+      </p>
+
+      <h2 class="doc-h2">Do CDN, em duas linhas</h2>
+      <p>
+        Uma linha de CSS e uma de JavaScript, direto do CDN. Sem build, sem
+        <code>package.json</code>, sem dependência de runtime. A página
+        <strong>precisa ser servida por HTTP</strong> — ES modules não funcionam em
+        <code>file://</code>.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;!doctype html&gt;
+&lt;html lang="pt-BR" data-lc-theme="legacy"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
+    &lt;link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/FelipeSilveiraBNG/lc-components@0.2.0/lc.css"
+    /&gt;
+    &lt;script
+      type="module"
+      src="https://cdn.jsdelivr.net/gh/FelipeSilveiraBNG/lc-components@0.2.0/components/loader.js"
+    &gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body class="lc"&gt;
+    &lt;div class="lc-page-body"&gt;…&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+      <p>
+        A versão está fixada em <code>@0.2.0</code> de propósito: numa tag fixada o jsDelivr entrega
+        cache imutável. <code>@main</code> também funciona, mas aí o CDN segura o arquivo por ~12h e
+        cada commit fica esperando invalidação.
+      </p>
+      <p>
+        Clonou o kit para servir local? Então os caminhos são relativos ao seu arquivo —
+        <code>lc.css</code> e <code>components/loader.js</code> ficam na raiz do repositório — e um
+        <code>npx serve .</code> resolve. Foi assim que esta documentação foi escrita.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <code>class="lc"</code> no <code>&lt;body&gt;</code> é o que aplica fundo, cor e
+          tipografia do tema. Sem ela a página fica branca com Times New Roman.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Os dois temas</h2>
+      <p>
+        O atributo <code>data-lc-theme</code> no <code>&lt;html&gt;</code> escolhe o tema:
+        <code>legacy</code> reproduz o painel PHP (AdminLTE/BS3), <code>modern</code> reproduz o
+        console React (Tailwind/slate). Sem o atributo, vale <code>legacy</code>. Os dois temas são
+        carregados sempre — trocar é mudar um atributo, sem recarregar nada.
+      </p>
+      <p>
+        Use o seletor no cabeçalho para alternar. A escolha fica guardada e vale para as outras
+        páginas desta documentação.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          Os dois temas são <strong>reprodução medida</strong>, não proposta de design. Nenhum valor
+          neles foi inventado: cada um saiu do código do produto correspondente.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">A marca, que é do tema <code>modern</code></h2>
+      <p>
+        Existe um brandbook oficial do BNG LinkCare, e ele é a identidade do <strong>lado React</strong>
+        do produto — ou seja, do tema <code>modern</code>. Não é um terceiro tema. Suas cores e sua
+        fonte estão no repositório, em <code>tokens/primitivos.css</code>, com nome privado
+        <code>--lc-_brand-*</code>.
+      </p>
+      <p>
+        O que o <code>modern</code> reproduz <em>hoje</em>, porém, é o console admin em slate e
+        blue-600. A marca de verdade está realizada no app <code>linkcare-me</code>, e duas das
+        cores que o kit registra vêm de lá, não do brandbook — existem porque alguém tentou de
+        verdade e bateu no contraste, e resolvem melhor do que qualquer verde do documento os dois
+        papéis que o turquesa não pode ocupar.
+      </p>
+
+      <p>
+        As sete cores e a fonte, cada uma com seu contraste e o papel que pode ocupar, estão na
+        página <a href="tokens.html">Tokens</a> — é lá que tabela de token mora. O resumo: o turquesa
+        é cor de <strong>superfície</strong> e não serve como texto nem como borda fina (1,74:1 no
+        branco), e quem resolve esses dois papéis são <code>navy-deep</code> e
+        <code>teal-ink</code>.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>A classificação está resolvida; a adoção, não.</strong> Trocar os valores do
+          <code>modern</code> pelos da marca muda a aparência do tema, e isso é decisão de produto —
+          não consequência automática. Falta também a hierarquia visual (o brandbook define cor e
+          tipografia e mais nada: sem grade, raio ou escala) e uma decisão sobre Poppins, que seria
+          a primeira webfont do kit — hoje os dois temas rodam em stack de sistema.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Componente é tag</h2>
+      <p>
+        Não existe classe de componente. Botão é <code>&lt;lc-button&gt;</code>, campo é
+        <code>&lt;lc-input&gt;</code>, aviso é <code>&lt;lc-alert&gt;</code>. Se você conhece o kit
+        de antes e está procurando <code>.lc-btn</code> ou <code>.lc-field</code>, eles não existem <!-- lc-permite-classe -->
+        mais.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;!-- antes --&gt;                          &lt;!-- agora --&gt;
+&lt;button class="lc-btn lc-btn--brand"&gt;   &lt;lc-button variant="brand"&gt;<!-- lc-permite-classe -->
+&lt;div class="lc-field"&gt;                  &lt;lc-input label="Nome"&gt;<!-- lc-permite-classe -->
+  &lt;label class="lc-label"&gt;Nome&lt;/label&gt;<!-- lc-permite-classe -->
+  &lt;input class="lc-input" /&gt;<!-- lc-permite-classe -->
+&lt;/div&gt;
+&lt;span class="lc-badge lc-badge--ok"&gt;    &lt;lc-badge variant="success"&gt;</code></pre><!-- lc-permite-classe -->
+
+      <p>
+        A troca foi decidida e justificada no
+        <strong>ADR 0001</strong> (<code>docs/adr/0001-aposentar-a-camada-de-classes.md</code>), que
+        registra também o que se perdeu: portar uma tela do legado deixou de ser renomear classe.
+      </p>
+
+      <h2 class="doc-h2">A exceção: tabela</h2>
+      <p>
+        <code>&lt;table class="lc-table"&gt;</code> continua sendo classe, e é a
+        <strong>única</strong> — marcada com
+        <span class="doc-selo doc-selo--classe">classe</span> na navegação à esquerda.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          Não é inconsistência esquecida. O parser HTML <strong>expulsa</strong> elemento
+          desconhecido de dentro de <code>&lt;table&gt;</code>, <code>&lt;tbody&gt;</code> e
+          <code>&lt;tr&gt;</code>: um <code>&lt;lc-row&gt;</code> viraria irmão da tabela e a tabela
+          ficaria vazia. Foi medido, não suposto — e o Web Awesome, referência de convenções do kit,
+          também não tem componente de tabela.
+        </span>
+      </lc-alert>
+
+      <p>
+        Utilitários e tipografia também continuam classe: <code>.lc-stack</code>,
+        <code>.lc-row</code>, <code>.lc-quiet</code>, <code>.lc-h1</code>. Não são componentes
+        disfarçados.
+      </p>
+
+      <h2 class="doc-h2">Duas armadilhas que valem saber antes</h2>
+      <lc-alert variant="danger">
+        <lc-icon slot="icon" name="danger"></lc-icon>
+        <span>
+          <strong><code>&lt;lc-button&gt;</code> não submete por omissão.</strong> O
+          <code>type</code> padrão é <code>button</code>, o oposto do
+          <code>&lt;button&gt;</code> nativo. Dentro de um <code>&lt;form&gt;</code> escreva
+          <code>type="submit"</code> — senão nada acontece e nada avisa.
+        </span>
+      </lc-alert>
+
+      <p>
+        <strong>Erro de campo não é markup, é validade.</strong> Não existe atributo
+        <code>error</code>. A mensagem vem da validação nativa
+        (<code>required</code>, <code>type</code>, <code>pattern</code>) e regra de negócio usa
+        <code>setCustomValidity()</code>. Detalhes em <a class="lc-link" href="campos.html">Campos</a>.
+      </p>
+
+      <h2 class="doc-h2">Como esta documentação é organizada</h2>
+      <p>
+        Cada página é um arquivo carregado de verdade, com URL própria — dá para linkar uma seção
+        específica e o botão voltar funciona.
+      </p>
+    </main>
+  </body>
+</html>
