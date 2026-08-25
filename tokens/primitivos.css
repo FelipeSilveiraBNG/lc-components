@@ -69,7 +69,11 @@
      ------------------------------------------------------------------------ */
   --lc-_branco: #ffffff;
   --lc-_preto: #000000;
-  --lc-_overlay: rgb(0 0 0 / 0.62);       /* legado: custom.css, 6 usos */
+  /* MEDIDO no `.modal` do painel de homologação. O valor anterior era 0.62,
+     anotado como "custom.css, 6 usos" — e as 6 ocorrências existem mesmo, mas
+     são `box-shadow` de dropdown dentro de tabela, não overlay. A anotação
+     apontava para a coisa errada, e o overlay ficava quase o dobro do real. */
+  --lc-_overlay: rgb(0 0 0 / 0.3);
   --lc-_overlay-suave: rgb(15 23 42 / 0.45);
 
   --lc-_stack-helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;

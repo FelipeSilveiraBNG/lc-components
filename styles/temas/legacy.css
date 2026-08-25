@@ -155,7 +155,9 @@
   /* ── Elevação — sombra dura, de 1px ─────────────────────────────────── */
   --lc-shadow-card: 0 1px 1px rgb(0 0 0 / 0.1);
   --lc-shadow-panel: 0 1px 3px rgb(0 0 0 / 0.12);
-  --lc-shadow-overlay: 0 5px 15px rgb(0 0 0 / 0.5); /* .modal do BS3 */
+  /* MEDIDA no `.modal-content` do painel, não copiada do BS3 — que usa
+     `0 5px 15px rgb(0 0 0 / 0.5)`. O painel é bem mais discreto que isso. */
+  --lc-shadow-overlay: 0 2px 3px rgb(0 0 0 / 0.125);
 
   /* ── Movimento ──────────────────────────────────────────────────────── */
   --lc-transition-fast: 0.15s ease-in-out; /* foco de input */
