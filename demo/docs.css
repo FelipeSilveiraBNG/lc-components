@@ -483,3 +483,14 @@ lc-modal:not(:defined) {
     flex-direction: column;
   }
 }
+
+/* Fundo cheio de marca, para as artes NEGATIVAS do logo.
+
+   Não é superfície nova nem literal: é a tinta de marca no tom cheio, e o
+   contrato já declara que o par legível dela é o branco
+   (`--lc-color-brand-on-loud`). Se um tema trocar essa tinta, o preview troca
+   junto — que é o certo, porque a pergunta que ele responde é "o negativo
+   aparece sobre a cor de marca?", não "o negativo aparece sobre #1d4ed8?". */
+.doc-preview--marca {
+  background: var(--lc-color-brand-fill-loud);
+}

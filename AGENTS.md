@@ -54,7 +54,8 @@ branca com Times New Roman.
 4. **Nenhum valor literal de cor ou medida no protótipo.** Use token (`var(--lc-space-m)`).
    Literal quebra na troca de tema, que é a razão de o kit existir.
 5. **Textos de UI em pt-BR.**
-6. Ícone sempre por `<lc-icon>`, nunca SVG inline nem emoji.
+6. Ícone sempre por `<lc-icon>`, nunca SVG inline nem emoji. O logo é `<lc-logo>` — mesma
+   regra, outra tag.
 
 ## Receitas
 
@@ -269,6 +270,27 @@ Variantes: `brand` `success` `warning` `danger` `neutral`. Aparece **acima de mo
 
 Nomes disponíveis em `components/lc-icon/library.system.js`. Nome inexistente rende um
 **marcador visível** e um aviso no console — nunca um espaço vazio.
+
+### Logo
+
+```html
+<lc-logo></lc-logo>                              <!-- horizontal, colorido -->
+<lc-logo variant="negative"></lc-logo>           <!-- horizontal, branco -->
+<lc-logo variant="mini"></lc-logo>               <!-- empilhado, azul -->
+<lc-logo variant="mini-negative"></lc-logo>      <!-- empilhado, branco -->
+<lc-logo style="--height: 40px"></lc-logo>       <!-- mede-se por ALTURA -->
+```
+
+Duas geometrias × duas pinturas. A `mini` empilha o letreiro sob o monograma e serve onde a
+horizontal não cabe; as `negative` são as mesmas peças em branco, para fundo escuro ou tintado —
+**nunca sobre o turquesa da marca** (branco ali dá 1,74:1).
+
+O logo **nasce com nome acessível** ("BNG LinkCare"), ao contrário do `<lc-icon>`, que nasce
+decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
+
+> É a única exceção à regra de ouro nº 6, e só porque continua sendo tag. Colar o SVG do logo à
+> mão segue proibido, e `<img src="logo.svg">` também: com arquivo são quatro downloads e quatro
+> chances de publicar o azul sobre fundo azul.
 
 ## Eventos
 

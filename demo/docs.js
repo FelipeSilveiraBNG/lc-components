@@ -58,6 +58,7 @@ const NAV = [
       { arquivo: 'switch.html', rotulo: 'lc-switch' },
       { arquivo: 'dropdown.html', rotulo: 'lc-dropdown' },
       { arquivo: 'icone.html', rotulo: 'lc-icon' },
+      { arquivo: 'marca.html', rotulo: 'lc-logo' },
       { arquivo: 'modal.html', rotulo: 'lc-modal' },
       { arquivo: 'toast.html', rotulo: 'lc-toast' },
     ],

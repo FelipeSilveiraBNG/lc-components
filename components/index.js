@@ -23,6 +23,7 @@ export { registerIconLibrary } from './lc-icon/library.system.js';
 export { toast } from './lc-toast/lc-toast.js';
 
 import './lc-icon/lc-icon.js';
+import './lc-logo/lc-logo.js';
 import './lc-switch/lc-switch.js';
 import './lc-dropdown/lc-dropdown.js';
 import './lc-modal/lc-modal.js';

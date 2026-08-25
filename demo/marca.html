@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>lc-logo — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1"><code>lc-logo</code></h1>
+      <p class="doc-lede">
+        A marca BNG LinkCare, nas quatro variantes. É o único vetor do kit que não é
+        <code>&lt;lc-icon&gt;</code> — e continua sendo tag, não SVG colado na página.
+      </p>
+
+      <h2 class="doc-h2">As quatro variantes</h2>
+      <p>
+        Duas geometrias, duas pinturas. A <strong>horizontal</strong> põe o monograma
+        <code>bng</code> ao lado do letreiro; a <strong>mini</strong> empilha, com o letreiro
+        miúdo embaixo, e existe para caber onde a horizontal não cabe.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-logo></lc-logo>
+          <lc-logo variant="mini"></lc-logo>
+        </template>
+      </div>
+
+      <p>
+        As <strong>negativas</strong> são as mesmas duas peças em branco, para fundo escuro ou
+        tintado. Não são arquivos diferentes: é a mesma geometria repintada por CSS.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--marca">
+          <template>
+            <lc-logo variant="negative"></lc-logo>
+            <lc-logo variant="mini-negative"></lc-logo>
+          </template>
+        </div>
+      </div>
+
+      <p>
+        Repare no letreiro: na horizontal ele é turquesa e o monograma azul; na mini a peça
+        inteira é azul. Não é descuido do desenho — no tamanho em que a mini é usada, um letreiro
+        turquesa some.
+      </p>
+
+      <h2 class="doc-h2">Tamanho é altura</h2>
+      <p>
+        O logo se mede por <code>--height</code>, nunca por largura: as duas geometrias têm
+        proporções muito diferentes (4,36:1 contra 1,32:1) e é a altura que faz as duas conviverem
+        numa mesma barra. A largura sai da proporção e não se ajusta.
+      </p>
+      <p>
+        Sem nenhum override o padrão é <code>2em</code>, então o logo acompanha a tipografia do
+        contexto — mesmo espírito do <a class="lc-link" href="icone.html">lc-icon</a>.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-logo style="--height: 24px"></lc-logo>
+          <lc-logo style="--height: 40px"></lc-logo>
+          <lc-logo variant="mini" style="--height: 64px"></lc-logo>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Nome acessível</h2>
+      <p>
+        Ao contrário do <code>lc-icon</code>, que nasce decorativo, o logo
+        <strong>nasce com nome</strong> — o leitor de tela anuncia "BNG LinkCare". É o padrão
+        certo porque o logo quase sempre carrega o nome do produto.
+      </p>
+      <p>
+        Quando ele já está acompanhado (um <code>&lt;h1&gt;</code> com o nome ao lado, ou dentro
+        de um link que já se anuncia), silencie com <code>label=""</code> em vez de deixar o nome
+        ser dito duas vezes.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-logo variant="mini" label="Ir para o início"></lc-logo>
+          <lc-logo variant="mini" label=""></lc-logo>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Onde o negativo pode pousar</h2>
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>Negativo sobre o turquesa da marca, não.</strong> Branco sobre
+          <code>#3CDBC0</code> dá 1,74:1 — o mesmo motivo pelo qual o turquesa é cor de superfície
+          e nunca de texto (ver <a href="tokens.html">Tokens</a>). O negativo é para o azul, para
+          foto escura e para fundo escuro. Sobre o turquesa, use a versão colorida.
+        </span>
+      </lc-alert>
+
+      <p>
+        Já a versão colorida <em>não</em> tem requisito de contraste a cumprir: a WCAG isenta
+        explicitamente logotipo e nome de marca. O turquesa do letreiro reprovaria como texto, e
+        isso não é defeito — ele não é texto.
+      </p>
+
+      <h2 class="doc-h2">Por que tag, e não arquivo</h2>
+      <p>
+        Seria possível publicar quatro <code>.svg</code> e escrever
+        <code>&lt;img src="logo-negativo.svg"&gt;</code>. Seriam quatro downloads, quatro arquivos
+        para manter em sincronia com o brandbook e quatro chances de alguém publicar o azul sobre
+        fundo azul. Como tag, a peça é uma só e a variante é um atributo.
+      </p>
+      <p>
+        As cores do logo são os <strong>únicos literais de cor</strong> dentro de um componente do
+        kit, e é de propósito: elas não são aparência, são identidade. Um logo que muda de cor
+        quando a página troca de tema deixou de ser o logo. Por isso <code>lc-logo</code> não lê
+        token nenhum — nem para o branco do negativo.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          A geometria vem do Figma (<code>[React] UI Kit BNG LinkCare</code>, nó
+          <code>1:35</code>) e mora em <code>components/lc-logo/marca.js</code>, que
+          <strong>não se edita à mão</strong>. Se a marca mudar, reexporte.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Variante inválida avisa</h2>
+      <p>
+        Nome de variante que não existe desenha a <code>default</code> e emite aviso no console —
+        nunca deixa um buraco no cabeçalho. Mesma política do <code>lc-icon</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-logo variant="branco"></lc-logo>
+        </template>
+      </div>
+    </main>
+  </body>
+</html>

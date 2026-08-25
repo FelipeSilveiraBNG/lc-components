@@ -13,3 +13,7 @@ playwright-report/
 Thumbs.db
 .idea/
 *.swp
+
+# Sessão de agente: worktrees, transcrições e config local do Claude Code.
+# São 5,7 MB de cópias do próprio repositório — nada disso é o kit.
+.claude/
