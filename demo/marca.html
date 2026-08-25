@@ -113,29 +113,6 @@
         isso não é defeito — ele não é texto.
       </p>
 
-      <h2 class="doc-h2">Por que tag, e não arquivo</h2>
-      <p>
-        Seria possível publicar quatro <code>.svg</code> e escrever
-        <code>&lt;img src="logo-negativo.svg"&gt;</code>. Seriam quatro downloads, quatro arquivos
-        para manter em sincronia com o brandbook e quatro chances de alguém publicar o azul sobre
-        fundo azul. Como tag, a peça é uma só e a variante é um atributo.
-      </p>
-      <p>
-        As cores do logo são os <strong>únicos literais de cor</strong> dentro de um componente do
-        kit, e é de propósito: elas não são aparência, são identidade. Um logo que muda de cor
-        quando a página troca de tema deixou de ser o logo. Por isso <code>lc-logo</code> não lê
-        token nenhum — nem para o branco do negativo.
-      </p>
-
-      <lc-alert variant="brand">
-        <lc-icon slot="icon" name="info"></lc-icon>
-        <span>
-          A geometria vem do Figma (<code>[React] UI Kit BNG LinkCare</code>, nó
-          <code>1:35</code>) e mora em <code>components/lc-logo/marca.js</code>, que
-          <strong>não se edita à mão</strong>. Se a marca mudar, reexporte.
-        </span>
-      </lc-alert>
-
       <h2 class="doc-h2">Variante inválida avisa</h2>
       <p>
         Nome de variante que não existe desenha a <code>default</code> e emite aviso no console —
