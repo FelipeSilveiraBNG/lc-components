@@ -65,6 +65,33 @@
   --lc-_vermelho-600: #dc2626;     /* (medido) */
 
   /* ------------------------------------------------------------------------
+     MARCA — o brandbook oficial.
+     Fonte: `Branding BNG LinkCare/BNG Linkcare _ Brandbook.pdf`, lido do PDF.
+     Nomes em inglês, como a camada de contrato.
+
+     Estão AQUI e não num tema porque o brandbook define cor e tipografia e
+     mais nada — nenhuma grade, nenhum raio, nenhuma escala, e nenhuma
+     hierarquia visual. Não dá para montar um tema com isso sem inventar o
+     resto, e a decisão de esperar está registrada em 01 §0.4. Então ficam
+     como insumo anotado, sem tema que os leia ainda.
+
+     Os contrastes abaixo foram CALCULADOS (WCAG 2.1), e mudam o que cada cor
+     pode ser: o turquesa é cor de superfície e nunca de texto nem de moldura
+     fina, ao contrário do que o destaque dele no documento sugere.
+     ------------------------------------------------------------------------ */
+  --lc-_brand-mint: #ade2d9; /* 1,43:1 no branco — só fundo tintado */
+  --lc-_brand-turquoise: #3cdbc0; /* A cor da marca. Pantone 333C · CMYK 62,0,36,0.
+                                     1,74:1 no branco: reprova como texto E como
+                                     borda de 1px. Branco em cima também reprova. */
+  --lc-_brand-teal: #12a58c; /* 3,09:1 — passa o mínimo de componente de UI (3:1),
+                                não passa como texto normal (4,5:1) */
+  --lc-_brand-green-deep: #025b4f; /* 8,04:1 AAA no branco, e 4,63:1 SOBRE o
+                                      turquesa — é o par legível dele */
+  --lc-_brand-blue: #003cff; /* 6,80:1 nos dois sentidos. O brandbook o prioriza
+                                para o LOGO ("a versão prioritária é a azul") e
+                                não afirma nada sobre interface. */
+
+  /* ------------------------------------------------------------------------
      COMUNS
      ------------------------------------------------------------------------ */
   --lc-_branco: #ffffff;
@@ -78,5 +105,13 @@
 
   --lc-_stack-helvetica: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --lc-_stack-sistema: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  /* A fonte do brandbook. Nenhum tema aponta para cá ainda, e isso é
+     deliberado: Poppins seria a PRIMEIRA webfont do kit — hoje não existe um
+     `@font-face` nem um `@import` de fonte em lugar nenhum, os dois temas
+     rodam em stack de sistema. Ligar isto custa requisição externa, FOUT e um
+     host a mais no CSP de quem consome por CDN. É decisão de arquitetura, não
+     de token, e por isso o valor fica registrado mas desligado. */
+  --lc-_stack-poppins: 'Poppins', ui-sans-serif, system-ui, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
 }
