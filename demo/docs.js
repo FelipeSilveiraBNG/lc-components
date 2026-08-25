@@ -138,25 +138,16 @@ function montarTopo() {
     ),
   );
 
-  /* A faixa de baixo aponta para a PRIMEIRA página de cada grupo, e fica ativa
-     enquanto a página atual pertencer ao grupo. */
-  const nav = el('nav', { class: 'doc-nav', 'aria-label': 'Seções principais' });
-  for (const g of NAV) {
-    const doGrupo = g.itens.some((i) => i.arquivo === ATUAL);
-    nav.append(
-      el('a', {
-        href: g.itens[0].arquivo,
-        texto: g.grupo,
-        'aria-current': doGrupo ? 'true' : null,
-      }),
-    );
-  }
-  nav.append(
-    el('span', { class: 'lc-grow' }),
-    el('a', { href: '../test/tema.html', texto: 'Suíte de testes' }),
-  );
+  /* Só a faixa da marca. Havia uma segunda faixa aqui, com um link por grupo do
+     NAV mais "Suíte de testes", e ela saiu por ser redundante: a lateral já
+     lista TODOS os grupos com todas as páginas — não só a primeira de cada — e
+     o rodapé já linka as três páginas de teste. Duas faixas grudadas no topo
+     custavam ~80px de altura permanente para repetir navegação que já existia
+     em dois outros lugares.
 
-  return el('header', { class: 'doc-topo lc-no-print' }, marca, nav);
+     O que fica grudado é esta faixa, e por um motivo: o seletor de tema tem de
+     estar alcançável em qualquer ponto do scroll. */
+  return el('header', { class: 'doc-topo lc-no-print' }, marca);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════

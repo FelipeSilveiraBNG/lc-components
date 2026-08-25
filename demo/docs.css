@@ -92,31 +92,6 @@ lc-modal:not(:defined) {
   text-decoration: none;
 }
 
-.doc-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--lc-space-m);
-  flex-wrap: wrap;
-  padding: var(--lc-space-xs) var(--lc-space-l);
-  border-bottom: var(--lc-border-width) solid var(--lc-color-border-normal);
-  background: var(--lc-color-surface-card);
-}
-.doc-nav a {
-  padding: var(--lc-space-2xs) 0;
-  border-bottom: 2px solid transparent;
-  color: var(--lc-color-text-normal);
-  font-size: var(--lc-font-size-s);
-  font-weight: var(--lc-font-weight-semibold);
-  text-decoration: none;
-}
-.doc-nav a:hover {
-  color: var(--lc-color-brand-text);
-}
-.doc-nav a[aria-current='true'] {
-  border-bottom-color: var(--lc-color-brand-border);
-  color: var(--lc-color-brand-text);
-}
-
 /* ══ CASCO DE TRÊS COLUNAS ══════════════════════════════════════════════════ */
 .doc-casco {
   display: grid;
