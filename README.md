@@ -158,7 +158,7 @@ demo/                     a documentação, multi-página
 
 O casco é montado pelo `docs.js` a partir de uma única lista de navegação, então
 acrescentar página é editar essa lista e criar o arquivo — nenhuma das outras
-páginas muda. É o que evita treze cópias de cabeçalho divergindo.
+páginas muda. É o que evita doze cópias de cabeçalho divergindo.
 
 ---
 

@@ -5,9 +5,9 @@
  * com navegação do navegador, URL própria, histórico e botão voltar. Não é
  * roteador de hash nem SPA.
  *
- * O preço de multi-página é a duplicação do shell: treze arquivos com o mesmo
+ * O preço de multi-página é a duplicação do shell: doze arquivos com o mesmo
  * cabeçalho, a mesma lateral e o mesmo rodapé é a receita para eles
- * divergirem — alguém acrescenta uma página e esquece de doze arquivos. Sem
+ * divergirem — alguém acrescenta uma página e esquece de onze arquivos. Sem
  * build e sem dependência (as duas restrições do kit), não há include de
  * template no HTML.
  *
@@ -29,11 +29,12 @@
    ══════════════════════════════════════════════════════════════════════════ */
 const NAV = [
   {
-    grupo: 'Começando',
+    grupo: 'Guia',
     icone: 'info',
     itens: [
       { arquivo: 'index.html', rotulo: 'Instalação' },
-      { arquivo: 'regras.html', rotulo: 'Regras de ouro' },
+      { arquivo: 'tokens.html', rotulo: 'Tokens' },
+      { arquivo: 'eventos.html', rotulo: 'Eventos' },
     ],
   },
   /*
@@ -42,7 +43,7 @@ const NAV = [
    * `classe`/`comp` em cada item era informação de verdade — o leitor precisava
    * saber de que lado estava antes de escrever markup.
    *
-   * Agora tudo é componente, com UMA exceção. Marcar doze itens com "comp" para
+   * Agora tudo é componente, com UMA exceção. Marcar onze itens com "comp" para
    * distinguir de um só seria ruído: o selo passaria a ser decoração, que é
    * exatamente o que a doc não deve ter. Então o selo sobrou onde carrega
    * informação — na tabela, que é o caso estranho e precisa se anunciar.
@@ -65,14 +66,6 @@ const NAV = [
     grupo: 'Camada nativa',
     icone: 'check',
     itens: [{ arquivo: 'tabela.html', rotulo: 'Tabela', selo: 'classe' }],
-  },
-  {
-    grupo: 'Referência',
-    icone: 'search',
-    itens: [
-      { arquivo: 'tokens.html', rotulo: 'Tokens' },
-      { arquivo: 'eventos.html', rotulo: 'Eventos' },
-    ],
   },
 ];
 
@@ -210,7 +203,7 @@ function montarLateral() {
 /* ══════════════════════════════════════════════════════════════════════════════
    5. SUMÁRIO "nesta página", derivado dos títulos que a página tem
 
-   Derivado, não escrito: uma lista à mão numa doc multi-página é treze listas
+   Derivado, não escrito: uma lista à mão numa doc multi-página é doze listas
    para envelhecer. Se a página não tem pelo menos dois títulos, a coluna não
    aparece — sumário de um item só é ruído.
    ══════════════════════════════════════════════════════════════════════════ */
@@ -465,7 +458,7 @@ function ligarTema() {
    Vive aqui, e não num script dentro de tokens.html, por um motivo prático: o
    `check-syntax.mjs` varre arquivos .js, então código que mora em .html não é
    coberto por lint nenhum. Guardada pela presença do elemento, a função
-   simplesmente não faz nada nas outras doze páginas.
+   simplesmente não faz nada nas outras onze páginas.
    ══════════════════════════════════════════════════════════════════════════ */
 const TOKENS = [
   ['--lc-color-brand-fill-normal', 'preenchimento sólido do botão primário'],
