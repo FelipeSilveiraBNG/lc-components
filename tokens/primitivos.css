@@ -65,15 +65,16 @@
   --lc-_vermelho-600: #dc2626;     /* (medido) */
 
   /* ------------------------------------------------------------------------
-     MARCA — o brandbook oficial.
-     Fonte: `Branding BNG LinkCare/BNG Linkcare _ Brandbook.pdf`, lido do PDF.
-     Nomes em inglês, como a camada de contrato.
+     MARCA — a identidade do lado REACT do produto, e é do tema `modern` que
+     ela é. Não de um terceiro tema.
 
-     Estão AQUI e não num tema porque o brandbook define cor e tipografia e
-     mais nada — nenhuma grade, nenhum raio, nenhuma escala, e nenhuma
-     hierarquia visual. Não dá para montar um tema com isso sem inventar o
-     resto, e a decisão de esperar está registrada em 01 §0.4. Então ficam
-     como insumo anotado, sem tema que os leia ainda.
+     Fonte das cinco primeiras: `Branding BNG LinkCare/BNG Linkcare _
+     Brandbook.pdf`, lido do PDF. Nomes em inglês, como a camada de contrato.
+
+     Ficam como primitivo, e não dentro de `modern.css`, porque o `modern.css`
+     hoje reproduz o `core-frontend` (slate + blue-600). Adotar estes valores
+     lá muda a aparência do tema e é decisão de produto. A classificação está
+     resolvida; a adoção, não.
 
      Os contrastes abaixo foram CALCULADOS (WCAG 2.1), e mudam o que cada cor
      pode ser: o turquesa é cor de superfície e nunca de texto nem de moldura
@@ -89,7 +90,21 @@
                                       turquesa — é o par legível dele */
   --lc-_brand-blue: #003cff; /* 6,80:1 nos dois sentidos. O brandbook o prioriza
                                 para o LOGO ("a versão prioritária é a azul") e
-                                não afirma nada sobre interface. */
+                                não afirma nada sobre interface. No linkcare-me
+                                é link e acento, anotado "use sparingly". */
+
+  /* Estas DUAS não estão no brandbook. Vêm do `linkcare-me`, que é a marca já
+     realizada em React, e existem porque alguém tentou de verdade e bateu no
+     contraste. Fonte: 08-levantamento-react.md §8.2, citando o
+     `docs/design/DESIGN-SYSTEM.md` daquele app (03/06/2026).
+
+     São elas, e não um verde do brandbook, que resolvem os dois papéis que o
+     turquesa não pode ocupar — e resolvem melhor: 9,98:1 contra 4,63:1 no
+     texto sobre o turquesa. */
+  --lc-_brand-navy-deep: #04154a; /* texto SOBRE o turquesa: 9,98:1 AAA
+                                     (e 17,34:1 no branco) */
+  --lc-_brand-teal-ink: #0e7e6e; /* o turquesa escurecido até passar como TEXTO
+                                    no branco: 4,97:1 AA */
 
   /* ------------------------------------------------------------------------
      COMUNS

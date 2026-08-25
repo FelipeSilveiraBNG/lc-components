@@ -9,13 +9,22 @@
    Fonte: framework-prototipos/08-levantamento-react.md §3, onde a frequência de
    classe Tailwind foi contada em 468 arquivos.
 
-   NÃO é a identidade do brandbook (turquesa #3CDBC0 + Poppins). Aquela
-   identidade ainda não tem hierarquia visual definida — decisão registrada em
-   01 §0.4 — e inventá-la aqui seria fixar por acidente de protótipo a primária
-   que ninguém escolheu. Quando a hierarquia existir, ela entra como um TERCEIRO
-   tema (ou como paleta), sem tocar em componente nenhum.
+   ── Onde entra o brandbook ───────────────────────────────────────────────
+   CORRIGIDO: a identidade do brandbook (turquesa #3CDBC0 + Poppins) pertence
+   a ESTE tema. Ela é a identidade do lado React do produto — não um terceiro
+   tema, como este comentário afirmava antes.
 
-   Ou seja: os dois temas deste kit são reproduções. Nenhum é proposta.
+   O que este arquivo reproduz HOJE, porém, é o `core-frontend`: slate e
+   blue-600, que o 08 §8.1 classifica como "ausência de identidade — a paleta
+   default do Tailwind vestida de console admin". A marca de verdade está
+   realizada no `linkcare-me` (turquesa/navy, Poppins/Montserrat), e os
+   primitivos dela estão em `tokens/primitivos.css` sob `--lc-_brand-*`.
+
+   Ou seja: a classificação está resolvida, a adoção não. Trocar os valores
+   deste arquivo pelos da marca muda a aparência do tema, e é decisão de
+   produto — não consequência automática desta correção.
+
+   Os dois temas deste kit continuam sendo reproduções. Nenhum é proposta.
 
    ── O achado que explica a semelhança de densidade ───────────────────────
    `--lc-font-size-m` é 14px nos DOIS temas, e isso é dado, não descuido:

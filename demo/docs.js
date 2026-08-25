@@ -476,8 +476,10 @@ const MARCA = [
   ['--lc-_brand-mint', '1,43:1', 'fundo tintado — o slot fill-quiet'],
   ['--lc-_brand-turquoise', '1,74:1', 'A cor da marca. Só superfície: reprova como texto e como borda fina'],
   ['--lc-_brand-teal', '3,09:1', 'hover e borda de componente — passa o mínimo de 3:1, não o de texto'],
-  ['--lc-_brand-green-deep', '8,04:1', 'texto, e o único legível SOBRE o turquesa (4,63:1)'],
-  ['--lc-_brand-blue', '6,80:1', 'prioritário do logo; o brandbook não afirma nada sobre interface'],
+  ['--lc-_brand-green-deep', '8,04:1', 'o verde escuro do brandbook'],
+  ['--lc-_brand-blue', '6,80:1', 'link e acento do logo — o linkcare-me anota "use sparingly"'],
+  ['--lc-_brand-navy-deep', '17,34:1', 'do linkcare-me: o texto SOBRE o turquesa, com 9,98:1'],
+  ['--lc-_brand-teal-ink', '4,97:1', 'do linkcare-me: o turquesa escurecido até passar como texto'],
   ['--lc-_stack-poppins', '—', 'a fonte da marca'],
 ];
 

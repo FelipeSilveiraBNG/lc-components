@@ -55,9 +55,13 @@ npx serve .          # e abra /demo/index.html
 **Os dois são reprodução medida, não proposta.** Todo valor saiu de medição no código —
 o `legacy` do doc 01, o `modern` da contagem de frequência de classe Tailwind do doc 08.
 
-Não existe tema da marca (turquesa + Poppins) ainda: a hierarquia visual do brandbook não foi
-definida, e inventá-la aqui fixaria por acidente de protótipo uma primária que ninguém
-escolheu. Quando existir, entra como terceiro tema sem tocar em componente nenhum.
+A marca (turquesa + Poppins) **é a identidade do `modern`** — do lado React do produto — e não
+um terceiro tema. As cores dela estão em `tokens/primitivos.css` sob `--lc-_brand-*`, com o
+contraste de cada uma anotado.
+
+O que o `modern` reproduz hoje, porém, é o console admin em slate e `blue-600`. A marca está
+realizada no app `linkcare-me`, e adotar aqueles valores muda a aparência do tema — é decisão
+de produto, e depende também da hierarquia visual do brandbook, que segue sem definição.
 
 ---
 

@@ -93,12 +93,19 @@
         </span>
       </lc-alert>
 
-      <h2 class="doc-h2">A terceira identidade: a marca</h2>
+      <h2 class="doc-h2">A marca, que é do tema <code>modern</code></h2>
       <p>
-        Existe um brandbook oficial do BNG LinkCare, e ele <strong>não é nenhum dos dois temas</strong>.
-        Suas cores e sua fonte estão no repositório, em <code>tokens/primitivos.css</code>, com nome
-        privado <code>--lc-_brand-*</code>. Estão registradas e <strong>desligadas</strong>: nenhum
-        tema aponta para elas.
+        Existe um brandbook oficial do BNG LinkCare, e ele é a identidade do <strong>lado React</strong>
+        do produto — ou seja, do tema <code>modern</code>. Não é um terceiro tema. Suas cores e sua
+        fonte estão no repositório, em <code>tokens/primitivos.css</code>, com nome privado
+        <code>--lc-_brand-*</code>.
+      </p>
+      <p>
+        O que o <code>modern</code> reproduz <em>hoje</em>, porém, é o console admin em slate e
+        blue-600. A marca de verdade está realizada no app <code>linkcare-me</code>, e é de lá que
+        vêm as duas últimas linhas da tabela — <strong>elas não estão no brandbook</strong>. Existem
+        porque alguém tentou de verdade e bateu no contraste, e resolvem melhor do que qualquer
+        verde do documento os dois papéis que o turquesa não pode ocupar.
       </p>
 
       <table class="lc-table lc-table--condensed lc-table--striped" id="tabela-marca">
@@ -115,19 +122,21 @@
       <p>
         A coluna de contraste é o que torna o mapeamento não óbvio. O turquesa é a cor de destaque
         do brandbook, mas com <strong>1,74:1</strong> no branco ele reprova como texto e como borda
-        de 1px — e branco em cima dele reprova também. Ele é cor de superfície, e o par legível dele
-        é o verde escuro. Os quatro verdes cobrem os seis slots da família <code>brand</code> do
-        contrato sem inventar nenhum valor, com uma quebra de forma: <code>brand-on-loud</code>
-        teria de ser <strong>escuro</strong>, ao contrário dos dois temas atuais, onde é branco.
+        de 1px — e branco em cima dele reprova também. Ele é cor de <strong>superfície</strong>. Os
+        dois papéis que sobram têm resposta: <code>navy-deep</code> é o texto sobre o turquesa
+        (9,98:1) e <code>teal-ink</code> é o turquesa legível como texto no branco (4,97:1). Isso
+        impõe uma quebra de forma sobre os temas atuais — <code>brand-on-loud</code> teria de ser
+        <strong>escuro</strong>, onde hoje é branco nos dois.
       </p>
 
       <lc-alert variant="warning">
         <lc-icon slot="icon" name="warning"></lc-icon>
         <span>
-          <strong>Por que ainda não é tema.</strong> O brandbook define cor e tipografia e mais
-          nada — sem grade, raio, escala ou hierarquia visual. Virar tema exigiria inventar o resto,
-          que é exatamente o que este kit não faz. E Poppins seria a primeira webfont daqui: hoje os
-          dois temas rodam em stack de sistema.
+          <strong>A classificação está resolvida; a adoção, não.</strong> Trocar os valores do
+          <code>modern</code> pelos da marca muda a aparência do tema, e isso é decisão de produto —
+          não consequência automática. Falta também a hierarquia visual (o brandbook define cor e
+          tipografia e mais nada: sem grade, raio ou escala) e uma decisão sobre Poppins, que seria
+          a primeira webfont do kit — hoje os dois temas rodam em stack de sistema.
         </span>
       </lc-alert>
 
