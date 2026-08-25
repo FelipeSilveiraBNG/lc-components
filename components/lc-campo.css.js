@@ -60,6 +60,25 @@ export default /* css */ `
     cursor: not-allowed;
   }
 
+  /* ── Tamanho compacto ─────────────────────────────────────────────────────
+     Existe por causa de UMA tela real: a linha de filtro no cabeçalho das
+     tabelas do painel, onde o campo precisa caber na altura da célula. Medido
+     lá: 30px de altura e 10px de padding — que são exatamente
+     \`--lc-control-height-sm\` e \`--lc-space-s\`, os mesmos que o lc-button já
+     usa em \`size="small"\`.
+
+     A fonte medida é 13px e aqui fica 12px (\`--lc-font-size-s\`). É de
+     propósito: 1px não é visível e um token novo por causa dele não se paga. */
+  :host([size='small']) .control {
+    min-height: var(--lc-control-height-sm);
+    padding: 0 var(--lc-space-s);
+    font-size: var(--lc-font-size-s);
+  }
+
+  :host([size='small']) .textarea {
+    padding: var(--lc-space-3xs) var(--lc-space-s);
+  }
+
   /* Borda de erro sai de :state(invalid), não de uma classe que o autor
      acrescenta — é a decisão B do ADR 0001. */
   :host(:state(invalid)) .control {

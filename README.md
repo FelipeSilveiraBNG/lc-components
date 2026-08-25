@@ -1,4 +1,4 @@
-# lc-components v0.1.0
+# lc-components v0.2.0
 
 Kit de protótipos do **BNG LinkCare**. Tokens + CSS base + custom elements em JavaScript
 puro, sem build, com **dois temas** trocáveis por um atributo.

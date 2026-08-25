@@ -69,7 +69,7 @@ const NAV = [
   },
 ];
 
-const VERSAO = 'v0.1.0';
+const VERSAO = 'v0.2.0';
 
 /* Lista plana, na ordem de leitura — é dela que sai o anterior/próximo. */
 const PLANA = NAV.flatMap((g) => g.itens);

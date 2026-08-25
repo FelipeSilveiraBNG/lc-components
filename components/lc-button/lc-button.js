@@ -69,6 +69,13 @@ export class LcButton extends LcElement {
     form: 'string',
     /** Ocupa a largura toda. */
     block: 'boolean',
+    /**
+     * Canto reto. É o `btn-flat` do painel, usado em toda barra de ferramentas
+     * de listagem. Booleano e não valor de `appearance` porque as duas coisas
+     * são ortogonais: `appearance` decide tinta e borda, `flat` decide canto —
+     * e um botão de barra de ferramentas costuma querer as duas.
+     */
+    flat: 'boolean',
     /** Desabilita de fato: não recebe foco e não dispara clique. */
     disabled: 'boolean',
   };

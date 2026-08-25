@@ -63,6 +63,25 @@
           </template>
         </div>
       </div>
+
+      <h2 class="doc-h2">Tamanho compacto</h2>
+      <p>
+        <code>size="small"</code> existe por causa de uma tela real: a linha de filtro no cabeçalho
+        das tabelas do painel, onde o campo tem de caber na altura da célula. Vale para os três —
+        <code>lc-input</code>, <code>lc-select</code> e <code>lc-textarea</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-input size="small" placeholder="Nome completo"></lc-input>
+          <lc-input size="small" placeholder="CPF"></lc-input>
+          <lc-select size="small">
+            <option>Todos</option>
+            <option>Ativo</option>
+            <option>Inativo</option>
+          </lc-select>
+        </template>
+      </div>
     </main>
   </body>
 </html>

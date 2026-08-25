@@ -8,6 +8,13 @@ export default /* css */ `
   :host([hidden]) { display: none; }
   :host([block]) { display: flex; width: 100%; }
 
+  /* Canto reto — o \`btn-flat\` do painel. Zera as MESMAS custom properties que o
+     lc-button-group usa para achatar junção, em vez de declarar
+     \`border-radius\` no \`.base\`: pelo comentário do raio por lado, declaração
+     local ali vence o valor herdado do host e quebraria o grupo. Assim as duas
+     coisas compõem — botão flat dentro de grupo continua funcionando. */
+  :host([flat]) { --raio-inicio: 0; --raio-fim: 0; }
+
   .base {
     /* ── Fundo de hover por CUSTOM PROPERTY, e não uma regra por variante ─────
        Esta é a lição de um bug real do kit: as regras de hover eram uma por

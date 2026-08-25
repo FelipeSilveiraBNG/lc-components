@@ -63,6 +63,25 @@
         Nenhuma das duas reage ao hover.
       </p>
 
+      <h2 class="doc-h2">Canto reto</h2>
+      <div class="doc-exemplo">
+        <template>
+          <lc-button flat variant="brand" size="small">Adicionar</lc-button>
+          <lc-button flat size="small">Download</lc-button>
+          <lc-button-group>
+            <lc-button flat>Dia</lc-button>
+            <lc-button flat>Semana</lc-button>
+          </lc-button-group>
+        </template>
+      </div>
+
+      <p>
+        <code>flat</code> zera o canto — é o <code>btn-flat</code> do painel, usado em toda barra de
+        ferramentas de listagem. É booleano, e não um valor de <code>appearance</code>, porque as
+        duas coisas são independentes: <code>appearance</code> decide tinta e borda,
+        <code>flat</code> decide canto. Compõe com <code>lc-button-group</code> sem briga.
+      </p>
+
       <h2 class="doc-h2">Largura total e grupo</h2>
       <div class="doc-exemplo">
         <div class="doc-preview doc-preview--bloco">
