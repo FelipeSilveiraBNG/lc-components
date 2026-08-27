@@ -84,6 +84,26 @@
   --lc-color-text-link: var(--lc-_ad-azul);
 
   /* ── Borda ──────────────────────────────────────────────────────────── */
+
+  /* SHELL — o casco escuro da aplicação: a barra lateral, e o que vier depois
+     dela. É a primeira superfície ESCURA do contrato.
+
+     Por que `shell` e não `inverse`: já existe `--lc-color-text-inverse`, e
+     `--lc-color-inverse-text` ao lado dele seria um par de nomes que ninguém
+     acerta de primeira. `shell` nomeia o papel — a moldura da aplicação, por
+     oposição ao conteúdo — e não empresta o nome de nenhum componente.
+
+     `fill-raised` é o hover; `fill-sunken` é o item atual. No painel o atual é
+     MAIS ESCURO que o fundo e o hover é mais claro, e os dois nomes dizem
+     exatamente isso. */
+  --lc-color-shell-fill: var(--lc-_ad-nav);
+  --lc-color-shell-fill-raised: var(--lc-_ad-nav-hover);
+  --lc-color-shell-fill-sunken: var(--lc-_ad-nav-ativo);
+  --lc-color-shell-text: var(--lc-_ad-nav-texto);
+  --lc-color-shell-text-quiet: var(--lc-_ad-nav-texto-fraco);
+  --lc-color-shell-border: var(--lc-_ad-nav-guia);
+  --lc-color-shell-accent: var(--lc-_ad-azul);
+
   --lc-color-border-quiet: var(--lc-_ad-divisor);
   --lc-color-border-normal: var(--lc-_ad-cinza);
   --lc-color-border-loud: var(--lc-_ad-borda-input);

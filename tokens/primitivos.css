@@ -34,6 +34,27 @@
   --lc-_ad-texto-fraco: #999999;
   --lc-_ad-borda-input: #cccccc;
 
+  /* A BARRA LATERAL. Estas seis não vinham do doc de tokens: foram lidas em
+     16/08 direto do `assets/sistema/css/bng-sidebar.css` do painel de
+     homologação — que JÁ ESTÁ TOKENIZADO, com o prefixo `--bng-*` — mais o
+     `_all-skins.min.css` do AdminLTE 2, de onde sai o fundo.
+
+     Onde o painel sobrescreve o AdminLTE, vale o painel: é o painel que está
+     no ar. É por isso que `nav-ativo` (#161e22) não é o #1e282c da skin-blue.
+
+     Repare que o item ATIVO é mais escuro que o fundo e o hover é mais claro.
+     Não é engano de leitura: é assim no ar, e é o que torna as duas coisas
+     distinguíveis sem depender de cor. */
+  --lc-_ad-nav: #222d32;             /* .main-sidebar da skin-blue */
+  --lc-_ad-nav-hover: #2c3b41;       /* --bng-nav-hover, e o fundo do submenu embutido */
+  --lc-_ad-nav-ativo: #161e22;       /* --bng-nav-ativo — MAIS escuro que o fundo */
+  --lc-_ad-nav-texto: #b8c7ce;       /* --bng-nav-texto — 8,12:1 sobre o fundo */
+  --lc-_ad-nav-texto-fraco: #8aa4af; /* item de submenu — 4,43:1 sobre o hover: REPROVA
+                                        o mínimo AA de 4,5:1 por 0,07. Reproduzido de
+                                        propósito, como o resto do `legacy`. Não copie
+                                        este par para o `modern`. */
+  --lc-_ad-nav-guia: #2f3d44;        /* --bng-guia, a régua vertical do submenu */
+
   /* ------------------------------------------------------------------------
      MODERNO — medido nos apps React (paleta default do Tailwind, que virou a
      paleta do produto por omissão).
@@ -105,6 +126,20 @@
                                      (e 17,34:1 no branco) */
   --lc-_brand-teal-ink: #0e7e6e; /* o turquesa escurecido até passar como TEXTO
                                     no branco: 4,97:1 AA */
+
+  /* Os DOIS DEGRAUS do navy, e a régua. Derivados, não medidos — anotados como
+     tal, no mesmo espírito dos `--lc-_ad-*-claro` acima.
+
+     Existem porque a barra lateral precisa de três níveis de superfície (fundo,
+     linha em hover, linha atual) e o brandbook define UM navy. Derivar do valor
+     medido é diferente de inventar um valor: a decisão de adotar o navy como
+     chão da barra é de produto, e estes três apenas a executam.
+
+     O hover clareia puxando para o `--lc-_brand-blue` em vez de para o branco —
+     branco dessaturaria o navy e o resultado pareceria cinza-azulado, não marca. */
+  --lc-_brand-navy-hover: #031c6b; /* (derivado) navy + 18% de brand-blue */
+  --lc-_brand-navy-ativo: #030e30; /* (derivado) navy + 35% de preto */
+  --lc-_brand-navy-guia: #04195c;  /* (derivado) navy + 10% de brand-blue */
 
   /* ------------------------------------------------------------------------
      COMUNS

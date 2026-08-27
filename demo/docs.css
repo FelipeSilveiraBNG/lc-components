@@ -285,16 +285,21 @@ lc-modal:not(:defined) {
 }
 
 /* ── Bloco de código ──────────────────────────────────────────────────────────
-   AQUI ficam os únicos literais de cor da folha, e de propósito:
+   AQUI ficam os únicos literais de cor da folha, e de propósito.
 
-   O contrato não tem superfície escura porque NENHUM dos dois produtos reais
-   tem — inventar `--lc-color-surface-code` seria acrescentar ao contrato uma cor
-   que não foi medida em lugar nenhum, exatamente o que o cabeçalho de
-   primitivos.css proíbe ("nada aqui foi inventado").
+   O argumento original era que o contrato não tinha superfície escura porque
+   NENHUM dos dois produtos reais tinha. ISSO DEIXOU DE SER VERDADE: a barra
+   lateral do painel é escura, foi medida, e o contrato ganhou a família
+   `--lc-color-shell-*` por causa dela.
 
-   E um bloco de código é deliberadamente IGUAL nos dois temas: ele não
-   representa a tela do produto, representa o código-fonte. Então não ter token é
-   a resposta certa, não uma lacuna.
+   A conclusão continua a mesma, agora apoiada só no segundo argumento — que
+   sempre foi o que de fato importava: um bloco de código é deliberadamente
+   IGUAL nos dois temas, porque não representa a tela do produto, representa o
+   código-fonte. E `--lc-color-shell-fill` é o casco da APLICAÇÃO: muda de valor
+   entre `legacy` e `modern`. Usá-lo aqui faria a cor do código seguir o tema,
+   que é exatamente o que não se quer.
+
+   Então não ter token continua sendo a resposta certa, e não uma lacuna.
 
    Prefixo `--cod-` em vez de `--lc-` para não se passar por contrato.
    -------------------------------------------------------------------------- */
