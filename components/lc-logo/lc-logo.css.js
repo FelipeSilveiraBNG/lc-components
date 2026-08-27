@@ -39,11 +39,16 @@ export default /* css */ `
     --wordmark-color: #003cff;
   }
 
+  /* As variantes de símbolo não têm letreiro para pintar — o grupo existe, mas
+     vazio. Nada a declarar aqui, e é de propósito: a cor do monograma já vem
+     de --symbol-color, que vale para todas as seis. */
+
   /* Negativo: peça inteira em branco, para fundo escuro ou tintado. As duas
      variantes negativas dividem esta regra porque a pintura é a mesma; o que
      muda entre elas é só a geometria, e essa quem escolhe é o JS. */
   :host([variant='negative']),
-  :host([variant='mini-negative']) {
+  :host([variant='mini-negative']),
+  :host([variant='symbol-negative']) {
     --symbol-color: #ffffff;
     --wordmark-color: #ffffff;
   }

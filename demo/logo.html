@@ -20,16 +20,16 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">Logo</h1>
       <p class="doc-lede">
-        <code>&lt;lc-logo&gt;</code> — a marca BNG LinkCare, nas quatro variantes. É o único
+        <code>&lt;lc-logo&gt;</code> — a marca BNG LinkCare, nas seis variantes. É o único
         vetor do kit que não é <code>&lt;lc-icon&gt;</code>, e continua sendo tag, não SVG colado
         na página.
       </p>
 
-      <h2 class="doc-h2">As quatro variantes</h2>
+      <h2 class="doc-h2">As seis variantes</h2>
       <p>
-        Duas geometrias, duas pinturas. A <strong>horizontal</strong> põe o monograma
-        <code>bng</code> ao lado do letreiro; a <strong>mini</strong> empilha, com o letreiro
-        miúdo embaixo, e existe para caber onde a horizontal não cabe.
+        Duas geometrias, duas pinturas, mais o monograma sozinho. A <strong>horizontal</strong>
+        põe o monograma <code>bng</code> ao lado do letreiro; a <strong>mini</strong> empilha, com
+        o letreiro miúdo embaixo, e existe para caber onde a horizontal não cabe.
       </p>
 
       <div class="doc-exemplo">
@@ -58,6 +58,46 @@
         inteira é azul. Não é descuido do desenho — no tamanho em que a mini é usada, um letreiro
         turquesa some.
       </p>
+
+      <h2 class="doc-h2">Só o monograma</h2>
+      <p>
+        <code>symbol</code> desenha o <code>bng</code> <strong>sem letreiro nenhum</strong>. Não é
+        a <code>mini</code> sem texto — é a horizontal com o letreiro omitido e a caixa fechada em
+        volta do monograma.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-logo variant="symbol"></lc-logo>
+          <lc-logo variant="symbol" style="--height: 48px"></lc-logo>
+        </template>
+      </div>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--marca">
+          <template>
+            <lc-logo variant="symbol-negative"></lc-logo>
+            <lc-logo variant="symbol-negative" style="--height: 48px"></lc-logo>
+          </template>
+        </div>
+      </div>
+
+      <p>
+        Existe por causa da <strong>barra lateral recolhida</strong>: quando ela vira um trilho de
+        56&nbsp;px, o lockup completo não cabe e a <code>mini</code> também não serve — o letreiro
+        miúdo dela vira borrão nesse tamanho. Sobra o monograma.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          Os dois monogramas do kit <strong>não são idênticos</strong>: o da <code>mini</code> é
+          1,8% mais largo em proporção que o da horizontal, provável ajuste óptico para o tamanho
+          menor. O <code>symbol</code> usa o da <strong>horizontal</strong>, porque o par que
+          importa é <code>default</code>&nbsp;↔&nbsp;<code>symbol</code> — é essa a troca que a
+          barra faz ao recolher.
+        </span>
+      </lc-alert>
 
       <h2 class="doc-h2">Tamanho é altura</h2>
       <p>

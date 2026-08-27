@@ -1,26 +1,32 @@
 import { define } from '../define.js';
 import { LcElement } from '../lc-element.js';
 import styles from './lc-logo.css.js';
-import { GEOMETRIAS } from './marca.js';
+import { GEOMETRIAS, VIEWBOX_SIMBOLO } from './marca.js';
 
 /**
- * Variante pública → geometria de marca.js.
+ * Variante pública → o que desenhar.
  *
- * As quatro variantes saem de duas geometrias: o Figma entrega `default`,
- * `Negativo` e `mini`, e a quarta (`mini-negative`) é a mini pintada de
- * branco. Não é invenção — é a mesma relação que `negative` tem com
- * `default`, aplicada à outra geometria, e é o que faltava para a marca
- * caber numa barra escura estreita.
+ * Seis variantes sobre duas geometrias. O Figma entrega `default`, `Negativo`
+ * e `mini`; `mini-negative` é a mini pintada de branco — a mesma relação que
+ * `negative` tem com `default`, aplicada à outra geometria.
+ *
+ * `symbol` e `symbol-negative` são o monograma SOZINHO, sem letreiro. Não é
+ * geometria nova: é a horizontal com o letreiro omitido e a caixa fechada no
+ * monograma (ver `VIEWBOX_SIMBOLO`). Existem porque a barra lateral recolhida
+ * troca o lockup pelo monograma, e a `mini` não serve para isso — ela leva o
+ * letreiro miúdo embaixo, que num trilho de 56px vira borrão.
  */
 const VARIANTES = {
-  default: 'horizontal',
-  negative: 'horizontal',
-  mini: 'mini',
-  'mini-negative': 'mini',
+  default: { geometria: 'horizontal' },
+  negative: { geometria: 'horizontal' },
+  mini: { geometria: 'mini' },
+  'mini-negative': { geometria: 'mini' },
+  symbol: { geometria: 'horizontal', soSimbolo: true },
+  'symbol-negative': { geometria: 'horizontal', soSimbolo: true },
 };
 
 /**
- * @summary A marca BNG LinkCare, nas quatro variantes do brandbook.
+ * @summary A marca BNG LinkCare, nas seis variantes.
  * @documentation ./lc-logo.md
  * @status experimental
  * @since 0.2
@@ -39,6 +45,8 @@ const VARIANTES = {
  * <lc-logo variant="negative"></lc-logo>
  * <lc-logo variant="mini" style="--height: 56px"></lc-logo>
  * <lc-logo variant="mini-negative"></lc-logo>
+ * <lc-logo variant="symbol"></lc-logo>
+ * <lc-logo variant="symbol-negative"></lc-logo>
  * ```
  *
  * É O ÚNICO SVG INLINE PERMITIDO NO KIT. A regra 6 do AGENTS.md — "ícone
@@ -47,7 +55,7 @@ const VARIANTES = {
  * exatamente o que a regra pede. Colar o SVG do logo à mão continua errado.
  *
  * Não é `<img src="logo.svg">` porque o negativo precisa ser a MESMA peça
- * repintada: com arquivo seriam quatro downloads e quatro chances de alguém
+ * repintada: com arquivo seriam seis downloads e seis chances de alguém
  * publicar o azul sobre fundo azul.
  *
  * Sobre acessibilidade: o logo NASCE com nome acessível ("BNG LinkCare"),
@@ -62,7 +70,7 @@ export class LcLogo extends LcElement {
   static properties = {
     /**
      * Qual peça da marca desenhar.
-     * @type {'default'|'negative'|'mini'|'mini-negative'}
+     * @type {'default'|'negative'|'mini'|'mini-negative'|'symbol'|'symbol-negative'}
      */
     variant: { type: 'string', default: 'default' },
     /** Nome acessível. `label=""` torna o logo decorativo. */
@@ -92,23 +100,26 @@ export class LcLogo extends LcElement {
    * e o logo costuma aparecer no cabeçalho de todas as telas.
    */
   render() {
-    let geometria = VARIANTES[this.variant];
+    let spec = VARIANTES[this.variant];
 
-    if (!geometria) {
+    if (!spec) {
       console.warn(
         `[lc-components] <lc-logo>: variante "${this.variant}" não existe. ` +
           `Use ${Object.keys(VARIANTES).join(', ')}. Desenhando "default".`,
       );
-      geometria = VARIANTES.default;
+      spec = VARIANTES.default;
     }
 
-    const { viewBox, simbolo, letreiro } = GEOMETRIAS[geometria];
+    const { viewBox, simbolo, letreiro } = GEOMETRIAS[spec.geometria];
     const paths = (lista) => lista.map((d) => `<path d="${d}"/>`).join('');
 
+    /* O grupo do letreiro é emitido MESMO VAZIO nas variantes de símbolo. Custa
+       um `<g>` e mantém `::part(wordmark)` existindo em todas as seis — quem
+       escreveu um seletor de part não o vê sumir ao trocar de variante. */
     this.shadowRoot.innerHTML =
-      `<svg part="svg" viewBox="${viewBox}" aria-hidden="true">` +
+      `<svg part="svg" viewBox="${spec.soSimbolo ? VIEWBOX_SIMBOLO : viewBox}" aria-hidden="true">` +
       `<g part="symbol" class="simbolo">${paths(simbolo)}</g>` +
-      `<g part="wordmark" class="letreiro">${paths(letreiro)}</g>` +
+      `<g part="wordmark" class="letreiro">${spec.soSimbolo ? '' : paths(letreiro)}</g>` +
       `</svg>`;
   }
 

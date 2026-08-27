@@ -6,8 +6,9 @@
  *
  * SÃO DUAS GEOMETRIAS, NÃO TRÊS. `default` e `Negativo` têm exatamente os
  * mesmos onze paths — conferido caractere a caractere, a única diferença entre
- * os dois exports é o `fill`, e cor é CSS. As quatro variantes públicas do
- * <lc-logo> saem de 2 geometrias × 2 pinturas.
+ * os dois exports é o `fill`, e cor é CSS. As seis variantes públicas do
+ * <lc-logo> saem daqui: duas geometrias × duas pinturas, mais o monograma
+ * sozinho — que não é geometria nova, é a horizontal recortada.
  *
  * Cada geometria vem partida em `simbolo` (o monograma `bng`, 3 paths) e
  * `letreiro` (as 8 letras de "LinkCare", 1 path por letra), porque é essa a
@@ -23,6 +24,24 @@
  *
  * NÃO EDITE À MÃO. Se a marca mudar, reexporte do Figma.
  */
+
+/**
+ * O viewBox do MONOGRAMA sozinho, recortado na tinta.
+ *
+ * Não é geometria nova: são os mesmos três paths de `horizontal.simbolo`, com a
+ * caixa fechada em volta deles. Sem isto, um logo só de símbolo herdaria o
+ * viewBox do lockup inteiro (449 de largura) e arrastaria 316 unidades de vazio
+ * à direita — o desenho encolheria para caber num espaço que ninguém ocupa.
+ *
+ * Os números saíram de `getBBox()` no navegador, não de conta à mão: o
+ * monograma tem curva, e estimar a caixa de uma curva a olho erra.
+ *
+ * Por que o símbolo da HORIZONTAL e não o da mini: a barra lateral troca o
+ * lockup completo pelo monograma quando recolhe, ou seja, o par que importa é
+ * `default` ↔ `symbol`. Os dois monogramas não são idênticos — a mini é 1,8%
+ * mais larga em proporção, provável ajuste óptico para o tamanho menor.
+ */
+export const VIEWBOX_SIMBOLO = '0 0 133.12 103';
 
 /** @typedef {{ viewBox: string, simbolo: string[], letreiro: string[] }} Geometria */
 

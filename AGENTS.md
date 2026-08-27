@@ -278,6 +278,8 @@ Nomes disponíveis em `components/lc-icon/library.system.js`. Nome inexistente r
 <lc-logo variant="negative"></lc-logo>           <!-- horizontal, branco -->
 <lc-logo variant="mini"></lc-logo>               <!-- empilhado, azul -->
 <lc-logo variant="mini-negative"></lc-logo>      <!-- empilhado, branco -->
+<lc-logo variant="symbol"></lc-logo>             <!-- só o monograma, azul -->
+<lc-logo variant="symbol-negative"></lc-logo>    <!-- só o monograma, branco -->
 <lc-logo style="--height: 40px"></lc-logo>       <!-- mede-se por ALTURA -->
 ```
 
@@ -289,7 +291,7 @@ O logo **nasce com nome acessível** ("BNG LinkCare"), ao contrário do `<lc-ico
 decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
 
 > É a única exceção à regra de ouro nº 6, e só porque continua sendo tag. Colar o SVG do logo à
-> mão segue proibido, e `<img src="logo.svg">` também: com arquivo são quatro downloads e quatro
+> mão segue proibido, e `<img src="logo.svg">` também: com arquivo são seis downloads e seis
 > chances de publicar o azul sobre fundo azul.
 
 ## Eventos
