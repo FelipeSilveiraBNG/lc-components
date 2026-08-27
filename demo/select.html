@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Select</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-select&gt;</code> — seleção de uma opção, sobre o
+        <code>&lt;select&gt;</code> nativo. Divide a base <code>lc-campo</code> com
+        <a class="lc-link" href="input.html">Input</a> e
+        <a class="lc-link" href="textarea.html">Textarea</a>.
+      </p>
+
+      <h2 class="doc-h2">As opções são <code>&lt;option&gt;</code></h2>
+      <p>
+        Nada de API nova para a lista: os <code>&lt;option&gt;</code> vão escritos como filhos, do
+        jeito que já se escreve HTML. O rótulo é atributo, porque o controle é dono do próprio
+        rótulo.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-select label="Unidade">
+              <option>Hospital Central</option>
+              <option>Unidade Norte</option>
+              <option>Unidade Sul</option>
+            </lc-select>
+            <lc-select label="Turno" hint="Define a escala do plantonista.">
+              <option value="m">Manhã</option>
+              <option value="t">Tarde</option>
+              <option value="n">Noite</option>
+            </lc-select>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Obrigatório e desabilitado</h2>
+      <p>
+        O erro vem da validação nativa, como nos outros campos — não existe atributo
+        <code>error</code>. Para regra de negócio, use <code>setCustomValidity()</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-select label="Convênio" required>
+              <option value="">Selecione…</option>
+              <option>Particular</option>
+              <option>SUS</option>
+            </lc-select>
+            <lc-select label="Regional" disabled>
+              <option>Centro-Oeste</option>
+            </lc-select>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Tamanho compacto</h2>
+      <p>
+        <code>size="small"</code> para a linha de filtro no cabeçalho das tabelas, onde o campo tem
+        de caber na altura da célula.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-select size="small">
+            <option>Todos</option>
+            <option>Ativo</option>
+            <option>Inativo</option>
+          </lc-select>
+          <lc-select size="small">
+            <option>Este mês</option>
+            <option>Últimos 90 dias</option>
+          </lc-select>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Por que as opções são copiadas, e não slotadas</h2>
+      <p>
+        O <code>&lt;select&gt;</code> nativo só aceita <code>&lt;option&gt;</code> e
+        <code>&lt;optgroup&gt;</code> como filhos: um <code>&lt;slot&gt;</code> lá dentro não é
+        conteúdo válido e o navegador simplesmente o descarta. Então o componente
+        <strong>lê os <code>&lt;option&gt;</code> do light DOM e os clona</strong> para dentro do
+        <code>&lt;select&gt;</code> do shadow root.
+      </p>
+      <p>
+        Os originais não aparecem duas vezes porque não há slot para eles — filho de light DOM sem
+        slot correspondente não é renderizado. Um <code>MutationObserver</code> mantém a cópia em
+        dia, então protótipo que popula a lista por script continua funcionando.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          A alternativa seria escrever um listbox próprio, como o <code>wa-select</code> faz.
+          Custa muito mais e <strong>perde o seletor nativo do celular</strong> — que num
+          protótipo de escala ou plantão é justamente o que se quer mostrar.
+        </span>
+      </lc-alert>
+    </main>
+  </body>
+</html>

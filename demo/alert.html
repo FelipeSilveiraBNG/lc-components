@@ -20,9 +20,8 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">Alert</h1>
       <p class="doc-lede">
-        <code>&lt;lc-alert&gt;</code> unifica o <code>.alert</code> e o <code>.callout</code> do
-        legado, que eram a mesma coisa com ênfase diferente. Esta página documenta também o
-        <code>&lt;lc-badge&gt;</code>, o chip de status.
+        <code>&lt;lc-alert&gt;</code> — aviso em bloco. Unifica o <code>.alert</code> e o
+        <code>.callout</code> do legado, que eram a mesma coisa com ênfase diferente.
       </p>
 
       <h2 class="doc-h2">Alertas</h2>
@@ -58,22 +57,13 @@
         </div>
       </div>
 
-      <h2 class="doc-h2">Chips de status</h2>
+      <h2 class="doc-h2">Aviso não é chip</h2>
       <p>
-        <code>&lt;lc-badge&gt;</code> é chip de status, não contador. Raio de pílula, fundo tintado e o
-        texto na cor escura da variante — nunca branco sobre a cor sólida, que não passaria contraste
-        neste tamanho.
+        Alerta ocupa a largura do contêiner e interrompe a leitura: serve para o que aconteceu
+        agora, ou para o que impede de seguir. Um estado que <em>acompanha</em> uma linha de
+        tabela ou um título é <a class="lc-link" href="badge.html">Badge</a>, e não um alerta
+        pequeno.
       </p>
-
-      <div class="doc-exemplo">
-        <template>
-          <lc-badge variant="success">Ativo</lc-badge>
-          <lc-badge variant="warning">Pendente</lc-badge>
-          <lc-badge variant="danger">Cancelado</lc-badge>
-          <lc-badge variant="brand">Em análise</lc-badge>
-          <lc-badge>Inativo</lc-badge>
-        </template>
-      </div>
     </main>
   </body>
 </html>

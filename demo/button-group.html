@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Button Group — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Button Group</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-button-group&gt;</code> — botões emendados num controle segmentado. Era a
+        classe <code>.lc-btn-group</code> até o ADR 0001. <!-- lc-permite-classe -->
+      </p>
+
+      <h2 class="doc-h2">Botões emendados</h2>
+      <p>
+        Os botões vão soltos dentro do grupo, como filhos. O grupo achata o raio das junções e
+        sobrepõe as bordas adjacentes, então a fileira lê como um controle só e não como três
+        botões vizinhos.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-button-group label="Período">
+            <lc-button>Dia</lc-button>
+            <lc-button>Semana</lc-button>
+            <lc-button>Mês</lc-button>
+          </lc-button-group>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Compõe com o que o botão já sabe</h2>
+      <p>
+        O grupo não substitui os atributos do <a class="lc-link" href="button.html">Button</a>:
+        <code>variant</code>, <code>size</code> e <code>flat</code> continuam valendo dentro dele.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-button-group label="Ações da listagem">
+            <lc-button flat size="small">Dia</lc-button>
+            <lc-button flat size="small">Semana</lc-button>
+          </lc-button-group>
+          <lc-button-group label="Decisão">
+            <lc-button variant="success">Aprovar</lc-button>
+            <lc-button variant="danger">Recusar</lc-button>
+          </lc-button-group>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">Não gerencia seleção</h2>
+      <p>
+        Não existe estado "botão ativo" aqui, e a ausência é deliberada. O grupo resolve
+        <strong>aparência</strong>: emendar a fileira. Seleção é <strong>comportamento</strong> —
+        guardar qual está escolhido, responder a teclado de grupo de rádio, emitir mudança — e
+        comportamento pede componente próprio, não um atributo pendurado neste.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          Se o protótipo precisa de um segmentado que <em>lembra</em> a escolha, o que serve hoje
+          é <a class="lc-link" href="switch.html">Switch</a> para dois estados, ou
+          <a class="lc-link" href="select.html">Select</a> para vários. Um segmentado com seleção
+          ainda não existe no kit.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Rótulo acessível</h2>
+      <p>
+        O atributo <code>label</code> vira o <code>aria-label</code> de um
+        <code>role="group"</code>. Sem ele, o leitor de tela anuncia três botões soltos e perde a
+        informação de que eles são alternativas da mesma pergunta — que é justamente o que a
+        emenda visual comunica a quem enxerga.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;lc-button-group label="Período"&gt;
+  &lt;lc-button&gt;Dia&lt;/lc-button&gt;
+  &lt;lc-button&gt;Semana&lt;/lc-button&gt;
+&lt;/lc-button-group&gt;</code></pre>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          A emenda é feita zerando as custom properties <code>--raio-inicio</code> e
+          <code>--raio-fim</code> nos filhos, não por seletor: <strong>custom property atravessa
+          o shadow boundary, seletor não</strong>. É por isso que o grupo consegue mudar o canto
+          de um botão que tem shadow root próprio.
+        </span>
+      </lc-alert>
+    </main>
+  </body>
+</html>

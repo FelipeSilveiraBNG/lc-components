@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Textarea — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Textarea</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-textarea&gt;</code> — campo de texto de várias linhas. Divide a base
+        <code>lc-campo</code> com <a class="lc-link" href="input.html">Input</a> e
+        <a class="lc-link" href="select.html">Select</a>: mesmo rótulo, mesma dica, mesmas regras
+        de erro.
+      </p>
+
+      <h2 class="doc-h2">Altura e dica</h2>
+      <p>
+        Nasce com duas linhas e meia de altura, e <code>rows</code> muda isso. O
+        <code>hint</code> é a mensagem neutra, para o que não é erro.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-textarea
+              label="Observações"
+              placeholder="Opcional"
+              hint="Aparece no relatório mensal."
+            ></lc-textarea>
+            <lc-textarea label="Justificativa da troca" rows="5"></lc-textarea>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Obrigatório, limite e desabilitado</h2>
+      <p>
+        O erro vem da validação nativa — <code>required</code>, <code>minlength</code>,
+        <code>maxlength</code> — e não de uma classe que o autor acrescenta. Não existe atributo
+        <code>error</code>; regra de negócio usa <code>setCustomValidity()</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-textarea
+              label="Motivo do cancelamento"
+              required
+              minlength="20"
+              hint="Ao menos 20 caracteres."
+            ></lc-textarea>
+            <lc-textarea label="Parecer" value="Registro encerrado." disabled></lc-textarea>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Redimensiona só na vertical</h2>
+      <p>
+        Arraste o canto de um dos campos acima: ele cresce e encolhe em altura, e não em largura.
+        É o mesmo comportamento da camada de classes, e a razão é a grade do formulário —
+        redimensionar na horizontal empurraria os campos vizinhos e quebraria o alinhamento da
+        tela inteira.
+      </p>
+
+      <h2 class="doc-h2">Tamanho compacto</h2>
+      <p>
+        <code>size="small"</code> vale aqui como nos outros dois campos, para caber na linha de
+        filtro das tabelas.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-textarea size="small" placeholder="Anotação rápida" rows="2"></lc-textarea>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

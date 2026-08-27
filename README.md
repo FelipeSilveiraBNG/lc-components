@@ -158,7 +158,8 @@ demo/                     a documentação, multi-página
   index.html              início — a porta de entrada
   instalacao.html         instalação, temas e armadilhas
   docs.css + docs.js      o casco (cabeçalho, lateral, sumário, rodapé)
-  <topico>.html           uma página por tópico, só com o próprio conteúdo
+  <componente>.html       uma página por componente, nomeada pela tag sem o `lc-`
+  <topico>.html           tokens, eventos e a camada nativa
 ```
 
 O casco é montado pelo `docs.js` a partir de uma única lista de navegação, então

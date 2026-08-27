@@ -52,15 +52,24 @@ const NAV = [
   {
     grupo: 'Componentes',
     icone: 'plus',
+    /* Uma tag, uma página. Em ordem alfabética: com quinze itens, agrupar por
+       afinidade (campos juntos, avisos juntos) vira decisão de quem escreveu, e
+       quem procura "Textarea" não sabe se é "campo" ou "formulário". */
     itens: [
-      { arquivo: 'botoes.html', rotulo: 'Button' },
-      { arquivo: 'campos.html', rotulo: 'Input' },
-      { arquivo: 'avisos.html', rotulo: 'Alert' },
-      { arquivo: 'switch.html', rotulo: 'Switch' },
+      { arquivo: 'alert.html', rotulo: 'Alert' },
+      { arquivo: 'badge.html', rotulo: 'Badge' },
+      { arquivo: 'button.html', rotulo: 'Button' },
+      { arquivo: 'button-group.html', rotulo: 'Button Group' },
+      { arquivo: 'card.html', rotulo: 'Card' },
       { arquivo: 'dropdown.html', rotulo: 'Dropdown' },
-      { arquivo: 'icone.html', rotulo: 'Icon' },
-      { arquivo: 'marca.html', rotulo: 'Logo' },
+      { arquivo: 'icon.html', rotulo: 'Icon' },
+      { arquivo: 'input.html', rotulo: 'Input' },
+      { arquivo: 'logo.html', rotulo: 'Logo' },
+      { arquivo: 'menu-item.html', rotulo: 'Menu Item' },
       { arquivo: 'modal.html', rotulo: 'Modal' },
+      { arquivo: 'select.html', rotulo: 'Select' },
+      { arquivo: 'switch.html', rotulo: 'Switch' },
+      { arquivo: 'textarea.html', rotulo: 'Textarea' },
       { arquivo: 'toast.html', rotulo: 'Toast' },
     ],
   },

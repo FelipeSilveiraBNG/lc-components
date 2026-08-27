@@ -20,11 +20,13 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">Input</h1>
       <p class="doc-lede">
-        <code>&lt;lc-input&gt;</code> é dono do próprio rótulo. Input, select e textarea
-        compartilham a mesma altura e o mesmo raio.
+        <code>&lt;lc-input&gt;</code> — campo de texto de uma linha, e dono do próprio rótulo.
+        Divide a base <code>lc-campo</code> com <a class="lc-link" href="select.html">Select</a> e
+        <a class="lc-link" href="textarea.html">Textarea</a>: mesma altura, mesmo raio, mesmas
+        regras de erro.
       </p>
 
-      <h2 class="doc-h2">Campo, seleção e erro</h2>
+      <h2 class="doc-h2">Rótulo e erro</h2>
       <p>
         O erro vem da validação nativa — <code>required</code>, <code>type</code>, <code>pattern</code> — e não de uma classe que o autor acrescenta. O
         rótulo é <code>&lt;label&gt;</code> de verdade, com <code>for</code> — sem isso o clique no
@@ -35,30 +37,26 @@
         <div class="doc-preview doc-preview--bloco">
           <template>
             <lc-input label="Nome do paciente" placeholder="Digite o nome"></lc-input>
-            <lc-select label="Unidade">
-              <option>Hospital Central</option>
-              <option>Unidade Norte</option>
-            </lc-select>
+            <lc-input label="E-mail" type="email" placeholder="nome@dominio.com"></lc-input>
             <lc-input label="CPF" value="123" required id="cpf-demo"></lc-input>
           </template>
         </div>
       </div>
 
-      <h2 class="doc-h2">Dica e texto longo</h2>
+      <h2 class="doc-h2">Dica e desabilitado</h2>
       <p>
-        O atributo <code>hint</code> é a mensagem neutra, para o que não é erro.
-        <code>&lt;lc-textarea&gt;</code> nasce com duas linhas e meia de altura e só redimensiona na
-        vertical.
+        O atributo <code>hint</code> é a mensagem neutra, para o que não é erro — some quando uma
+        mensagem de validação toma o lugar dela.
       </p>
 
       <div class="doc-exemplo">
         <div class="doc-preview doc-preview--bloco">
           <template>
-            <lc-textarea
-              label="Observações"
+            <lc-input
+              label="Cartão do SUS"
               placeholder="Opcional"
               hint="Aparece no relatório mensal."
-            ></lc-textarea>
+            ></lc-input>
             <lc-input label="Convênio" value="Não editável" disabled></lc-input>
           </template>
         </div>
@@ -66,20 +64,17 @@
 
       <h2 class="doc-h2">Tamanho compacto</h2>
       <p>
-        <code>size="small"</code> existe por causa de uma tela real: a linha de filtro no cabeçalho
-        das tabelas do painel, onde o campo tem de caber na altura da célula. Vale para os três —
-        <code>lc-input</code>, <code>lc-select</code> e <code>lc-textarea</code>.
+        <code>size="small"</code> existe por causa de uma tela real: a linha de filtro no
+        cabeçalho das tabelas do painel, onde o campo tem de caber na altura da célula. Vale para
+        os três campos — <code>lc-input</code>, <code>lc-select</code> e
+        <code>lc-textarea</code>.
       </p>
 
       <div class="doc-exemplo">
         <template>
           <lc-input size="small" placeholder="Nome completo"></lc-input>
           <lc-input size="small" placeholder="CPF"></lc-input>
-          <lc-select size="small">
-            <option>Todos</option>
-            <option>Ativo</option>
-            <option>Inativo</option>
-          </lc-select>
+          <lc-input size="small" type="date"></lc-input>
         </template>
       </div>
     </main>

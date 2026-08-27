@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Menu Item — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Menu Item</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-menu-item&gt;</code> — item de menu do
+        <a class="lc-link" href="dropdown.html">Dropdown</a>. Não se usa sozinho: é filho de um
+        <code>&lt;lc-dropdown&gt;</code>, como <code>&lt;option&gt;</code> é de
+        <code>&lt;select&gt;</code>.
+      </p>
+
+      <h2 class="doc-h2">Ênfase, ícone e desabilitado</h2>
+      <p>
+        <code>variant="danger"</code> tinge o item destrutivo. <code>disabled</code> o tira da
+        navegação por teclado. Um <a class="lc-link" href="icon.html">Icon</a> antes do rótulo é
+        só conteúdo — o item não tem slot próprio para ele.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-dropdown>
+            <lc-button slot="trigger">
+              Ações <lc-icon name="chevron-down"></lc-icon>
+            </lc-button>
+            <lc-menu-item value="editar">
+              <lc-icon name="pencil"></lc-icon> Editar
+            </lc-menu-item>
+            <lc-menu-item value="duplicar">
+              <lc-icon name="plus"></lc-icon> Duplicar
+            </lc-menu-item>
+            <lc-menu-item value="arquivar" disabled>
+              <lc-icon name="check"></lc-icon> Arquivar
+            </lc-menu-item>
+            <hr />
+            <lc-menu-item variant="danger" value="excluir">
+              <lc-icon name="trash"></lc-icon> Excluir
+            </lc-menu-item>
+          </lc-dropdown>
+        </template>
+      </div>
+
+      <h2 class="doc-h2"><code>value</code> é o que chega no evento</h2>
+      <p>
+        O dropdown emite <code>lc-select</code> com <code>{ value, item }</code>, e o
+        <code>value</code> vem daqui. É o identificador estável do item — não dependa do texto do
+        rótulo, que muda quando alguém reescreve a interface.
+      </p>
+
+      <pre class="doc-codigo"><code>document.addEventListener('lc-select', (e) =&gt; {
+  console.log(e.detail.value); // 'editar', 'duplicar', 'excluir'
+});</code></pre>
+
+      <h2 class="doc-h2">Era a última classe de que um componente dependia</h2>
+      <p>
+        Antes do ADR 0001, o <code>lc-dropdown</code> procurava por <code>.lc-menu-item</code> <!-- lc-permite-classe -->
+        para achar o primeiro item e para descobrir qual foi acionado, e o CSS dele estilizava
+        <code>::slotted(.lc-menu-item)</code>. Um componente dependia de uma classe que o autor da <!-- lc-permite-classe -->
+        tela tinha de acertar de memória.
+      </p>
+
+      <lc-alert variant="success">
+        <lc-icon slot="icon" name="success"></lc-icon>
+        <span>
+          Com a tag, o dropdown procura por <strong><code>lc-menu-item</code></strong>. Um erro de
+          digitação vira uma tag que não sobe — visível na hora — em vez de um item que existe na
+          tela mas não responde ao clique.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Separador é <code>&lt;hr&gt;</code></h2>
+      <p>
+        Para dividir grupos dentro do menu, um <code>&lt;hr&gt;</code> nativo entre os itens — não
+        há componente de separador, e não precisa haver.
+      </p>
+    </main>
+  </body>
+</html>

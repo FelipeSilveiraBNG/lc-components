@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Card — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Card</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-card&gt;</code> — contêiner de conteúdo com barra de acento no topo. Unifica o
+        <code>.box</code> do AdminLTE e o <code>.portlet</code> do Metronic, que eram redundantes.
+      </p>
+
+      <h2 class="doc-h2">Corpo, cabeçalho e rodapé</h2>
+      <p>
+        O conteúdo vai no slot padrão. Cabeçalho e rodapé são
+        <code>slot="header"</code> e <code>slot="footer"</code>.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-card variant="brand">
+              <span slot="header">Dados do paciente</span>
+              <lc-input label="Nome do paciente" placeholder="Digite o nome"></lc-input>
+              <div slot="footer">
+                <lc-button variant="brand">Salvar</lc-button>
+                <lc-button appearance="plain">Cancelar</lc-button>
+              </div>
+            </lc-card>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">A barra de acento diz o papel</h2>
+      <p>
+        <code>variant</code> tinge só a barra do topo — é o que o <code>.box</code> do legado usava
+        para dizer "este card é de aviso". A largura dela é token, porque os dois temas dão peso
+        diferente à faixa.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-card>
+              <span slot="header">Neutro</span>
+              Sem variante, a barra segue a borda comum.
+            </lc-card>
+            <lc-card variant="success">
+              <span slot="header">Escala publicada</span>
+              A escala de novembro já está disponível para os plantonistas.
+            </lc-card>
+            <lc-card variant="danger">
+              <span slot="header">Pendência</span>
+              Três plantões deste mês estão sem cobertura.
+            </lc-card>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Cabeçalho e rodapé somem sozinhos</h2>
+      <p>
+        Um card sem <code>slot="header"</code> não tem faixa vazia com borda: o cabeçalho
+        simplesmente não aparece. O mesmo vale para o rodapé.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <lc-card>
+              Só corpo. Nenhuma faixa vazia em cima nem embaixo.
+            </lc-card>
+          </template>
+        </div>
+      </div>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>Não escreva div vazia para "manter a estrutura".</strong> Na camada de classes
+          isso dependia de o autor <em>não</em> escrever a <code>div</code> — e escrever era o
+          caminho de menor resistência, então card com faixa vazia era o defeito mais comum.
+          Aqui não há como errar: o slot vazio esconde a faixa.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Conteúdo que chega depois também conta</h2>
+      <p>
+        A faixa aparece por <code>slotchange</code>, não só na primeira renderização — então
+        protótipo que preenche o rodapé por script continua funcionando sem nada a mais.
+      </p>
+
+      <pre class="doc-codigo"><code>const card = document.querySelector('lc-card');
+const acoes = document.createElement('div');
+acoes.slot = 'footer';
+acoes.innerHTML = '&lt;lc-button variant="brand"&gt;Aprovar&lt;/lc-button&gt;';
+card.append(acoes); // o rodapé aparece agora</code></pre>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          O CSS lê um custom state (<code>:state(has-header)</code>), e não
+          <code>:has()</code>. Medido: <code>:host(:has(…))</code> é
+          <strong>inválido</strong> no Chromium e o navegador descarta a regra inteira em
+          silêncio, sem erro no console. <code>:has()</code> solto funciona; dentro de
+          <code>:host()</code>, não.
+        </span>
+      </lc-alert>
+    </main>
+  </body>
+</html>

@@ -20,7 +20,7 @@
     <main class="doc-conteudo">
       <h1 class="lc-h1">Button</h1>
       <p class="doc-lede">
-        <code>&lt;lc-button&gt;</code>, cinco variantes e um grupo. Era a classe <code>.lc-btn</code> <!-- lc-permite-classe -->
+        <code>&lt;lc-button&gt;</code>, em cinco variantes. Era a classe <code>.lc-btn</code> <!-- lc-permite-classe -->
         até o ADR 0001 — o nome antigo fica citado aqui para quem está migrando reconhecer.
       </p>
 
@@ -68,10 +68,7 @@
         <template>
           <lc-button flat variant="brand" size="small">Adicionar</lc-button>
           <lc-button flat size="small">Download</lc-button>
-          <lc-button-group>
-            <lc-button flat>Dia</lc-button>
-            <lc-button flat>Semana</lc-button>
-          </lc-button-group>
+          <lc-button flat variant="danger" size="small">Remover</lc-button>
         </template>
       </div>
 
@@ -79,22 +76,29 @@
         <code>flat</code> zera o canto — é o <code>btn-flat</code> do painel, usado em toda barra de
         ferramentas de listagem. É booleano, e não um valor de <code>appearance</code>, porque as
         duas coisas são independentes: <code>appearance</code> decide tinta e borda,
-        <code>flat</code> decide canto. Compõe com <code>lc-button-group</code> sem briga.
+        <code>flat</code> decide canto. Compõe com
+        <a class="lc-link" href="button-group.html">Button Group</a> sem briga.
       </p>
 
-      <h2 class="doc-h2">Largura total e grupo</h2>
+      <h2 class="doc-h2">Largura total</h2>
+      <p>
+        <code>block</code> faz o botão ocupar a linha inteira — o padrão de rodapé de formulário
+        no telefone.
+      </p>
+
       <div class="doc-exemplo">
         <div class="doc-preview doc-preview--bloco">
           <template>
             <lc-button variant="brand" block>Largura total</lc-button>
-            <lc-button-group>
-              <lc-button>Dia</lc-button>
-              <lc-button>Semana</lc-button>
-              <lc-button>Mês</lc-button>
-            </lc-button-group>
+            <lc-button block>Cancelar</lc-button>
           </template>
         </div>
       </div>
+
+      <p>
+        Vários botões emendados num controle segmentado são
+        <a class="lc-link" href="button-group.html">Button Group</a>.
+      </p>
     </main>
   </body>
 </html>

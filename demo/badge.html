@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Badge — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Badge</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-badge&gt;</code> — chip de status. Era a classe <code>.lc-badge</code> <!-- lc-permite-classe -->
+        até o ADR 0001.
+      </p>
+
+      <h2 class="doc-h2">Chips de status</h2>
+      <p>
+        Raio de pílula, fundo tintado e o texto na cor escura da variante — nunca branco sobre a
+        cor sólida, que não passaria contraste neste tamanho.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-badge variant="success">Ativo</lc-badge>
+          <lc-badge variant="warning">Pendente</lc-badge>
+          <lc-badge variant="danger">Cancelado</lc-badge>
+          <lc-badge variant="brand">Em análise</lc-badge>
+          <lc-badge>Inativo</lc-badge>
+        </template>
+      </div>
+
+      <h2 class="doc-h2">É status, não contador</h2>
+      <p>
+        <code>&lt;lc-badge variant="warning"&gt;Pendente&lt;/lc-badge&gt;</code> é o uso certo. Um
+        número sobre um ícone de sino <strong>não</strong> é este componente.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          A distinção precisa estar escrita porque o legado não a fazia: usava
+          <code>.label-*</code> do Bootstrap para as duas coisas. Herdar isso traria um chip que
+          ora rotula, ora conta — e cujo tamanho, cor e posição nunca servem bem aos dois papéis.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Onde ele costuma aparecer</h2>
+      <p>
+        O lugar natural do chip é ao lado de um dado, não sozinho: a última coluna de uma
+        listagem, ou o título de um <a class="lc-link" href="card.html">Card</a>. É o que o
+        distingue de um <a class="lc-link" href="alert.html">Alert</a>, que interrompe a leitura
+        e ocupa a linha inteira.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <table class="lc-table lc-table--striped">
+              <thead>
+                <tr>
+                  <th>Plantonista</th>
+                  <th>Unidade</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ana Ribeiro</td>
+                  <td>Hospital Central</td>
+                  <td><lc-badge variant="success">Ativo</lc-badge></td>
+                </tr>
+                <tr>
+                  <td>Carlos Menezes</td>
+                  <td>Unidade Norte</td>
+                  <td><lc-badge variant="warning">Pendente</lc-badge></td>
+                </tr>
+                <tr>
+                  <td>Marina Alves</td>
+                  <td>Unidade Sul</td>
+                  <td><lc-badge variant="danger">Cancelado</lc-badge></td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
