@@ -44,6 +44,52 @@
         </template>
       </div>
 
+      <h2 class="doc-h2">Ação e categoria</h2>
+      <p>
+        Os ícones acima são de <strong>ação</strong> — o que um botão faz. Os de baixo nomeiam
+        uma <strong>área do produto</strong>, e existem porque uma barra lateral precisa deles.
+      </p>
+
+      <div class="doc-exemplo">
+        <template>
+          <lc-icon name="house" label="Início"></lc-icon>
+          <lc-icon name="settings" label="Sistema"></lc-icon>
+          <lc-icon name="copy" label="Templates"></lc-icon>
+          <lc-icon name="id-card" label="Cadastros"></lc-icon>
+          <lc-icon name="video" label="Telessaúde"></lc-icon>
+          <lc-icon name="heart-pulse" label="Laudos"></lc-icon>
+          <lc-icon name="briefcase-medical" label="Medicamento"></lc-icon>
+          <lc-icon name="image" label="Mídia"></lc-icon>
+          <lc-icon name="newspaper" label="Publicações"></lc-icon>
+          <lc-icon name="chart-column" label="Relatórios"></lc-icon>
+          <lc-icon name="ambulance" label="PS Digital"></lc-icon>
+          <lc-icon name="clipboard" label="Clínica"></lc-icon>
+          <lc-icon name="monitor" label="Consultório"></lc-icon>
+          <lc-icon name="banknote" label="Financeiro"></lc-icon>
+          <lc-icon name="stethoscope" label="Profissional"></lc-icon>
+          <lc-icon name="gauge" label="Observabilidade"></lc-icon>
+        </template>
+      </div>
+
+      <p>
+        Cada um foi levantado no menu do painel de homologação e traduzido do Font Awesome 4 para
+        o equivalente Lucide. Duas traduções não são literais, e estão justificadas no cabeçalho
+        de <code>library.system.js</code> — a que mais muda é <code>fa-user-md</code>, uma pessoa
+        com estetoscópio, que virou o <code>stethoscope</code> sozinho: em 16&nbsp;px a figura
+        humana vira mancha e o objeto continua legível.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          <strong>O nome é o nome do Lucide</strong>, sem tradução — quem achar um ícone em
+          <code>lucide.dev</code> pode escrever o nome que viu lá. As únicas exceções são
+          <code>info</code>, <code>warning</code>, <code>danger</code> e <code>success</code>,
+          que nomeiam o <em>papel</em> em vez do desenho, porque é o papel que o
+          <a class="lc-link" href="alert.html">Alert</a> pede.
+        </span>
+      </lc-alert>
+
       <h2 class="doc-h2">Biblioteca do Font Awesome 4</h2>
       <p>
         <code>library="fa4"</code> aceita os nomes do Font Awesome 4 usados no legado, para portar
