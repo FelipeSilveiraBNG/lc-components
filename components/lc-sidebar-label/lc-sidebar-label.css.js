@@ -3,6 +3,10 @@ export default /* css */ `
   :host { display: block; }
   :host([hidden]) { display: none; }
 
+  /* No trilho o rótulo some. "MENU" em 56px de largura vira duas letras e meia,
+     e o que sobra não é rótulo de coisa nenhuma. O painel faz o mesmo. */
+  :host([data-rail]) { display: none; }
+
   .base {
     padding: var(--lc-space-s) var(--lc-space-m) var(--lc-space-xs);
     color: var(--lc-color-shell-text-quiet);

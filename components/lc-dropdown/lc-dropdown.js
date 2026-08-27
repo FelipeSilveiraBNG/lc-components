@@ -1,6 +1,7 @@
 import { define } from '../define.js';
 import { LC_AFTER_HIDE, LC_AFTER_SHOW, LC_HIDE, LC_SELECT, LC_SHOW } from '../events.js';
 import { LcElement } from '../lc-element.js';
+import { posicionar } from '../posicionar.js';
 import styles from './lc-dropdown.css.js';
 
 /**
@@ -122,26 +123,17 @@ export class LcDropdown extends LcElement {
    * Posiciona o painel em coordenadas de viewport. Vira para cima quando não há
    * espaço embaixo, e é grudado na borda quando estouraria na horizontal — que é
    * o caso da "última linha da tabela" do doc 05 §3.7.
+   *
+   * O cálculo saiu daqui para `posicionar.js` quando o `lc-sidebar-group`
+   * precisou do mesmo comportamento abrindo à direita. O comportamento deste
+   * componente não mudou: as regras de virar e de grudar são as mesmas linhas,
+   * agora num lugar só.
    */
   #position() {
-    const anchor = this.$('.base').getBoundingClientRect();
-    const panel = this.#panel;
-
-    // Mede sem mostrar salto: o painel já está no top layer quando isto roda.
-    const { width, height } = panel.getBoundingClientRect();
-    const gap = this.distance;
-    const [side, align] = this.placement.split('-');
-
-    let top = side === 'top' ? anchor.top - height - gap : anchor.bottom + gap;
-    if (side !== 'top' && top + height > innerHeight - 8 && anchor.top - height - gap > 8) {
-      top = anchor.top - height - gap; // não cabe embaixo → vira para cima
-    }
-
-    let left = align === 'end' ? anchor.right - width : anchor.left;
-    left = Math.max(8, Math.min(left, innerWidth - width - 8));
-
-    panel.style.top = `${Math.max(8, top)}px`;
-    panel.style.left = `${left}px`;
+    posicionar(this.#panel, this.$('.base').getBoundingClientRect(), {
+      placement: this.placement,
+      distance: this.distance,
+    });
   }
 }
 

@@ -94,5 +94,68 @@ export default /* css */ `
     width: var(--lc-border-width);
     background: var(--lc-color-shell-border);
   }
+
+  .submenu-rotulo { display: none; }
+
+  /* ── No trilho ───────────────────────────────────────────────────────────
+     Sobra o ícone no gatilho, e o submenu vira painel flutuante. */
+  :host([data-rail]) .gatilho {
+    justify-content: center;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  :host([data-rail]) .rotulo,
+  :host([data-rail]) .seta {
+    display: none;
+  }
+
+  /* ── O flyout ────────────────────────────────────────────────────────────
+     O MESMO elemento do submenu inline, agora no top layer. \`popover\` traz
+     \`position: fixed\` e \`inset: 0\` por padrão do UA; zeramos o inset para
+     que o \`top\`/\`left\` calculados em posicionar.js sejam os que valem. */
+  :host([data-rail]) .submenu[popover] {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    padding: var(--lc-space-2xs) 0;
+    border: var(--lc-border-width) solid var(--lc-color-shell-border);
+    border-radius: var(--lc-radius-panel);
+    /* Medidos no painel: \`min-width: 236px\`, \`max-width: 290px\`,
+       \`max-height: 330px\`. Um grupo de dezenove itens rola dentro do painel
+       em vez de esticar até fora da tela. */
+    min-inline-size: 236px;
+    max-inline-size: 290px;
+    max-block-size: 330px;
+    overflow-y: auto;
+    /* Fundo da BARRA, não do hover. O painel usa #20292e, a dois passos do
+       #222d32 daqui — mas a razão de escolher este não é a semelhança: se o
+       flyout usasse \`fill-raised\`, o hover do item usaria a mesma cor e
+       simplesmente não existiria. */
+    background: var(--lc-color-shell-fill);
+    box-shadow: var(--lc-shadow-panel);
+    overscroll-behavior: contain;
+  }
+
+  /* No flyout não há régua a que alinhar, então o recuo de submenu sai: os
+     itens voltam ao respiro normal de uma linha de menu. */
+  :host([data-rail]) .submenu[popover] ::slotted(lc-sidebar-item) {
+    --recuo-submenu: var(--lc-space-m);
+  }
+
+  /* A régua não faz sentido no flyout: ali não há um gatilho acima a que
+     amarrar os itens — o cabeçalho já diz de onde eles vieram. */
+  :host([data-rail]) .submenu[popover]::before { content: none; }
+
+  :host([data-rail]) .submenu-rotulo {
+    display: block;
+    padding: var(--lc-space-xs) var(--lc-space-m);
+    color: var(--lc-color-shell-text-strong);
+    font-family: var(--lc-font-family);
+    font-size: var(--lc-font-size-s);
+    font-weight: var(--lc-font-weight-semibold);
+  }
+
+  :host([data-rail]) .submenu-rotulo[hidden] { display: none; }
 }
 `;

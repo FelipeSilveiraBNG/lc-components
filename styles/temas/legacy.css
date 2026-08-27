@@ -109,6 +109,15 @@
   --lc-color-shell-border: var(--lc-_ad-nav-guia);
   --lc-color-shell-accent: var(--lc-_ad-azul);
 
+  /* A alça de recolher: turquesa da marca, IGUAL nos dois temas. Não é descuido
+     de paridade — é a decisão de reproduzir o painel, que já usa a cor da marca
+     na alça mesmo no tema do AdminLTE. Se um dia um tema quiser outra, o token
+     está aqui para isso. */
+  --lc-color-shell-handle: var(--lc-_brand-turquoise);
+  --lc-color-shell-handle-hover: var(--lc-_brand-turquoise-deep);
+  --lc-color-shell-handle-icon: var(--lc-_brand-ink-on-turquoise);
+
+
   --lc-color-border-quiet: var(--lc-_ad-divisor);
   --lc-color-border-normal: var(--lc-_ad-cinza);
   --lc-color-border-loud: var(--lc-_ad-borda-input);

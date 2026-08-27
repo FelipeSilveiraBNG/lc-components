@@ -69,7 +69,10 @@ export default /* css */ `
   :host([data-nivel='2']) .base {
     min-height: auto;
     padding-block: var(--lc-space-xs);
-    padding-inline-start: var(--lc-space-2xl);
+    /* O recuo é custom property porque quem sabe se o item está num submenu
+       INLINE ou num FLYOUT é o grupo, não o item — e custom property atravessa
+       o shadow boundary, seletor não. Mesmo mecanismo do lc-button-group. */
+    padding-inline-start: var(--recuo-submenu, var(--lc-space-2xl));
     color: var(--lc-color-shell-text-quiet);
     font-size: var(--lc-font-size-s);
   }
@@ -77,6 +80,28 @@ export default /* css */ `
   :host([data-nivel='2']) .base:hover,
   :host([data-nivel='2'][current]) .base {
     color: var(--lc-color-shell-text-strong);
+  }
+
+  /* ── No trilho ───────────────────────────────────────────────────────────
+     Sobra o ícone, centrado. O rótulo sai da VISTA, não do DOM: é ele que dá
+     o nome acessível do link, e trocá-lo pelo \`title\` faria o leitor de tela
+     depender de um atributo que ele só usa na falta de outra coisa. */
+  :host([data-rail]) .base {
+    justify-content: center;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  :host([data-rail]) .rotulo {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 `;

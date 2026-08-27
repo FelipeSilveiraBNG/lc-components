@@ -28,9 +28,9 @@
       <lc-alert variant="warning">
         <lc-icon slot="icon" name="warning"></lc-icon>
         <span>
-          <strong>Em construção.</strong> Esta é a barra <em>expandida</em>. O trilho recolhido, o
-          submenu em flyout e a gaveta do telefone vêm nas fases seguintes — os atributos
-          <code>collapsed</code> e <code>open</code> ainda não fazem nada.
+          <strong>Em construção.</strong> Faltam a gaveta do telefone e a pele
+          <code>modern</code> afinada — o atributo <code>open</code> ainda não faz nada. O resto
+          está aqui.
         </span>
       </lc-alert>
 
@@ -46,6 +46,7 @@
             <div style="display: grid; grid-template-columns: auto 1fr; block-size: 420px">
               <lc-sidebar label="Navegação do painel">
                 <lc-logo slot="brand" style="--height: 26px"></lc-logo>
+                <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
 
                 <lc-sidebar-label>Menu</lc-sidebar-label>
                 <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
@@ -78,6 +79,91 @@
           </template>
         </div>
       </div>
+
+      <h2 class="doc-h2">O trilho</h2>
+      <p>
+        <code>collapsed</code> troca a coluna de 230&nbsp;px por um trilho de 56&nbsp;px — as duas
+        medidas do painel. Sobram os ícones; os rótulos saem da vista mas
+        <strong>não do DOM</strong>, porque é deles que vem o nome acessível de cada link. Um
+        <code>title</code> entra só no trilho, para quem está de mouse sobre um ícone sozinho.
+      </p>
+      <p>
+        Recolher fecha todos os grupos abertos: um submenu embutido dentro de 56&nbsp;px seria uma
+        coluna de itens sem rótulo nenhum. No trilho o submenu só existe como flyout.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 300px">
+              <lc-sidebar label="Trilho" collapsed>
+                <lc-logo slot="brand" style="--height: 26px"></lc-logo>
+                <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
+                <lc-sidebar-item href="#a" icon="house" current>Home</lc-sidebar-item>
+                <lc-sidebar-group label="Sistema" icon="settings">
+                  <lc-sidebar-item href="#b">Configurações</lc-sidebar-item>
+                  <lc-sidebar-item href="#c">Usuário</lc-sidebar-item>
+                </lc-sidebar-group>
+                <lc-sidebar-group label="Relatórios" icon="chart-column">
+                  <lc-sidebar-item href="#d">Pacientes</lc-sidebar-item>
+                </lc-sidebar-group>
+              </lc-sidebar>
+              <div style="padding: var(--lc-space-l); background: var(--lc-color-surface-page)">
+                <p class="lc-quiet">Passe o mouse num ícone de grupo, ou clique na alça turquesa.</p>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">A troca da marca é por slot</h2>
+      <p>
+        São <strong>dois slots</strong>: <code>brand</code> e <code>brand-collapsed</code>. A barra
+        não alcança o <a class="lc-link" href="logo.html">Logo</a> de ninguém para trocar a
+        variante dele — o consumidor põe as duas peças e o CSS mostra uma de cada vez.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
+&lt;lc-logo slot="brand-collapsed" variant="symbol"&gt;&lt;/lc-logo&gt;</code></pre>
+
+      <p>
+        Quem não puser a segunda fica com a faixa vazia no trilho. É visível, e preferível a um
+        lockup de 449 unidades espremido em 56&nbsp;px.
+      </p>
+
+      <h2 class="doc-h2">O flyout</h2>
+      <p>
+        No trilho, o mesmo submenu sai do fluxo e abre à direita do ícone, no
+        <strong>top layer</strong> nativo. É o mesmo elemento e os mesmos itens — o que muda é o
+        <code>popover</code>. Abre no hover com mouse, e no clique sempre: em toque não existe
+        hover, e o teclado precisa de um gatilho de verdade.
+      </p>
+
+      <lc-alert variant="success">
+        <lc-icon slot="icon" name="success"></lc-icon>
+        <span>
+          Top layer, e não <code>position: fixed</code>: a lista da barra rola com
+          <code>overflow-y: auto</code>, e qualquer painel dentro dela seria recortado na primeira
+          linha que passasse da borda. O cálculo de posição é <strong>o mesmo código</strong> do
+          <a class="lc-link" href="dropdown.html">Dropdown</a> — saiu de lá para um módulo que os
+          dois usam.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">Recolher não é guardado</h2>
+      <p>
+        A barra emite <code>lc-collapse</code> com <code>detail.collapsed</code> e não grava nada.
+        Quem quiser que a escolha sobreviva à troca de tela escuta e guarda onde achar melhor.
+      </p>
+
+      <pre class="doc-codigo"><code>sidebar.addEventListener('lc-collapse', (e) =&gt; {
+  localStorage.setItem('menu-recolhido', e.detail.collapsed);
+});</code></pre>
+
+      <p>
+        Um kit de protótipo que escrevesse sozinho em <code>localStorage</code> surpreenderia quem
+        monta duas telas lado a lado — a segunda abriria com o estado da primeira.
+      </p>
 
       <h2 class="doc-h2">A barra é só a coluna</h2>
       <p>

@@ -55,6 +55,17 @@ export class LcSidebarItem extends LcElement {
     current: 'sync',
   };
 
+  /* `data-rail` é posto pelo lc-sidebar, e atributo `data-*` não entra em
+     `static properties` — então o observador é declarado aqui. */
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'data-rail'];
+  }
+
+  attributeChangedCallback(attr, antes, depois) {
+    super.attributeChangedCallback(attr, antes, depois);
+    if (attr === 'data-rail') this.sync();
+  }
+
   ready() {
     this.sync();
   }
@@ -77,6 +88,16 @@ export class LcSidebarItem extends LcElement {
        verdade. */
     if (this.current) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
+
+    /* No trilho o rótulo some da vista, e o `title` é o que resta para quem
+       está com o mouse em cima de um ícone sozinho. Só no trilho: expandida, o
+       rótulo já está na tela e a dica seria ruído.
+
+       O texto NÃO sai do DOM — fica escondido por recorte. Assim o nome
+       acessível do link continua vindo dele, e o leitor de tela não passa a
+       depender do `title`, que ele usaria só na falta de outra coisa. */
+    if (this.dataset.rail !== undefined) a.title = this.textContent.trim();
+    else a.removeAttribute('title');
   }
 }
 

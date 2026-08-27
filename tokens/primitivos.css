@@ -148,6 +148,17 @@
      que ela é desenhada — o submenu usa aquele fundo. Errar a referência foi o
      que deixou a régua do painel invisível, e a primeira versão desta aqui
      repetia o erro: #04195c sobre #031c6b dava 1,06:1. */
+  /* A ALÇA DE RECOLHER da barra lateral. Medidos no `bng-sidebar.css`, onde são
+     `--bng-alca-fundo`, `--bng-alca-fundo-hover` e `--bng-alca-icone`.
+
+     Ficam no bloco da MARCA, e não no do legado, porque o turquesa é a cor da
+     marca — e a alça do painel já é turquesa hoje, dentro de um tema que
+     reproduz o AdminLTE. Vale nos dois temas: é o segundo lugar onde uma cor de
+     marca atravessa a troca de tema, depois do lc-logo. */
+  --lc-_brand-turquoise-deep: #2ec6ab; /* o turquesa em hover, medido no painel */
+  --lc-_brand-ink-on-turquoise: #0f2f3a; /* o ícone dentro da alça, medido.
+                                            13,26:1 sobre o turquesa */
+
   --lc-_brand-navy-guia: #425590;  /* (derivado) navy-hover + 25% de branco — 2,12:1
                                       sobre o submenu, que é o que faz uma linha de
                                       1px existir num fundo escuro */

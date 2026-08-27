@@ -38,6 +38,16 @@ export const LC_AFTER_HIDE = 'lc-after-hide';
 export const LC_SELECT = 'lc-select';
 
 /**
+ * A barra lateral recolheu ou expandiu. `detail.collapsed` diz qual dos dois.
+ *
+ * Existe porque o componente NÃO GUARDA esse estado: quem quiser que a escolha
+ * sobreviva à troca de tela escuta isto e grava onde achar melhor. Um kit de
+ * protótipo que escrevesse sozinho em `localStorage` surpreenderia quem monta
+ * duas telas lado a lado.
+ */
+export const LC_COLLAPSE = 'lc-collapse';
+
+/**
  * Controle foi verificado e não satisfaz as restrições.
  *
  * Existe porque o ADR 0001 decidiu que erro de campo é ESTADO DE VALIDADE, não
