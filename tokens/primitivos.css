@@ -53,7 +53,12 @@
                                         o mínimo AA de 4,5:1 por 0,07. Reproduzido de
                                         propósito, como o resto do `legacy`. Não copie
                                         este par para o `modern`. */
-  --lc-_ad-nav-guia: #2f3d44;        /* --bng-guia, a régua vertical do submenu */
+  --lc-_ad-nav-guia: #2f3d44;        /* --bng-guia, a régua vertical do submenu.
+                                        HERDADO: a régua fica SOBRE o submenu, que é
+                                        #2c3b41 — dá 1,03:1, ou seja, ela não aparece.
+                                        Não é erro de leitura nossa; é assim no ar.
+                                        Reproduzido como o resto do `legacy`, e o
+                                        `modern` corrige (ver --lc-_brand-navy-guia). */
 
   /* ------------------------------------------------------------------------
      MODERNO — medido nos apps React (paleta default do Tailwind, que virou a
@@ -139,7 +144,13 @@
      branco dessaturaria o navy e o resultado pareceria cinza-azulado, não marca. */
   --lc-_brand-navy-hover: #031c6b; /* (derivado) navy + 18% de brand-blue */
   --lc-_brand-navy-ativo: #030e30; /* (derivado) navy + 35% de preto */
-  --lc-_brand-navy-guia: #04195c;  /* (derivado) navy + 10% de brand-blue */
+  /* A régua é derivada do navy-HOVER, não do navy base, porque é sobre o hover
+     que ela é desenhada — o submenu usa aquele fundo. Errar a referência foi o
+     que deixou a régua do painel invisível, e a primeira versão desta aqui
+     repetia o erro: #04195c sobre #031c6b dava 1,06:1. */
+  --lc-_brand-navy-guia: #425590;  /* (derivado) navy-hover + 25% de branco — 2,12:1
+                                      sobre o submenu, que é o que faz uma linha de
+                                      1px existir num fundo escuro */
 
   /* ------------------------------------------------------------------------
      COMUNS

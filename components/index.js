@@ -41,3 +41,9 @@ import './lc-input/lc-input.js';
 import './lc-textarea/lc-textarea.js';
 import './lc-select/lc-select.js';
 import './lc-menu-item/lc-menu-item.js';
+
+/* A barra lateral e as três tags que vivem dentro dela. */
+import './lc-sidebar/lc-sidebar.js';
+import './lc-sidebar-item/lc-sidebar-item.js';
+import './lc-sidebar-group/lc-sidebar-group.js';
+import './lc-sidebar-label/lc-sidebar-label.js';

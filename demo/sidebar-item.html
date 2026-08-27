@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar Item — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Sidebar Item</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-sidebar-item&gt;</code> — uma linha que navega, dentro do
+        <a class="lc-link" href="sidebar.html">Sidebar</a>. Não se usa sozinho.
+      </p>
+
+      <h2 class="doc-h2">Primeiro nível e submenu</h2>
+      <p>
+        Solto na barra, o item leva ícone. Dentro de um
+        <a class="lc-link" href="sidebar-group.html">Sidebar Group</a>, ele nasce
+        <strong>sem ícone e com recuo</strong> — e não é preciso dizer nada: o grupo marca os
+        filhos sozinho.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 230px">
+              <lc-sidebar label="Exemplo de itens">
+                <lc-sidebar-item href="#um" icon="house" current>Primeiro nível, atual</lc-sidebar-item>
+                <lc-sidebar-item href="#dois" icon="clipboard">Primeiro nível</lc-sidebar-item>
+                <lc-sidebar-group label="Um grupo" icon="settings" open>
+                  <lc-sidebar-item href="#tres">Item de submenu</lc-sidebar-item>
+                  <lc-sidebar-item href="#quatro">Outro item</lc-sidebar-item>
+                </lc-sidebar-group>
+              </lc-sidebar>
+              <div style="background: var(--lc-color-surface-page)"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <p>
+        A hierarquia do submenu é dada pelo <strong>recuo e pela régua vertical</strong>, não por
+        um segundo ícone. É o que o painel faz, e evita uma coluna de ícones repetidos que não
+        distinguem nada.
+      </p>
+
+      <h2 class="doc-h2">É um link de verdade</h2>
+      <p>
+        O item é um <code>&lt;a href&gt;</code>, não um botão que navega por script. Middle-click
+        abre em aba nova, o navegador mostra o destino na barra de status, e o histórico funciona.
+        Uma barra de navegação que não faz isso frustra quem usa teclado e mouse do jeito que
+        sempre usou.
+      </p>
+
+      <h2 class="doc-h2">Não escreva <code>current</code></h2>
+      <p>
+        O <a class="lc-link" href="sidebar.html">Sidebar</a> casa o <code>href</code> com
+        <code>location.pathname</code> e marca sozinho. Escrever à mão só é necessário quando a
+        URL não bate com nenhum item — rota com parâmetro, por exemplo — e aí o explícito vence.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          O acento visual e o <code>aria-current="page"</code> saem do <strong>mesmo</strong>
+          atributo. Não há como o leitor de tela e o olho discordarem sobre onde você está.
+        </span>
+      </lc-alert>
+    </main>
+  </body>
+</html>

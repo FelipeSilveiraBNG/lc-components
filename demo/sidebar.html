@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Sidebar</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-sidebar&gt;</code> — a barra de navegação da aplicação. Reproduz o menu do
+        painel de homologação, e é o primeiro componente do kit que ocupa uma
+        <strong>superfície escura</strong>.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>Em construção.</strong> Esta é a barra <em>expandida</em>. O trilho recolhido, o
+          submenu em flyout e a gaveta do telefone vêm nas fases seguintes — os atributos
+          <code>collapsed</code> e <code>open</code> ainda não fazem nada.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">A barra inteira</h2>
+      <p>
+        Quatro tags: a coluna, o rótulo de seção, o item que navega e o grupo que abre submenu.
+        Clique nos grupos — abrir um fecha o outro.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 420px">
+              <lc-sidebar label="Navegação do painel">
+                <lc-logo slot="brand" style="--height: 26px"></lc-logo>
+
+                <lc-sidebar-label>Menu</lc-sidebar-label>
+                <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
+
+                <lc-sidebar-group label="Sistema" icon="settings">
+                  <lc-sidebar-item href="#configuracoes">Configurações</lc-sidebar-item>
+                  <lc-sidebar-item href="#usuario">Usuário</lc-sidebar-item>
+                  <lc-sidebar-item href="#empresas">Empresas</lc-sidebar-item>
+                </lc-sidebar-group>
+
+                <lc-sidebar-group label="Telessaúde" icon="video">
+                  <lc-sidebar-item href="#teleconsulta">Teleconsulta</lc-sidebar-item>
+                  <lc-sidebar-item href="#agenda">Agenda</lc-sidebar-item>
+                </lc-sidebar-group>
+
+                <lc-sidebar-group label="Relatórios" icon="chart-column">
+                  <lc-sidebar-item href="#pacientes">Pacientes</lc-sidebar-item>
+                  <lc-sidebar-item href="#medicos">Médicos</lc-sidebar-item>
+                </lc-sidebar-group>
+
+                <lc-sidebar-item href="#profissional" icon="stethoscope">
+                  Configuração Profissional
+                </lc-sidebar-item>
+              </lc-sidebar>
+
+              <div style="padding: var(--lc-space-l); background: var(--lc-color-surface-page)">
+                <p class="lc-quiet">O conteúdo da tela fica aqui.</p>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">A barra é só a coluna</h2>
+      <p>
+        <code>&lt;lc-sidebar&gt;</code> não é <code>fixed</code>, não empurra conteúdo e não
+        escreve nada fora de si. Quem faz o conteúdo se ajustar é o utilitário
+        <code>.lc-app</code>, e o mecanismo é a coluna <code>auto</code>: a barra muda de largura,
+        a coluna muda junto, o <code>1fr</code> recalcula.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;div class="lc-app"&gt;
+  &lt;lc-sidebar label="Navegação principal"&gt;
+    &lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
+
+    &lt;lc-sidebar-label&gt;Menu&lt;/lc-sidebar-label&gt;
+    &lt;lc-sidebar-item href="/painel" icon="house"&gt;Home&lt;/lc-sidebar-item&gt;
+
+    &lt;lc-sidebar-group label="Sistema" icon="settings"&gt;
+      &lt;lc-sidebar-item href="/painel/usuario"&gt;Usuário&lt;/lc-sidebar-item&gt;
+    &lt;/lc-sidebar-group&gt;
+  &lt;/lc-sidebar&gt;
+
+  &lt;main&gt;…&lt;/main&gt;
+&lt;/div&gt;</code></pre>
+
+      <p>
+        A alternativa seria a barra ser fixa e escrever a própria largura numa custom property no
+        <code>&lt;html&gt;</code>. Funcionaria com qualquer layout, mas poria o componente a mexer
+        fora de si — e o kit não tem nenhum componente que faça isso.
+      </p>
+
+      <h2 class="doc-h2">O item atual se descobre sozinho</h2>
+      <p>
+        A barra casa o <code>href</code> de cada item com <code>location.pathname</code> e marca
+        quem bate, abrindo o grupo dele junto. <strong>Não escreva <code>current</code> à mão</strong>
+        — é assim que uma tela abre com o menu apontando para o lugar errado.
+      </p>
+      <p>
+        Um <code>current</code> explícito vence e desliga o automático inteiro: se alguém decidiu
+        marcar, a barra não discute. Serve para rota com parâmetro, onde a URL não bate com nenhum
+        item.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          O casamento é <strong>exato</strong>, não por prefixo. Prefixo faria
+          <code>/painel</code> casar com toda tela do sistema, e o menu apontaria para "Home" em
+          qualquer lugar. Protótipo com rota por hash pode chamar
+          <code>sidebar.marcarAtual()</code> depois de trocar de tela.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">O acordeão</h2>
+      <p>
+        Abrir um grupo fecha o anterior. Vem ligado, e reproduz o painel — com dezenove itens no
+        maior grupo, é o que torna a lista navegável.
+      </p>
+
+      <pre class="doc-codigo"><code>&lt;lc-sidebar accordion="false"&gt;  &lt;!-- vários grupos abertos ao mesmo tempo --&gt;</code></pre>
+
+      <p>
+        A lógica mora no <code>lc-sidebar</code>, não no <code>lc-sidebar-group</code>: fechar os
+        irmãos é decisão da lista inteira, e seria errado cada grupo alcançar os outros para isso.
+        É a mesma divisão que o <a class="lc-link" href="dropdown.html">Dropdown</a> faz com o
+        <a class="lc-link" href="menu-item.html">Menu Item</a>.
+      </p>
+
+      <h2 class="doc-h2">Quem rola é a coluna</h2>
+      <p>
+        A lista rola sozinha; a página não acompanha. Uma barra de dezessete linhas não cabe em
+        laptop, e rolar a página inteira para achar o último item é pior do que rolar só a coluna
+        — o exemplo lá em cima está com 420&nbsp;px de altura de propósito, para mostrar isso.
+      </p>
+
+      <h2 class="doc-h2">A faixa da marca some sozinha</h2>
+      <p>
+        Sem nada no <code>slot="brand"</code>, a faixa não aparece — não há barra colorida vazia no
+        topo. Mesmo comportamento do cabeçalho do <a class="lc-link" href="card.html">Card</a>, e
+        pelo mesmo motivo: faixa vazia com cor é o defeito que ninguém nota até estar publicado.
+      </p>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 190px">
+              <lc-sidebar label="Sem marca">
+                <lc-sidebar-item href="#a" icon="clipboard">Sem faixa em cima</lc-sidebar-item>
+                <lc-sidebar-item href="#b" icon="banknote">Nem espaço vazio</lc-sidebar-item>
+              </lc-sidebar>
+              <div style="background: var(--lc-color-surface-page)"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

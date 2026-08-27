@@ -99,6 +99,29 @@
     animation: 2s step-end lc-cloak-revelar;
   }
 
+  /* ── Casco da aplicação: barra lateral + conteúdo ───────────────────────────
+     O `lc-sidebar` é uma coluna de grid e nada mais — não é `fixed`, não empurra
+     conteúdo, não escreve nada fora de si. Este utilitário é o que faz o
+     conteúdo se ajustar quando ela encolhe, e o mecanismo é a coluna `auto`: a
+     barra muda de largura, a coluna muda junto, o `1fr` recalcula.
+
+     Foi decisão de projeto e não conveniência. A alternativa — barra fixa
+     escrevendo a própria largura numa custom property no `<html>` — funcionaria
+     com qualquer layout, mas poria o componente a mexer fora de si.
+
+     `min-inline-size: 0` na segunda coluna porque item de grid nasce com
+     `min-width: auto`: sem isto, uma tabela larga no conteúdo empurra a coluna
+     e a página inteira rola na horizontal. */
+  .lc-app {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    min-block-size: 100vh;
+  }
+
+  .lc-app > :not(lc-sidebar) {
+    min-inline-size: 0;
+  }
+
   @keyframes lc-cloak-revelar {
     from {
       opacity: 0;

@@ -117,6 +117,11 @@
   --lc-color-shell-fill-sunken: var(--lc-_brand-navy-ativo);
   --lc-color-shell-text: var(--lc-_slate-300);
   --lc-color-shell-text-quiet: var(--lc-_slate-400);
+  /* O texto FORTE: hover e item atual. A fase 01 não o previu — só apareceu ao
+     escrever o CSS do item, quando ficou claro que `shell-text` sozinho não
+     distingue a linha sob o cursor da linha em repouso. Branco nos dois temas
+     (`--bng-nav-texto-forte` no painel; 17,34:1 sobre o navy no modern). */
+  --lc-color-shell-text-strong: var(--lc-_branco);
   --lc-color-shell-border: var(--lc-_brand-navy-guia);
   --lc-color-shell-accent: var(--lc-_brand-turquoise);
 
@@ -155,6 +160,12 @@
      altura de campo. 38px é o que sai de text-sm + padding vertical de 8px.
      Marcado como derivado para ninguém tratar como medição.
      ---------------------------------------------------------------------- */
+  /* Altura da linha da barra lateral, 3px acima do `legacy`. Decisão de produto,
+     tomada de olho no custo: a 48px, quinze grupos dão 720px e a coluna passa a
+     rolar em tela de 800px. Rolar é o comportamento normal dessa barra — o
+     painel já rola hoje com 45px. */
+  --lc-shell-row-height: 48px;
+
   --lc-control-height: 38px; /* (derivado) */
   --lc-control-height-sm: 32px; /* (derivado) */
   --lc-control-height-lg: 44px; /* (derivado) */

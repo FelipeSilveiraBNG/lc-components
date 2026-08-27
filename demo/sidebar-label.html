@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar Label — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <link rel="stylesheet" href="docs.css" />
+    <script>
+      document.documentElement.setAttribute(
+        'data-lc-theme',
+        localStorage.getItem('lc-tema') ?? 'legacy',
+      );
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <script type="module" src="docs.js"></script>
+  </head>
+
+  <body class="lc">
+    <main class="doc-conteudo">
+      <h1 class="lc-h1">Sidebar Label</h1>
+      <p class="doc-lede">
+        <code>&lt;lc-sidebar-label&gt;</code> — um rótulo de seção no
+        <a class="lc-link" href="sidebar.html">Sidebar</a>. Só texto, e é o menor componente do
+        kit.
+      </p>
+
+      <h2 class="doc-h2">Um rótulo na lista</h2>
+
+      <div class="doc-exemplo">
+        <div class="doc-preview doc-preview--bloco">
+          <template>
+            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 280px">
+              <lc-sidebar label="Exemplo de rótulos">
+                <lc-sidebar-label>Atendimento</lc-sidebar-label>
+                <lc-sidebar-item href="#fila" icon="clipboard">Recepção &amp; Fila</lc-sidebar-item>
+                <lc-sidebar-item href="#presencial" icon="stethoscope">Presencial</lc-sidebar-item>
+
+                <lc-sidebar-label>Administração</lc-sidebar-label>
+                <lc-sidebar-item href="#usuarios" icon="id-card">Usuários</lc-sidebar-item>
+                <lc-sidebar-item href="#relatorios" icon="chart-column">Relatórios</lc-sidebar-item>
+              </lc-sidebar>
+              <div style="background: var(--lc-color-surface-page)"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <h2 class="doc-h2">Não agrupa nada</h2>
+      <p>
+        O rótulo é solto na lista — não envolve os itens que vêm depois dele, não recolhe, não
+        guarda estado. <strong>É o "MENU" do painel</strong>, e nada além disso.
+      </p>
+      <p>
+        A ausência é o ponto. Um <code>&lt;lc-sidebar-section&gt;</code> que envolvesse os itens
+        resolveria mais, mas ninguém pediu isso ainda — e uma tag que existe por precaução é uma
+        tag que ninguém sabe quando usar. Se um protótipo precisar de seções de verdade, aí nasce
+        outra, e esta continua servindo para o caso simples.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          Para o leitor de tela isto é <code>role="presentation"</code> — decoração de lista, não
+          cabeçalho navegável. Um <code>&lt;h2&gt;</code> aqui poluiria o mapa de cabeçalhos da
+          página com a palavra "MENU", que não ajuda ninguém a se localizar.
+        </span>
+      </lc-alert>
+    </main>
+  </body>
+</html>

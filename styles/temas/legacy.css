@@ -101,6 +101,11 @@
   --lc-color-shell-fill-sunken: var(--lc-_ad-nav-ativo);
   --lc-color-shell-text: var(--lc-_ad-nav-texto);
   --lc-color-shell-text-quiet: var(--lc-_ad-nav-texto-fraco);
+  /* O texto FORTE: hover e item atual. A fase 01 não o previu — só apareceu ao
+     escrever o CSS do item, quando ficou claro que `shell-text` sozinho não
+     distingue a linha sob o cursor da linha em repouso. Branco nos dois temas
+     (`--bng-nav-texto-forte` no painel; 17,34:1 sobre o navy no modern). */
+  --lc-color-shell-text-strong: var(--lc-_branco);
   --lc-color-shell-border: var(--lc-_ad-nav-guia);
   --lc-color-shell-accent: var(--lc-_ad-azul);
 
@@ -139,6 +144,11 @@
   --lc-accent-bar-width: 3px;
 
   /* ── Densidade ──────────────────────────────────────────────────────── */
+  /* Altura da linha da barra lateral. Medida: 45px é o que o `.sidebar-menu > li
+     > a` do AdminLTE dá com 12px de padding sobre a entrelinha de 21px. Não sai
+     de `--lc-control-height`, que é de FORMULÁRIO e vale 34px aqui. */
+  --lc-shell-row-height: 45px;
+
   --lc-control-height: 34px;
   --lc-control-height-sm: 30px;
   --lc-control-height-lg: 45px;
