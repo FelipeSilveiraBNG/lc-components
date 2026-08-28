@@ -24,6 +24,9 @@ const PAGINAS = [
   'componentes-basicos.html',
   'botao.html',
   'campos.html',
+  /* A gaveta do telefone. Metade das asserções está no driver: precisa de
+     viewport estreito e de Esc de verdade. */
+  'gaveta.html',
 ];
 
 /* Import de diretório não funciona em ESM: precisa apontar para o index.js. */
@@ -124,6 +127,150 @@ for (const pagina of PAGINAS) {
         verdict: estado.modalAberto ? 'PASS' : 'FAIL',
         detail: `modalAberto=${estado.modalAberto}`,
       });
+    }
+  }
+
+  /* ── Passo dirigido: a gaveta do telefone ───────────────────────────────
+     Duas coisas que a página não consegue fazer sozinha. A primeira é ESTREITAR
+     A JANELA: `window.resizeTo` é bloqueado, e a faixa da gaveta é uma media
+     query de viewport — só o driver muda isso. A segunda é o Esc, pelo mesmo
+     motivo que já valia para o `clipping.html`: o Esc do `<dialog>` reage a
+     tecla de verdade, não a `KeyboardEvent` sintético.
+
+     A barra chega aqui RECOLHIDA de propósito: é como se prova que a faixa da
+     gaveta ignora o trilho sem apagar o `collapsed` de quem o pediu. */
+  if (pagina === 'gaveta.html') {
+    const montado = await page.evaluate('Boolean(window.__lcGaveta)');
+    if (montado) {
+      const anota = (name, ok, detail = '') =>
+        resultados.push({ name: `[driver] ${name}`, verdict: ok ? 'PASS' : 'FAIL', detail });
+
+      /* ── Entra na faixa da gaveta ─────────────────────────────────────── */
+      await page.setViewportSize({ width: 380, height: 720 });
+      await page.waitForTimeout(200);
+
+      let e = await page.evaluate(`({
+        naFaixa: window.__lcGaveta.barra.matches(':state(drawer)'),
+        noTrilho: window.__lcGaveta.barra.matches(':state(rail)'),
+        collapsed: window.__lcGaveta.barra.hasAttribute('collapsed'),
+        railNosFilhos: [...window.__lcGaveta.barra.children].some((f) => f.dataset.rail !== undefined),
+        larguraBarra: window.__lcGaveta.barra.getBoundingClientRect().width,
+        larguraConteudo: window.__lcGaveta.conteudo.getBoundingClientRect().width,
+        gatilhoEscondido: getComputedStyle(window.__lcGaveta.gatilho).display === 'none',
+        aberta: window.__lcGaveta.gaveta.open,
+      })`);
+
+      anota('abaixo de 767px a barra entra na faixa da gaveta', e.naFaixa);
+      anota('a coluna vai a ZERO — sai do fluxo', Math.round(e.larguraBarra) === 0, `${e.larguraBarra}px`);
+      anota('o conteúdo fica com a tela inteira', Math.round(e.larguraConteudo) === 380, `${e.larguraConteudo}px`);
+      anota('o trilho deixa de existir na faixa da gaveta', !e.noTrilho && !e.railNosFilhos);
+      anota('mas o collapsed de quem pediu NÃO é apagado', e.collapsed);
+      anota('o gatilho do consumidor aparece (.lc-only-drawer)', !e.gatilhoEscondido);
+      anota('entrar na faixa não abre a gaveta sozinha', !e.aberta);
+
+      /* ── Abre pelo invocador, sem uma linha de JS na página ───────────── */
+      await page.click('#gatilho');
+      await page.waitForTimeout(450);
+
+      e = await page.evaluate(`({
+        aberta: window.__lcGaveta.gaveta.open,
+        atributo: window.__lcGaveta.barra.hasAttribute('open'),
+        caixa: window.__lcGaveta.gaveta.getBoundingClientRect().toJSON(),
+        fimDoTopo: document.querySelector('.topo').getBoundingClientRect().bottom,
+        veuComeca: getComputedStyle(window.__lcGaveta.gaveta, '::backdrop').insetBlockStart,
+        eventos: window.__lcGaveta.eventos.slice(),
+      })`);
+
+      anota('data-lc-sidebar="toggle" abre a gaveta', e.aberta && e.atributo);
+      anota(
+        'a gaveta é encostada à esquerda e mede os 230px do painel',
+        Math.round(e.caixa.width) === 230 && Math.round(e.caixa.left) === 0,
+        JSON.stringify(e.caixa),
+      );
+      /* O --drawer-top da tela sai de `--lc-shell-row-height`, o MESMO token que
+         dá a altura do cabeçalho. Se as duas linhas não coincidirem, ou o token
+         não chegou à gaveta ou o `inset` não é o que se pensava. */
+      anota(
+        'a gaveta começa exatamente onde o cabeçalho termina',
+        Math.round(e.caixa.top) === Math.round(e.fimDoTopo) &&
+          Math.round(e.caixa.bottom) === 720,
+        `gaveta ${e.caixa.top}–${e.caixa.bottom} · cabeçalho termina em ${e.fimDoTopo}`,
+      );
+      anota(
+        'o véu começa na mesma linha — o ::backdrop herda o --drawer-top',
+        parseFloat(e.veuComeca) === Math.round(e.fimDoTopo),
+        `véu em ${e.veuComeca} · cabeçalho termina em ${e.fimDoTopo}`,
+      );
+      anota(
+        'emitiu lc-show e lc-after-show',
+        e.eventos.some((x) => x[0] === 'lc-show') && e.eventos.some((x) => x[0] === 'lc-after-show'),
+        JSON.stringify(e.eventos),
+      );
+
+      /* ── Foco preso: o showModal nativo tem de bastar ─────────────────── */
+      for (let i = 0; i < 12; i++) await page.keyboard.press('Tab');
+      const foco = await page.evaluate(`({
+        dentro: Boolean(document.activeElement?.closest?.('lc-sidebar')),
+        onde: document.activeElement?.localName ?? '(nenhum)',
+      })`);
+      anota('o foco não escapa da gaveta em 12 Tabs', foco.dentro, `parou em <${foco.onde}>`);
+
+      /* ── Esc, com tecla de verdade ───────────────────────────────────── */
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(450);
+      e = await page.evaluate(`({
+        aberta: window.__lcGaveta.gaveta.open,
+        atributo: window.__lcGaveta.barra.hasAttribute('open'),
+        eventos: window.__lcGaveta.eventos.slice(),
+      })`);
+      anota('Esc fecha a gaveta e apaga o atributo', !e.aberta && !e.atributo);
+      anota(
+        'o lc-hide do Esc diz de onde veio',
+        e.eventos.some((x) => x[0] === 'lc-hide' && x[1] === 'escape'),
+        JSON.stringify(e.eventos.filter((x) => x[0] === 'lc-hide')),
+      );
+
+      /* ── Clique no véu ───────────────────────────────────────────────── */
+      await page.evaluate('window.__lcGaveta.barra.open = true');
+      await page.waitForTimeout(450);
+      /* x = 360 numa tela de 380: fora da gaveta de 230, em cima do véu. */
+      await page.mouse.click(360, 400);
+      await page.waitForTimeout(450);
+      e = await page.evaluate(`({
+        aberta: window.__lcGaveta.gaveta.open,
+        eventos: window.__lcGaveta.eventos.slice(),
+      })`);
+      anota('clique no véu fecha a gaveta', !e.aberta);
+      anota(
+        'o lc-hide do véu diz de onde veio',
+        e.eventos.some((x) => x[0] === 'lc-hide' && x[1] === 'backdrop'),
+        JSON.stringify(e.eventos.filter((x) => x[0] === 'lc-hide')),
+      );
+
+      /* ── Sai da faixa com a gaveta ABERTA ────────────────────────────── */
+      await page.evaluate('window.__lcGaveta.barra.open = true');
+      await page.waitForTimeout(450);
+      await page.setViewportSize({ width: 1280, height: 720 });
+      await page.waitForTimeout(450);
+      e = await page.evaluate(`({
+        aberta: window.__lcGaveta.gaveta.open,
+        atributo: window.__lcGaveta.barra.hasAttribute('open'),
+        naFaixa: window.__lcGaveta.barra.matches(':state(drawer)'),
+        noTrilho: window.__lcGaveta.barra.matches(':state(rail)'),
+        larguraBarra: window.__lcGaveta.barra.getBoundingClientRect().width,
+        eventos: window.__lcGaveta.eventos.slice(),
+      })`);
+      anota('alargar a janela fecha a gaveta e apaga o open', !e.aberta && !e.atributo && !e.naFaixa);
+      anota(
+        'e devolve o trilho de 56px que o collapsed pedia',
+        e.noTrilho && Math.round(e.larguraBarra) === 56,
+        `${e.larguraBarra}px`,
+      );
+      anota(
+        'o lc-after-hide sai mesmo quando quem fechou foi o breakpoint',
+        e.eventos.filter((x) => x[0] === 'lc-after-hide').length === 3,
+        JSON.stringify(e.eventos.map((x) => x[0])),
+      );
     }
   }
 

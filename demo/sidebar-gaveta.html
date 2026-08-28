@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A gaveta do telefone — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script>
+      /*
+       * Esta página NÃO é uma página da doc: é a tela de aplicação que a página
+       * do Sidebar embute num <iframe> estreito para mostrar a gaveta. Não
+       * carrega o docs.js de propósito — não deve ganhar cabeçalho, lateral nem
+       * anterior/próximo.
+       *
+       * O iframe é o que torna a gaveta demonstrável num monitor: a faixa de
+       * 767px é do VIEWPORT, e dentro de um iframe de 380px o viewport tem
+       * 380px. Sem ele, ver a gaveta exigiria estreitar a janela do navegador e
+       * perder a doc de vista.
+       *
+       * O tema vem do mesmo localStorage da doc, e o evento `storage` chega aqui
+       * quando a doc grava — ele dispara em todo documento da origem MENOS o que
+       * escreveu. É o que mantém o iframe no tema que o leitor escolheu lá fora.
+       */
+      const tema = () =>
+        document.documentElement.setAttribute(
+          'data-lc-theme',
+          localStorage.getItem('lc-tema') ?? 'legacy',
+        );
+      tema();
+      addEventListener('storage', (e) => {
+        if (e.key === 'lc-tema') tema();
+      });
+    </script>
+    <script type="module" src="../components/loader.js"></script>
+    <style>
+      /* O cabeçalho da aplicação. Não é do kit — é do consumidor, e é aqui que
+         mora o gatilho da gaveta.
+
+         A ALTURA SAI DE UM TOKEN, e o mesmo token diz à barra onde a gaveta
+         começa. É o que garante que os dois nunca discordem: a linha de baixo do
+         cabeçalho e a linha de cima da gaveta são o mesmo número, e o número
+         muda com o tema (45px no legacy, 48px no modern) sem que a tela saiba. */
+      .topo {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        box-sizing: border-box;
+        block-size: var(--lc-shell-row-height);
+        padding-inline: var(--lc-space-s);
+        background: var(--lc-color-surface-card);
+        border-block-end: var(--lc-border-width) solid var(--lc-color-border-normal);
+      }
+      lc-sidebar {
+        --drawer-top: var(--lc-shell-row-height);
+      }
+      .topo strong {
+        font-size: var(--lc-font-size-l);
+      }
+      .conteudo {
+        padding: var(--lc-space-m);
+      }
+    </style>
+  </head>
+
+  <body class="lc">
+    <div class="lc-app">
+      <lc-sidebar label="Navegação do painel">
+        <lc-logo slot="brand" style="--height: 26px"></lc-logo>
+        <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
+
+        <lc-sidebar-label>Menu</lc-sidebar-label>
+        <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
+
+        <lc-sidebar-group label="Sistema" icon="settings">
+          <lc-sidebar-item href="#configuracoes">Configurações</lc-sidebar-item>
+          <lc-sidebar-item href="#usuario">Usuário</lc-sidebar-item>
+          <lc-sidebar-item href="#empresas">Empresas</lc-sidebar-item>
+        </lc-sidebar-group>
+
+        <lc-sidebar-group label="Telessaúde" icon="video">
+          <lc-sidebar-item href="#teleconsulta">Teleconsulta</lc-sidebar-item>
+          <lc-sidebar-item href="#agenda">Agenda</lc-sidebar-item>
+        </lc-sidebar-group>
+
+        <lc-sidebar-item href="#profissional" icon="stethoscope">
+          Configuração Profissional
+        </lc-sidebar-item>
+      </lc-sidebar>
+
+      <div>
+        <header class="topo">
+          <lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu">
+            <lc-icon name="menu"></lc-icon>
+          </lc-button>
+          <strong>BNG LinkCare</strong>
+        </header>
+
+        <div class="conteudo lc-stack">
+          <h1 class="lc-h2">Escala do dia</h1>
+          <p class="lc-quiet">
+            A coluna do menu não existe nesta largura: o conteúdo fica com a tela inteira e o
+            menu espera pelo botão.
+          </p>
+          <lc-card>
+            <span slot="header">Plantão 07h–19h</span>
+            <p>Ana Souza — Clínica Médica</p>
+          </lc-card>
+          <lc-button variant="brand">Confirmar presença</lc-button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

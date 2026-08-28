@@ -44,7 +44,8 @@ branca com Times New Roman.
      irmão da tabela e a tabela ficaria vazia. Medido, não suposto. O Web Awesome também não tem
      componente de tabela.
    - **Utilitário e tipografia continuam classe:** `.lc-stack`, `.lc-row`, `.lc-grow`,
-     `.lc-quiet`, `.lc-h1`, `.lc-h2`, `.lc-page-body`, `.lc-cloak`, `.lc-no-print`.
+     `.lc-quiet`, `.lc-h1`, `.lc-h2`, `.lc-page-body`, `.lc-cloak`, `.lc-no-print`, `.lc-app`,
+     `.lc-only-drawer`.
 
    O `tools/check-sem-classes.mjs` reprova quem usar classe aposentada.
 2. **Nunca reestilize componente por dentro.** Use atributo, `::part()` ou a custom property
@@ -294,14 +295,78 @@ decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
 > mão segue proibido, e `<img src="logo.svg">` também: com arquivo são seis downloads e seis
 > chances de publicar o azul sobre fundo azul.
 
+### Casco da aplicação — barra lateral e conteúdo
+
+```html
+<body class="lc">
+  <div class="lc-app">
+    <lc-sidebar label="Navegação principal">
+      <lc-logo slot="brand"></lc-logo>
+      <lc-logo slot="brand-collapsed" variant="symbol"></lc-logo>
+
+      <lc-sidebar-label>Menu</lc-sidebar-label>
+      <lc-sidebar-item href="/painel" icon="house">Home</lc-sidebar-item>
+
+      <lc-sidebar-group label="Sistema" icon="settings">
+        <lc-sidebar-item href="/painel/usuario">Usuário</lc-sidebar-item>
+      </lc-sidebar-group>
+    </lc-sidebar>
+
+    <div>
+      <header class="topo">
+        <lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu">
+          <lc-icon name="menu"></lc-icon>
+        </lc-button>
+        <strong>BNG LinkCare</strong>
+      </header>
+      <main class="lc-page-body">…</main>
+    </div>
+  </div>
+</body>
+```
+
+`.lc-app` é o utilitário que faz o conteúdo se ajustar: a barra é **só a coluna**, nunca
+`fixed`, e não escreve nada fora de si. São quatro tags — a coluna, o rótulo de seção, o item
+que navega e o grupo que abre submenu.
+
+**Não escreva `current` à mão.** A barra casa o `href` de cada item com o `location.pathname` e
+marca quem bate, abrindo o grupo dele junto. `current` explícito vence e desliga o automático
+inteiro — serve para rota com parâmetro, onde a URL não bate com item nenhum.
+
+Quatro estados, um só componente:
+
+| Estado | Como se pede |
+|---|---|
+| Coluna de 230 px | o padrão |
+| Trilho de ícones de 56 px | `collapsed`, ou a alça turquesa na borda |
+| Flyout do submenu | automático, no trilho |
+| **Gaveta sobre o conteúdo** | abaixo de 767 px, com `open` |
+
+> ⚠️ **Abaixo de 767 px a coluna vai a zero e o menu só existe como gaveta.** O gatilho é do
+> consumidor — a barra não traz botão. Use `data-lc-sidebar="toggle"` (sem script, como o
+> `data-lc-modal`) e `class="lc-only-drawer"` para o botão aparecer só nessa faixa. **Não escreva
+> a media query de novo**: o utilitário lê o estado que a própria barra publica.
+
+A gaveta abre **sob o cabeçalho**, como no painel — e a barra não descobre a altura dele
+sozinha. Declare as duas com o MESMO token, e as duas linhas nunca discordam:
+
+```css
+.topo      { block-size: var(--lc-shell-row-height); }
+lc-sidebar { --drawer-top: var(--lc-shell-row-height); }
+```
+
+A gaveta é um `<dialog>` modal: fecha no Esc e no clique fora, e prende o foco. Recolher **não é
+guardado** — a barra emite `lc-collapse` e não grava nada; quem quiser persistir escuta e grava.
+
 ## Eventos
 
 | Evento | Origem | `detail` |
 |---|---|---|
 | `lc-change` | `lc-switch` | `{ checked, value }` |
 | `lc-select` | `lc-dropdown` (cancelável: `preventDefault()` mantém aberto) | `{ value, item }` |
-| `lc-show` / `lc-after-show` | `lc-modal`, `lc-dropdown` | — |
-| `lc-hide` / `lc-after-hide` | `lc-modal`, `lc-dropdown` (`lc-hide` cancelável) | `{ source }` |
+| `lc-show` / `lc-after-show` | `lc-modal`, `lc-dropdown`, `lc-sidebar` (a gaveta) | — |
+| `lc-hide` / `lc-after-hide` | `lc-modal`, `lc-dropdown`, `lc-sidebar` (`lc-hide` cancelável) | `{ source }` |
+| `lc-collapse` | `lc-sidebar` | `{ collapsed }` |
 
 Todos borbulham e atravessam o shadow boundary — pode escutar no `document`.
 

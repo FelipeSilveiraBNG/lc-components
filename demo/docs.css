@@ -518,3 +518,33 @@ lc-modal:not(:defined) {
 .doc-preview--marca {
   background: var(--lc-color-brand-fill-loud);
 }
+
+/* O telefone da gaveta.
+
+   A faixa da gaveta é do VIEWPORT, e dentro de um iframe o viewport é o iframe:
+   é isto que torna o quarto estado da barra demonstrável num monitor, sem pedir
+   ao leitor que estreite a janela e perca a doc de vista.
+
+   380px é um telefone pequeno de verdade — abaixo dos 390 do iPhone atual —
+   porque o caso apertado é o que interessa ver. */
+.doc-telefone-caixa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lc-space-s);
+  align-items: flex-start;
+  padding: var(--lc-space-m);
+  background: var(--lc-color-surface-card);
+  border: var(--lc-border-width) solid var(--lc-color-border-normal);
+}
+.doc-telefone {
+  inline-size: 380px;
+  block-size: 520px;
+  max-inline-size: 100%;
+  border: var(--lc-border-width) solid var(--lc-color-border-loud);
+  border-radius: var(--lc-radius-card);
+  background: var(--lc-color-surface-page);
+}
+.doc-telefone-caixa p {
+  margin: 0;
+  max-width: 70ch;
+}

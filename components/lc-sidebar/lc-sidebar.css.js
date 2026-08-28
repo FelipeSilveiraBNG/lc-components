@@ -8,6 +8,18 @@ export default /* css */ `
     --width: 230px;
     --rail-width: 56px;
 
+    /* ONDE A GAVETA COMEÇA, contado do alto da tela.
+
+       Zero é a única opção honesta como PADRÃO: a barra não sabe se a tela tem
+       cabeçalho, nem qual a altura dele — e descobrir isso exigiria alcançar
+       fora de si, que é justamente o que a decisão de layout proíbe.
+
+       O painel de homologação abre a gaveta SOB o cabeçalho, e reproduzir isso
+       é uma linha na tela que monta o casco:
+
+         lc-sidebar { --drawer-top: var(--lc-shell-row-height); } */
+    --drawer-top: 0px;
+
     display: block;
     /* Âncora da alça, que fica montada sobre a borda direita. */
     position: relative;
@@ -25,9 +37,24 @@ export default /* css */ `
     color: var(--lc-color-shell-text);
   }
 
-  :host([collapsed]) { inline-size: var(--rail-width); }
+  /* O TRILHO É ESTADO, NÃO ATRIBUTO — e a diferença aparece no telefone.
+     \`collapsed\` é o que o consumidor pede; \`:state(rail)\` é o que a barra de
+     fato faz, e na faixa da gaveta ela IGNORA o pedido: um trilho de 56px com
+     flyout no hover não existe em toque. Quem calcula é o \`syncCollapsed()\`,
+     que também é quem espalha o \`data-rail\` para os filhos — os dois saem da
+     mesma conta, então não há como divergirem. */
+  :host(:state(rail)) { inline-size: var(--rail-width); }
 
   :host([hidden]) { display: none; }
+
+  /* ── A faixa da gaveta: a coluna deixa de existir ────────────────────────
+     A barra continua sendo só a coluna (é a decisão de layout), e é justamente
+     por isso que aqui ela vira uma coluna de largura ZERO: o \`<dialog>\` lá
+     embaixo sai para o top layer e não ocupa espaço nenhum no grid, então a
+     faixa \`auto\` do \`.lc-app\` colapsa e o conteúdo fica com a tela inteira.
+
+     Sem \`display: none\` no host, que mataria o \`<dialog>\` descendente junto. */
+  :host(:state(drawer)) { inline-size: 0; }
 
   /* ── A largura NÃO é animada, e isso foi decidido depois de medir ─────────
      O \`legacy.css\` define \`--lc-transition-normal\` com o comentário "recolher
@@ -48,6 +75,107 @@ export default /* css */ `
      soubesse as duas larguras — e aí o utilitário de layout passaria a
      depender de um componente. A troca instantânea é o preço, e é barato:
      o conteúdo que reflui já dá o retorno visual. */
+
+  /* ── A GAVETA: um <dialog> que só é caixa no telefone ────────────────────
+     Fora da faixa da gaveta o \`<dialog>\` é \`display: contents\` — não gera
+     caixa nenhuma, e o \`<nav>\` continua sendo filho direto do host, exatamente
+     como era antes de a gaveta existir. Nenhum layout de desktop muda por causa
+     de um elemento que, ali, não existe.
+
+     POR QUE <dialog> E NÃO position: fixed. A fase 06 pedia quatro coisas —
+     sobrepor o conteúdo, Esc, clique fora e FOCO PRESO. O \`showModal()\` nativo
+     dá as quatro de graça, mais o \`::backdrop\` e mais o top layer, que dispensa
+     inventar \`z-index\` para disputar com o cabeçalho da aplicação. Prender foco
+     à mão é um laço de \`Tab\` com lista de focáveis e \`inert\` no resto da
+     página: dezenas de linhas para reimplementar, pior, o que o navegador já
+     faz. É a mesma escolha do \`lc-modal\`, pelo mesmo motivo.
+
+     Não é popover: \`popover\` dá top layer e light dismiss, mas NÃO prende foco.
+     O flyout do \`lc-sidebar-group\` é popover porque não precisa prender nada. */
+  .gaveta {
+    display: contents;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--lc-color-shell-text);
+    background: var(--lc-color-shell-fill);
+  }
+
+  :host(:state(drawer)) .gaveta {
+    /* Fechada é \`none\` DECLARADO, não herdado da folha do navegador: é este
+       \`display\` que a transição discreta abaixo tem para animar. */
+    display: none;
+    position: fixed;
+    /* Encostada à esquerda, da altura inteira da tela. Sem os quatro zeros do
+       \`inset\` a folha do navegador centraliza o diálogo. */
+    inset: var(--drawer-top) auto 0 0;
+    inline-size: var(--width);
+    /* MEDIDO: os quatro zeros do \`inset\` não bastam. A folha do navegador dá ao
+       diálogo \`width: fit-content\` e \`height: fit-content\`, e o \`fit-content\`
+       vence o par de insets — a gaveta abria com 215px de altura numa tela de
+       720, do tamanho exato da lista de itens. O \`auto\` é o que devolve o
+       esticamento entre os dois insets. */
+    block-size: auto;
+    max-inline-size: none;
+    max-block-size: none;
+    /* Quem rola é a lista, como na coluna. Nada precisa escapar da gaveta: o
+       flyout não existe nesta faixa, porque o trilho não existe. */
+    overflow: hidden;
+    box-shadow: var(--lc-shadow-overlay);
+    translate: -100% 0;
+    /* \`allow-discrete\` é o que faz \`display\` e \`overlay\` participarem da
+       transição. Sem ele a gaveta apareceria pronta, sem deslizar, e sairia da
+       tela de uma vez ao fechar — o navegador tiraria o elemento do top layer
+       no primeiro quadro. */
+    transition:
+      translate var(--lc-transition-normal),
+      display var(--lc-transition-normal) allow-discrete,
+      overlay var(--lc-transition-normal) allow-discrete;
+  }
+
+  :host(:state(drawer)) .gaveta[open] {
+    display: block;
+    translate: 0 0;
+  }
+
+  /* O estado de PARTIDA da animação de entrada. Um elemento que acaba de sair
+     de \`display: none\` não tem valor anterior para o motor interpolar; é isto
+     que dá um. */
+  @starting-style {
+    :host(:state(drawer)) .gaveta[open] { translate: -100% 0; }
+  }
+
+  /* O véu sai do \`::backdrop\` nativo — nenhum elemento a mais no shadow root,
+     e nenhuma decisão de \`z-index\`: o top layer já empilha o véu logo abaixo
+     da gaveta. O token é o MESMO do \`lc-modal\`, porque é o mesmo papel. */
+  :host(:state(drawer)) .gaveta::backdrop {
+    /* O véu começa onde a gaveta começa: com \`--drawer-top\` posto, o cabeçalho
+       da aplicação fica à vista e por inteiro, como no painel.
+
+       O \`::backdrop\` herda as custom properties do elemento que o originou,
+       então o \`var()\` daqui resolve. Onde não herdasse, o valor cairia para o
+       \`inset: 0\` da folha do navegador e o véu cobriria a tela toda — degrada
+       para o comportamento de antes, não para nada. */
+    inset-block-start: var(--drawer-top);
+    background-color: transparent;
+    transition:
+      background-color var(--lc-transition-normal),
+      display var(--lc-transition-normal) allow-discrete,
+      overlay var(--lc-transition-normal) allow-discrete;
+  }
+
+  :host(:state(drawer)) .gaveta[open]::backdrop {
+    background-color: var(--lc-color-surface-overlay);
+  }
+
+  @starting-style {
+    :host(:state(drawer)) .gaveta[open]::backdrop { background-color: transparent; }
+  }
+
+  /* A alça não atravessa a faixa da gaveta. Ela recolhe a barra para o trilho,
+     e o trilho não existe aqui — sobraria um botão turquesa flutuando sobre uma
+     coluna de largura zero, o que é exatamente o que se via antes desta regra. */
+  :host(:state(drawer)) .alca { display: none; }
 
   .base {
     display: flex;
@@ -81,8 +209,8 @@ export default /* css */ `
 
      Quem não puser a segunda fica com faixa vazia no trilho — visível, e
      preferível a um lockup de 449 unidades espremido em 56px. */
-  :host(:not([collapsed])) slot[name='brand-collapsed'],
-  :host([collapsed]) slot[name='brand'] {
+  :host(:not(:state(rail))) slot[name='brand-collapsed'],
+  :host(:state(rail)) slot[name='brand'] {
     display: none;
   }
 
@@ -145,10 +273,20 @@ export default /* css */ `
     transition: transform var(--lc-transition-fast);
   }
 
-  :host([collapsed]) .alca-icone { transform: rotate(0deg); }
+  :host(:state(rail)) .alca-icone { transform: rotate(0deg); }
 
   @media (prefers-reduced-motion: reduce) {
     .alca, .alca-icone { transition: none; }
+    /* A gaveta ainda precisa de \`display\` e \`overlay\` na transição — sem eles
+       ela volta a ser removida do top layer no primeiro quadro do fechamento.
+       O que sai é só o DESLIZE, que é o que incomoda quem pediu menos
+       movimento. Duração zero em vez de \`transition: none\`. */
+    :host(:state(drawer)) .gaveta,
+    :host(:state(drawer)) .gaveta::backdrop {
+      transition:
+        display 0s allow-discrete,
+        overlay 0s allow-discrete;
+    }
   }
 }
 `;

@@ -28,9 +28,8 @@
       <lc-alert variant="warning">
         <lc-icon slot="icon" name="warning"></lc-icon>
         <span>
-          <strong>Em construção.</strong> Faltam a gaveta do telefone e a pele
-          <code>modern</code> afinada — o atributo <code>open</code> ainda não faz nada. O resto
-          está aqui.
+          <strong>Em construção.</strong> Falta afinar a pele <code>modern</code>. Os quatro
+          estados da barra — coluna, trilho, flyout e gaveta — estão todos aqui.
         </span>
       </lc-alert>
 
@@ -147,6 +146,136 @@
           linha que passasse da borda. O cálculo de posição é <strong>o mesmo código</strong> do
           <a class="lc-link" href="dropdown.html">Dropdown</a> — saiu de lá para um módulo que os
           dois usam.
+        </span>
+      </lc-alert>
+
+      <h2 class="doc-h2">A gaveta do telefone</h2>
+      <p>
+        É o <strong>quarto estado da mesma barra</strong>, não um segundo componente. Abaixo de
+        <strong>767&nbsp;px</strong> a coluna vai a zero, o conteúdo fica com a tela inteira e o
+        menu passa a abrir por cima dela. O breakpoint não foi escolhido: é o
+        <code>@media (max-width: 767px)</code> que o painel de homologação já usa.
+      </p>
+      <p>
+        O trilho de ícones <strong>deixa de existir</strong> nessa faixa — flyout no hover não
+        existe em toque. <code>collapsed</code> continua posto, apenas ignorado: quem estreitar a
+        janela com a barra em trilho encontra o trilho de volta ao alargá-la.
+      </p>
+
+      <div class="doc-telefone-caixa">
+        <iframe
+          class="doc-telefone"
+          src="sidebar-gaveta.html"
+          title="A barra como gaveta, numa tela de telefone"
+          loading="lazy"
+        ></iframe>
+        <p class="lc-quiet">
+          Uma tela de 380&nbsp;px de verdade, num <code>&lt;iframe&gt;</code> — a faixa da gaveta é
+          do <em>viewport</em>, e dentro de um iframe de 380&nbsp;px o viewport tem 380&nbsp;px.
+          Sem ele, ver a gaveta exigiria estreitar a janela e perder a doc de vista.
+        </p>
+        <p class="lc-quiet">
+          Clique no botão de menu. Fecha no <kbd>Esc</kbd> e no clique fora — e enquanto está
+          aberta, o <kbd>Tab</kbd> não sai de dentro dela.
+        </p>
+      </div>
+
+      <pre class="doc-codigo"><code>&lt;div class="lc-app"&gt;
+  &lt;lc-sidebar label="Navegação principal"&gt;
+    &lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
+    &lt;lc-sidebar-item href="/painel" icon="house"&gt;Home&lt;/lc-sidebar-item&gt;
+  &lt;/lc-sidebar&gt;
+
+  &lt;div&gt;
+    &lt;header class="topo"&gt;
+      &lt;!-- O gatilho é do consumidor. O invocador dispensa script. --&gt;
+      &lt;lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu"&gt;
+        &lt;lc-icon name="menu"&gt;&lt;/lc-icon&gt;
+      &lt;/lc-button&gt;
+      &lt;strong&gt;BNG LinkCare&lt;/strong&gt;
+    &lt;/header&gt;
+    &lt;main&gt;…&lt;/main&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+      <p>
+        <strong>O gatilho é do consumidor.</strong> A barra não traz botão: o topo da aplicação
+        não é do kit, então o kit não palpita nele. O que o kit dá são duas conveniências para
+        que a tela não precise de uma linha de JavaScript nem repetir o breakpoint:
+      </p>
+      <ul>
+        <li>
+          <code>data-lc-sidebar="toggle"</code> em qualquer elemento clicável alterna a gaveta —
+          a mesma convenção do <a class="lc-link" href="modal.html">Modal</a>. Também aceita
+          <code>open</code> e <code>close</code>, e um id (<code>toggle menu-principal</code>)
+          quando a tela tem duas barras.
+        </li>
+        <li>
+          <code>class="lc-only-drawer"</code> mostra esse botão <strong>só na faixa da
+          gaveta</strong>. Não é uma media query a mais: a regra lê o estado que a própria barra
+          publica, então o 767&nbsp;px existe num único lugar do kit.
+        </li>
+      </ul>
+
+      <lc-alert variant="success">
+        <lc-icon slot="icon" name="success"></lc-icon>
+        <span>
+          A gaveta é um <code>&lt;dialog&gt;</code> aberto com <code>showModal()</code>, e é de lá
+          que vêm <strong>as quatro exigências de uma vez</strong>: sobrepor o conteúdo pelo top
+          layer, fechar no Esc, o véu no <code>::backdrop</code> e o
+          <strong>foco preso</strong>, com o resto da página inerte. Prender foco à mão seriam
+          dezenas de linhas para reimplementar, pior, o que o navegador já faz — é a mesma escolha
+          do <a class="lc-link" href="modal.html">Modal</a>. Fora da faixa da gaveta o mesmo
+          elemento é <code>display: contents</code>: não gera caixa nenhuma, e nada no layout de
+          desktop muda por causa de um elemento que ali não existe.
+        </span>
+      </lc-alert>
+
+      <h3 class="doc-h3">A gaveta abre sob o cabeçalho</h3>
+      <p>
+        É o que o painel faz, e a barra não consegue descobrir sozinha: ela não sabe se a tela tem
+        cabeçalho nem qual a altura dele, e ir procurar seria alcançar fora de si. Então a tela
+        diz, com <code>--drawer-top</code> — e o véu começa na mesma linha, de modo que o
+        cabeçalho fica à vista por inteiro. O padrão é zero: gaveta da altura da tela.
+      </p>
+
+      <pre class="doc-codigo"><code>.topo      { block-size: var(--lc-shell-row-height); }
+lc-sidebar { --drawer-top: var(--lc-shell-row-height); }</code></pre>
+
+      <p>
+        <strong>O mesmo token nos dois lugares</strong> é o que faz a linha de baixo do cabeçalho
+        e a linha de cima da gaveta serem o mesmo número — inclusive quando o tema muda o valor
+        (45&nbsp;px no <em>legacy</em>, 48&nbsp;px no <em>modern</em>).
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          Com a gaveta aberta, <strong>o cabeçalho está à vista mas inerte</strong> — é o que o
+          <code>showModal()</code> faz com o resto da página, e é o mesmo preço do foco preso. Clicar no
+          botão de menu de novo não fecha nada; clicar no véu, sim. Se a sua tela precisa que o
+          próprio botão feche, ponha um segundo gatilho
+          <code>data-lc-sidebar="close"</code> DENTRO da barra.
+        </span>
+      </lc-alert>
+
+      <p>
+        Quem fechou a gaveta importa, porque o botão de fora precisa saber. Todo fechamento pedido
+        por quem usa a tela passa por um <code>lc-hide</code> cancelável com a origem, e o
+        <code>lc-after-hide</code> sai sempre que ela fechou de fato — inclusive quando quem
+        fechou foi a janela ter sido alargada.
+      </p>
+
+      <pre class="doc-codigo"><code>barra.addEventListener('lc-after-hide', () =&gt; {
+  gatilho.setAttribute('aria-expanded', 'false');
+});</code></pre>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          <strong>Nesta página, num telefone,</strong> os exemplos acima aparecem sem a barra — e
+          isso é a gaveta funcionando: a coluna sai do fluxo e o menu fica esperando por
+          <code>open</code>. Cada exemplo é uma barra de verdade, não uma figura.
         </span>
       </lc-alert>
 

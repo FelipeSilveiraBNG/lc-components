@@ -46,18 +46,37 @@
           </tr>
           <tr>
             <td><code>lc-show</code> / <code>lc-after-show</code></td>
-            <td><code>lc-modal</code>, <code>lc-dropdown</code></td>
+            <td>
+              <code>lc-modal</code>, <code>lc-dropdown</code>, <code>lc-sidebar</code> — a gaveta
+              do telefone
+            </td>
             <td>—</td>
           </tr>
           <tr>
             <td><code>lc-hide</code> / <code>lc-after-hide</code></td>
             <td>
-              <code>lc-modal</code>, <code>lc-dropdown</code> — <code>lc-hide</code> cancelável
+              <code>lc-modal</code>, <code>lc-dropdown</code>, <code>lc-sidebar</code> —
+              <code>lc-hide</code> cancelável
             </td>
             <td><code>{ source }</code></td>
           </tr>
+          <tr>
+            <td><code>lc-collapse</code></td>
+            <td><code>lc-sidebar</code> — recolheu para o trilho, ou voltou</td>
+            <td><code>{ collapsed }</code></td>
+          </tr>
         </tbody>
       </table>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          Os quatro tempos de overlay servem a QUALQUER coisa que se sobreponha, não só ao modal:
+          a gaveta da <a class="lc-link" href="sidebar.html">Sidebar</a> usa os mesmos quatro. É o
+          que o gatilho dela tem para não dessincronizar — quem fechou a gaveta pode ter sido o
+          Esc, o véu, ou a janela ter sido alargada até a gaveta deixar de existir.
+        </span>
+      </lc-alert>
 
       <h2 class="doc-h2">Por que atravessar o shadow boundary importa</h2>
       <p>

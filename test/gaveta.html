@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR" data-lc-theme="legacy">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teste da gaveta do telefone — lc-components</title>
+    <link rel="stylesheet" href="../lc.css" />
+    <script type="module" src="../components/index.js"></script>
+    <style>
+      /* A tela de aplicação de verdade: cabeçalho com o gatilho, e o casco. */
+      .topo {
+        display: flex;
+        align-items: center;
+        gap: var(--lc-space-s);
+        box-sizing: border-box;
+        block-size: var(--lc-shell-row-height);
+        padding-inline: var(--lc-space-s);
+        background: var(--lc-color-surface-card);
+        border-block-end: var(--lc-border-width) solid var(--lc-color-border-normal);
+      }
+      /* A gaveta abre SOB o cabeçalho, como no painel. O mesmo token nos dois
+         lugares — é o driver que confere se as duas linhas coincidem. */
+      lc-sidebar {
+        --drawer-top: var(--lc-shell-row-height);
+      }
+    </style>
+  </head>
+  <body class="lc">
+    <div class="lc-app" id="casco">
+      <lc-sidebar label="Navegação do painel" id="barra">
+        <lc-logo slot="brand" style="--height: 26px"></lc-logo>
+        <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
+
+        <lc-sidebar-label>Menu</lc-sidebar-label>
+        <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
+        <lc-sidebar-group label="Sistema" icon="settings">
+          <lc-sidebar-item href="#configuracoes">Configurações</lc-sidebar-item>
+          <lc-sidebar-item href="#usuario">Usuário</lc-sidebar-item>
+        </lc-sidebar-group>
+        <lc-sidebar-item href="#relatorios" icon="chart-column">Relatórios</lc-sidebar-item>
+      </lc-sidebar>
+
+      <div id="conteudo">
+        <div class="topo">
+          <!-- O gatilho é do consumidor, e o invocador dispensa script. -->
+          <lc-button
+            data-lc-sidebar="toggle"
+            class="lc-only-drawer"
+            id="gatilho"
+            aria-label="Abrir o menu"
+          >
+            <lc-icon name="menu"></lc-icon>
+          </lc-button>
+          <strong>BNG LinkCare</strong>
+        </div>
+
+        <div class="lc-page-body">
+          <h1 class="lc-h1">A gaveta do telefone</h1>
+          <p class="lc-quiet" style="max-width: 70ch">
+            O quarto estado da barra: abaixo de 767&nbsp;px — o breakpoint medido no painel de
+            homologação — a coluna vai a zero e o menu abre num <code>&lt;dialog&gt;</code> modal
+            sobre o conteúdo. As asserções desta página cobrem a faixa de DESKTOP; a faixa da
+            gaveta precisa de viewport estreito e de teclado de verdade, então mora no driver
+            (<code>tools/run-tests.mjs</code>).
+          </p>
+
+          <!-- Um focável FORA da barra, para o teste de foco preso ter onde falhar. -->
+          <p><a class="lc-link" href="#depois" id="fora">Um link fora da barra</a></p>
+
+          <div id="saida"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { check, render } from './harness.js';
+
+      const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+      await customElements.whenDefined('lc-sidebar');
+      await customElements.whenDefined('lc-sidebar-group');
+      await espera(60);
+
+      const barra = document.getElementById('barra');
+      const conteudo = document.getElementById('conteudo');
+      const gatilho = document.getElementById('gatilho');
+      const gaveta = barra.shadowRoot.querySelector('.gaveta');
+      const largura = (el) => el.getBoundingClientRect().width;
+
+      /* Todo fechamento e toda abertura passam por evento — é o que o gatilho do
+         consumidor tem para não dessincronizar. O driver lê esta lista. */
+      const eventos = [];
+      for (const nome of ['lc-show', 'lc-after-show', 'lc-hide', 'lc-after-hide']) {
+        barra.addEventListener(nome, (e) => eventos.push([nome, e.detail?.source ?? null]));
+      }
+
+      /* ── Faixa de desktop: nada de gaveta ──────────────────────────────── */
+      check('[desktop] a barra NÃO está na faixa da gaveta', !barra.matches(':state(drawer)'));
+      check(
+        '[desktop] o <dialog> não é caixa nenhuma — display: contents',
+        getComputedStyle(gaveta).display === 'contents',
+        getComputedStyle(gaveta).display,
+      );
+      check(
+        '[desktop] a coluna mede os 230px medidos no painel',
+        Math.round(largura(barra)) === 230,
+        `${largura(barra).toFixed(1)}px`,
+      );
+      check(
+        '[desktop] o gatilho da gaveta está escondido pelo .lc-only-drawer',
+        getComputedStyle(gatilho).display === 'none',
+        getComputedStyle(gatilho).display,
+      );
+
+      /* ── `open` fora da faixa não faz nada ─────────────────────────────── */
+      barra.open = true;
+      await espera(60);
+      check('[desktop] open não abre diálogo nenhum', !gaveta.open);
+      check(
+        '[desktop] open não mexe na largura da coluna',
+        Math.round(largura(barra)) === 230,
+        `${largura(barra).toFixed(1)}px`,
+      );
+      check('[desktop] open não emitiu lc-show', eventos.length === 0, JSON.stringify(eventos));
+      barra.open = false;
+
+      /* ── O trilho continua sendo o trilho ──────────────────────────────── */
+      barra.collapsed = true;
+      await espera(60);
+      check(
+        '[desktop] collapsed dá o trilho de 56px',
+        Math.round(largura(barra)) === 56,
+        `${largura(barra).toFixed(1)}px`,
+      );
+      check('[desktop] o state rail está ligado', barra.matches(':state(rail)'));
+      check(
+        '[desktop] os filhos receberam data-rail',
+        [...barra.children].every((f) => f.dataset.rail !== undefined),
+      );
+
+      /* Fica RECOLHIDA para o driver: é assim que se prova que a faixa da gaveta
+         ignora o trilho sem apagar o atributo de quem o pediu. */
+      window.__lcGaveta = { barra, conteudo, gatilho, gaveta, eventos };
+      check(
+        'Cenário montado para o driver (asserções em tools/run-tests.mjs)',
+        Boolean(window.__lcGaveta.barra),
+      );
+
+      render(document.getElementById('saida'));
+    </script>
+  </body>
+</html>

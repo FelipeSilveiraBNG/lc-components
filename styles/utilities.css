@@ -122,6 +122,30 @@
     min-inline-size: 0;
   }
 
+  /* ── O gatilho da gaveta ────────────────────────────────────────────────────
+     Abaixo de 767px a barra sai do fluxo e vira gaveta sobre o conteúdo, e quem
+     a abre é um botão do CONSUMIDOR — o topo da aplicação não é do kit. Este
+     utilitário é o que faz esse botão aparecer só nessa faixa:
+
+       <lc-button data-lc-sidebar="toggle" class="lc-only-drawer">
+         <lc-icon name="menu"></lc-icon>
+       </lc-button>
+
+     Por que não uma media query aqui. O breakpoint mora numa única linha, o
+     `FAIXA_GAVETA` do `lc-sidebar.js`, e é ele que liga o custom state `drawer`
+     na barra. Esta regra lê ESSE state — então não existe um segundo 767px para
+     esquecer de atualizar. Sem barra na página, o botão fica escondido, que é o
+     comportamento certo: não há gaveta para abrir.
+
+     E a regra é NEGATIVA (`:not(:has(…))`) de propósito. Um par
+     `display: none` / `display: block` obrigaria a escolher um display para
+     devolver, e o certo depende da tag — `lc-button` é `inline-flex`, um `<div>`
+     é `block`. Escondendo pela ausência, na faixa da gaveta não sobra nenhuma
+     declaração de `display` e cada elemento fica com o seu. */
+  body:not(:has(lc-sidebar:state(drawer))) .lc-only-drawer {
+    display: none;
+  }
+
   @keyframes lc-cloak-revelar {
     from {
       opacity: 0;

@@ -51,6 +51,11 @@ const system = {
   user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   calendar:
     '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  /* As três linhas do hambúrguer. Entrou com a gaveta do telefone: a barra não
+     traz o botão que a abre — ele é do consumidor — e sem este desenho toda tela
+     de protótipo teria de inventar o próprio, o que a regra de ouro nº 6 proíbe.
+     Nome e desenho do Lucide `menu`. */
+  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
 
   /* ── Ícones de CATEGORIA ────────────────────────────────────────────────────
      Os quatorze acima são de AÇÃO: o que um botão faz. Estes dezesseis nomeiam
