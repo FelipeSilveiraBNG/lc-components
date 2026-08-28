@@ -28,9 +28,6 @@
   <body class="lc">
     <div class="lc-app" id="casco">
       <lc-sidebar label="Navegação do painel" id="barra">
-        <lc-logo slot="brand" style="--height: 26px"></lc-logo>
-        <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
-
         <lc-sidebar-label>Menu</lc-sidebar-label>
         <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
         <lc-sidebar-group label="Sistema" icon="settings">
@@ -51,7 +48,8 @@
           >
             <lc-icon name="menu"></lc-icon>
           </lc-button>
-          <strong>BNG LinkCare</strong>
+          <!-- A marca mora no cabeçalho, não na barra. -->
+          <lc-logo style="--height: 22px"></lc-logo>
         </div>
 
         <div class="lc-page-body">

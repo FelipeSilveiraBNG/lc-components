@@ -12,9 +12,14 @@ import { GEOMETRIAS, VIEWBOX_SIMBOLO } from './marca.js';
  *
  * `symbol` e `symbol-negative` são o monograma SOZINHO, sem letreiro. Não é
  * geometria nova: é a horizontal com o letreiro omitido e a caixa fechada no
- * monograma (ver `VIEWBOX_SIMBOLO`). Existem porque a barra lateral recolhida
- * troca o lockup pelo monograma, e a `mini` não serve para isso — ela leva o
- * letreiro miúdo embaixo, que num trilho de 56px vira borrão.
+ * monograma (ver `VIEWBOX_SIMBOLO`). Existem para o lugar apertado onde o lockup
+ * não cabe e a `mini` também não serve, porque ela leva o letreiro miúdo embaixo
+ * e ele vira borrão abaixo de uns 40px.
+ *
+ * O caso que as trouxe foi o trilho de 56px do `lc-sidebar`, que trocava lockup
+ * por monograma em dois slots. A barra deixou de carregar a marca — ela mora no
+ * cabeçalho da aplicação — e o caso mudou de lugar sem mudar de natureza: é o
+ * cabeçalho que estreita no telefone.
  */
 const VARIANTES = {
   default: { geometria: 'horizontal' },

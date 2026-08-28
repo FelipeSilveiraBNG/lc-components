@@ -53,9 +53,6 @@
       lc-sidebar {
         --drawer-top: var(--lc-shell-row-height);
       }
-      .topo strong {
-        font-size: var(--lc-font-size-l);
-      }
       .conteudo {
         padding: var(--lc-space-m);
       }
@@ -65,9 +62,6 @@
   <body class="lc">
     <div class="lc-app">
       <lc-sidebar label="Navegação do painel">
-        <lc-logo slot="brand" style="--height: 26px"></lc-logo>
-        <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
-
         <lc-sidebar-label>Menu</lc-sidebar-label>
         <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
 
@@ -92,7 +86,8 @@
           <lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu">
             <lc-icon name="menu"></lc-icon>
           </lc-button>
-          <strong>BNG LinkCare</strong>
+          <!-- A marca mora AQUI, e não na barra: o cabeçalho é do consumidor. -->
+          <lc-logo style="--height: 22px"></lc-logo>
         </header>
 
         <div class="conteudo lc-stack">

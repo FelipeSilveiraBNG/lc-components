@@ -27,8 +27,6 @@ const FAIXA_GAVETA = '(max-width: 767px)';
  * @dependency lc-icon
  *
  * @slot - Os `lc-sidebar-item`, `lc-sidebar-group` e `lc-sidebar-label`.
- * @slot brand - A marca no topo, normalmente um `lc-logo`.
- * @slot brand-collapsed - A marca do trilho, normalmente `lc-logo variant="symbol"`.
  *
  * @event lc-collapse - Recolheu ou expandiu. `detail.collapsed` diz qual.
  * @event lc-show - A gaveta vai abrir. Cancelável.
@@ -41,7 +39,6 @@ const FAIXA_GAVETA = '(max-width: 767px)';
  *
  * @csspart base - O `<nav>`.
  * @csspart drawer - O `<dialog>` da gaveta. Fora do telefone não é caixa nenhuma.
- * @csspart brand - A faixa da marca.
  * @csspart menu - A lista, que é quem rola.
  * @csspart handle - A alça de recolher.
  *
@@ -54,13 +51,19 @@ const FAIXA_GAVETA = '(max-width: 767px)';
  * ```html
  * <div class="lc-app">
  *   <lc-sidebar label="Navegação principal">
- *     <lc-logo slot="brand"></lc-logo>
- *     <lc-logo slot="brand-collapsed" variant="symbol"></lc-logo>
+ *     <lc-sidebar-label>Menu</lc-sidebar-label>
  *     <lc-sidebar-item href="/painel" icon="house">Home</lc-sidebar-item>
  *   </lc-sidebar>
  *   <main>…</main>
  * </div>
  * ```
+ *
+ * A MARCA NÃO MORA AQUI. Houve uma faixa de 50px no topo, com dois slots e a cor
+ * de marca. Ela saiu quando a gaveta do telefone mostrou o problema: a gaveta
+ * abre sob o cabeçalho da aplicação, que quase sempre já traz a marca, e ficavam
+ * duas marcas a quinze pixels de distância. Resolver por dentro exigiria o kit
+ * adivinhar o que a tela tem no topo — o oposto da decisão abaixo. O logo vai no
+ * cabeçalho, que já é do consumidor.
  *
  * A BARRA É SÓ A COLUNA. Ela não é `fixed`, não empurra conteúdo e não escreve
  * nada fora de si — o layout é do consumidor, com o utilitário `.lc-app`. Assim
@@ -109,10 +112,6 @@ export class LcSidebar extends LcElement {
   static template = /* html */ `
     <dialog part="drawer" class="gaveta">
       <nav part="base" class="base">
-        <div part="brand" class="marca">
-          <slot name="brand"></slot>
-          <slot name="brand-collapsed"></slot>
-        </div>
         <div part="menu" class="menu"><slot></slot></div>
       </nav>
     </dialog>
@@ -228,15 +227,6 @@ export class LcSidebar extends LcElement {
         }
       }
     });
-
-    /* A faixa da marca nasce escondida e só aparece com conteúdo, como o
-       cabeçalho do lc-card. Mesmo motivo: faixa vazia com cor de marca é o tipo
-       de defeito que ninguém nota até estar publicado. */
-    const slots = this.$$('slot[name^="brand"]');
-    const sincronizarMarca = () =>
-      this.setState('has-brand', slots.some((s) => s.assignedElements().length > 0));
-    for (const slot of slots) slot.addEventListener('slotchange', sincronizarMarca);
-    sincronizarMarca();
 
     /* Filho que chega depois também precisa saber do trilho. O observer olha só
        a lista de filhos diretos, não a árvore inteira. */

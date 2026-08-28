@@ -186,33 +186,23 @@ export default /* css */ `
     min-block-size: 0;
   }
 
-  /* ── A faixa da marca ────────────────────────────────────────────────────
-     Nasce escondida e só aparece com conteúdo em algum dos dois slots, como o
-     cabeçalho do lc-card — pela mesma razão: faixa vazia com cor é o defeito
-     que ninguém nota até estar publicado. */
-  .marca {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    block-size: 50px;
-    padding-inline: var(--lc-space-s);
-    background: var(--lc-color-brand-fill-loud);
-    overflow: hidden;
-  }
+  /* ── A MARCA NÃO MORA AQUI ───────────────────────────────────────────────
+     Houve uma faixa de 50px no topo desta barra, com dois slots e a cor de
+     marca, reproduzindo a caixa do logo do AdminLTE. Ela saiu, e o motivo
+     apareceu quando a gaveta do telefone ficou pronta: ali a barra abre logo
+     abaixo do cabeçalho da aplicação, que praticamente sempre traz a marca —
+     e ficavam DUAS marcas a quinze pixels de distância.
 
-  :host(:state(has-brand)) .marca { display: flex; }
+     Consertar isso por dentro do componente exigiria o kit adivinhar o que a
+     tela do consumidor tem no topo, que é o oposto da decisão de layout: a
+     barra é só a coluna, e não palpita no cabeçalho. Então a marca passou
+     inteira para o cabeçalho, que já é do consumidor, e a barra ficou sendo o
+     que ela é — a lista.
 
-  /* A troca da marca é por SLOT, não por mágica: a barra não alcança o
-     \`lc-logo\` de ninguém para trocar a variante dele. O consumidor põe as duas
-     peças e o CSS mostra uma de cada vez.
-
-     Quem não puser a segunda fica com faixa vazia no trilho — visível, e
-     preferível a um lockup de 449 unidades espremido em 56px. */
-  :host(:not(:state(rail))) slot[name='brand-collapsed'],
-  :host(:state(rail)) slot[name='brand'] {
-    display: none;
-  }
+     O que saiu junto: os slots \`brand\` e \`brand-collapsed\`, o
+     \`::part(brand)\`, o custom state \`has-brand\` e a troca de lockup por
+     monograma no trilho. Nada disso tem substituto dentro da barra, de
+     propósito. */
 
   /* ── A lista ─────────────────────────────────────────────────────────────
      É ela que rola, não a página: uma barra de dezessete linhas não cabe em

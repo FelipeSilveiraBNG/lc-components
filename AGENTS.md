@@ -301,9 +301,6 @@ decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
 <body class="lc">
   <div class="lc-app">
     <lc-sidebar label="Navegação principal">
-      <lc-logo slot="brand"></lc-logo>
-      <lc-logo slot="brand-collapsed" variant="symbol"></lc-logo>
-
       <lc-sidebar-label>Menu</lc-sidebar-label>
       <lc-sidebar-item href="/painel" icon="house">Home</lc-sidebar-item>
 
@@ -317,7 +314,7 @@ decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
         <lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu">
           <lc-icon name="menu"></lc-icon>
         </lc-button>
-        <strong>BNG LinkCare</strong>
+        <lc-logo style="--height: 22px"></lc-logo>
       </header>
       <main class="lc-page-body">…</main>
     </div>
@@ -328,6 +325,11 @@ decorativo. Se já houver um `<h1>` com o nome ao lado, silencie com `label=""`.
 `.lc-app` é o utilitário que faz o conteúdo se ajustar: a barra é **só a coluna**, nunca
 `fixed`, e não escreve nada fora de si. São quatro tags — a coluna, o rótulo de seção, o item
 que navega e o grupo que abre submenu.
+
+**A marca vai no cabeçalho, não na barra.** O `<lc-sidebar>` não tem slot de logo: havia uma
+faixa no topo dele e ela saiu, porque a gaveta do telefone abre sob o cabeçalho e ficavam duas
+marcas colocadas uma sobre a outra. Ponha `<lc-logo>` no seu `<header>`, ao lado do botão da
+gaveta.
 
 **Não escreva `current` à mão.** A barra casa o `href` de cada item com o `location.pathname` e
 marca quem bate, abrindo o grupo dele junto. `current` explícito vence e desliga o automático

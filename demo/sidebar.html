@@ -44,9 +44,6 @@
           <template>
             <div style="display: grid; grid-template-columns: auto 1fr; block-size: 420px">
               <lc-sidebar label="Navegação do painel">
-                <lc-logo slot="brand" style="--height: 26px"></lc-logo>
-                <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
-
                 <lc-sidebar-label>Menu</lc-sidebar-label>
                 <lc-sidebar-item href="#inicio" icon="house" current>Home</lc-sidebar-item>
 
@@ -96,8 +93,6 @@
           <template>
             <div style="display: grid; grid-template-columns: auto 1fr; block-size: 300px">
               <lc-sidebar label="Trilho" collapsed>
-                <lc-logo slot="brand" style="--height: 26px"></lc-logo>
-                <lc-logo slot="brand-collapsed" variant="symbol" style="--height: 26px"></lc-logo>
                 <lc-sidebar-item href="#a" icon="house" current>Home</lc-sidebar-item>
                 <lc-sidebar-group label="Sistema" icon="settings">
                   <lc-sidebar-item href="#b">Configurações</lc-sidebar-item>
@@ -115,19 +110,34 @@
         </div>
       </div>
 
-      <h2 class="doc-h2">A troca da marca é por slot</h2>
+      <h2 class="doc-h2">A marca não mora na barra</h2>
       <p>
-        São <strong>dois slots</strong>: <code>brand</code> e <code>brand-collapsed</code>. A barra
-        não alcança o <a class="lc-link" href="logo.html">Logo</a> de ninguém para trocar a
-        variante dele — o consumidor põe as duas peças e o CSS mostra uma de cada vez.
+        Houve aqui uma faixa de 50&nbsp;px no topo, com a cor da marca e dois slots
+        (<code>brand</code> e <code>brand-collapsed</code>), reproduzindo a caixa do logo do
+        AdminLTE. <strong>Ela saiu.</strong>
+      </p>
+      <p>
+        O motivo apareceu quando a gaveta do telefone ficou pronta: a gaveta abre logo abaixo do
+        cabeçalho da aplicação, que quase sempre já traz a marca — e ficavam
+        <strong>duas marcas a quinze pixels de distância</strong>. Consertar isso por dentro
+        exigiria o kit adivinhar o que a sua tela tem no topo, que é o oposto da decisão de
+        layout: a barra é só a coluna e não palpita no cabeçalho.
+      </p>
+      <p>
+        Então o <a class="lc-link" href="logo.html">Logo</a> vai no cabeçalho, que já é seu — no
+        mesmo lugar onde mora o botão da gaveta:
       </p>
 
-      <pre class="doc-codigo"><code>&lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
-&lt;lc-logo slot="brand-collapsed" variant="symbol"&gt;&lt;/lc-logo&gt;</code></pre>
+      <pre class="doc-codigo"><code>&lt;header class="topo"&gt;
+  &lt;lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu"&gt;
+    &lt;lc-icon name="menu"&gt;&lt;/lc-icon&gt;
+  &lt;/lc-button&gt;
+  &lt;lc-logo style="--height: 22px"&gt;&lt;/lc-logo&gt;
+&lt;/header&gt;</code></pre>
 
       <p>
-        Quem não puser a segunda fica com a faixa vazia no trilho. É visível, e preferível a um
-        lockup de 449 unidades espremido em 56&nbsp;px.
+        Saíram junto o <code>::part(brand)</code> e a troca de lockup por monograma no trilho. Nada
+        disso tem substituto <em>dentro</em> da barra, de propósito.
       </p>
 
       <h2 class="doc-h2">O flyout</h2>
@@ -182,7 +192,6 @@
 
       <pre class="doc-codigo"><code>&lt;div class="lc-app"&gt;
   &lt;lc-sidebar label="Navegação principal"&gt;
-    &lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
     &lt;lc-sidebar-item href="/painel" icon="house"&gt;Home&lt;/lc-sidebar-item&gt;
   &lt;/lc-sidebar&gt;
 
@@ -192,7 +201,7 @@
       &lt;lc-button data-lc-sidebar="toggle" class="lc-only-drawer" aria-label="Abrir o menu"&gt;
         &lt;lc-icon name="menu"&gt;&lt;/lc-icon&gt;
       &lt;/lc-button&gt;
-      &lt;strong&gt;BNG LinkCare&lt;/strong&gt;
+      &lt;lc-logo style="--height: 22px"&gt;&lt;/lc-logo&gt;
     &lt;/header&gt;
     &lt;main&gt;…&lt;/main&gt;
   &lt;/div&gt;
@@ -304,8 +313,6 @@ lc-sidebar { --drawer-top: var(--lc-shell-row-height); }</code></pre>
 
       <pre class="doc-codigo"><code>&lt;div class="lc-app"&gt;
   &lt;lc-sidebar label="Navegação principal"&gt;
-    &lt;lc-logo slot="brand"&gt;&lt;/lc-logo&gt;
-
     &lt;lc-sidebar-label&gt;Menu&lt;/lc-sidebar-label&gt;
     &lt;lc-sidebar-item href="/painel" icon="house"&gt;Home&lt;/lc-sidebar-item&gt;
 
@@ -367,26 +374,6 @@ lc-sidebar { --drawer-top: var(--lc-shell-row-height); }</code></pre>
         — o exemplo lá em cima está com 420&nbsp;px de altura de propósito, para mostrar isso.
       </p>
 
-      <h2 class="doc-h2">A faixa da marca some sozinha</h2>
-      <p>
-        Sem nada no <code>slot="brand"</code>, a faixa não aparece — não há barra colorida vazia no
-        topo. Mesmo comportamento do cabeçalho do <a class="lc-link" href="card.html">Card</a>, e
-        pelo mesmo motivo: faixa vazia com cor é o defeito que ninguém nota até estar publicado.
-      </p>
-
-      <div class="doc-exemplo">
-        <div class="doc-preview doc-preview--bloco">
-          <template>
-            <div style="display: grid; grid-template-columns: auto 1fr; block-size: 190px">
-              <lc-sidebar label="Sem marca">
-                <lc-sidebar-item href="#a" icon="clipboard">Sem faixa em cima</lc-sidebar-item>
-                <lc-sidebar-item href="#b" icon="banknote">Nem espaço vazio</lc-sidebar-item>
-              </lc-sidebar>
-              <div style="background: var(--lc-color-surface-page)"></div>
-            </div>
-          </template>
-        </div>
-      </div>
     </main>
   </body>
 </html>
