@@ -228,36 +228,108 @@ export default /* css */ `
 
      \`z-index\` não resolve sobreposição com painel de top layer, e nem
      precisa: a alça não disputa com nada: ela só precisa ficar acima do
-     conteúdo vizinho, que está no fluxo normal. */
+     conteúdo vizinho, que está no fluxo normal.
+
+     ── ANCORADA PELA ESQUERDA, e isto é o que faz o hover funcionar ──────────
+     A âncora era \`inset-inline-end: -10px\`, que prende a aresta DIREITA. Com
+     ela, crescer no hover empurraria a alça para dentro da barra, por cima do
+     menu. O painel prende a esquerda (\`left: var(--bng-sb-largura)\` com
+     \`margin-left: -10px\`), e é por isso que lá ela se abre sobre o conteúdo.
+     Reproduzido: \`inset-inline-start: 100%\` é a borda direita da coluna, seja
+     ela 230px ou 56px, e a margem negativa monta a aba sobre a borda. */
   .alca {
     position: absolute;
     inset-block-start: var(--lc-space-2xl);
-    inset-inline-end: -10px;
+    inset-inline-start: 100%;
+    margin-inline-start: -10px;
     z-index: 1;
 
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     inline-size: 20px;
     block-size: 56px;
     padding: 0;
     border: 0;
     border-radius: var(--lc-radius-pill);
+    /* O rótulo nasce de largura zero; sem isto ele apareceria cortado para fora
+       da aba durante a abertura. */
+    overflow: hidden;
+    white-space: nowrap;
 
     background: var(--lc-color-shell-handle);
     color: var(--lc-color-shell-handle-icon);
     cursor: pointer;
-    transition: background-color var(--lc-transition-fast);
+
+    /* ── O ANEL BRANCO ────────────────────────────────────────────────────
+       Dois px, e não um: é a medida do painel, que traz na própria folha o
+       motivo — o turquesa dá 1,52:1 contra o \`#ecf0f5\` do conteúdo, e sem o
+       anel a aba não tem contorno nenhum.
+
+       É \`box-shadow\` e não \`border\`: borda entraria na caixa e comeria 4px
+       dos 20px de largura da aba, apertando o ícone. O spread do box-shadow
+       cresce para FORA sem mexer no layout — e é assim no painel também. */
+    box-shadow: 0 0 0 2px var(--lc-color-shell-handle-ring);
+
+    /* Animar a largura DA ALÇA é seguro, ao contrário de animar a do host: ela
+       é \`position: absolute\`, não é item do grid, e portanto não realimenta a
+       faixa \`auto\` que congelava a barra em 230px (ver o bloco lá em cima). */
+    transition:
+      inline-size var(--lc-transition-fast),
+      padding var(--lc-transition-fast),
+      background-color var(--lc-transition-fast);
   }
 
-  .alca:hover { background: var(--lc-color-shell-handle-hover); }
+  /* ── O hover, que é o mesmo gesto com dois rótulos ────────────────────────
+     A aba se abre de 20px para 128px, escurece o turquesa e revela o que o
+     clique vai fazer: "Recolher" quando a barra está aberta, "Expandir" quando
+     está no trilho. Os dois estados usam a mesma animação; o que muda é a
+     palavra, e quem a troca é o \`syncCollapsed()\` no JS — o CSS não sabe
+     escrever texto.
+
+     \`:focus-visible\` abre igual, de propósito: quem chega pelo Tab precisa
+     ler o rótulo tanto quanto quem chega pelo mouse. E é \`focus-visible\` e não
+     \`focus\` porque depois de um clique de mouse o foco FICA na alça — com
+     \`:focus\` o rótulo ficaria aberto por cima do flyout do trilho. O painel
+     tem exatamente essa nota na folha dele, achada em teste ao vivo. */
+  .alca:hover,
+  .alca:focus-visible {
+    inline-size: 128px;
+    justify-content: flex-start;
+    padding-inline-start: 4px;
+    background: var(--lc-color-shell-handle-hover);
+  }
 
   .alca:focus-visible {
     outline: 2px solid var(--lc-color-shell-handle);
-    outline-offset: 2px;
+    /* 3px, não 2: o anel branco já ocupa os dois primeiros. */
+    outline-offset: 3px;
+  }
+
+  .alca-rotulo {
+    /* Fechado é largura zero, não \`display: none\`: só assim há o que animar. */
+    max-inline-size: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-inline-start: 0;
+    font-size: var(--lc-font-size-s);
+    font-weight: var(--lc-font-weight-semibold);
+    transition:
+      max-inline-size var(--lc-transition-fast),
+      opacity var(--lc-transition-fast),
+      margin-inline-start var(--lc-transition-fast);
+  }
+
+  .alca:hover .alca-rotulo,
+  .alca:focus-visible .alca-rotulo {
+    max-inline-size: 100px;
+    opacity: 1;
+    margin-inline-start: var(--lc-space-xs);
   }
 
   .alca-icone {
     font-size: var(--lc-font-size-s);
+    flex: none;
     /* Expandida, a seta aponta para dentro (recolher); recolhida, para fora. */
     transform: rotate(180deg);
     transition: transform var(--lc-transition-fast);
@@ -266,7 +338,7 @@ export default /* css */ `
   :host(:state(rail)) .alca-icone { transform: rotate(0deg); }
 
   @media (prefers-reduced-motion: reduce) {
-    .alca, .alca-icone { transition: none; }
+    .alca, .alca-icone, .alca-rotulo { transition: none; }
     /* A gaveta ainda precisa de \`display\` e \`overlay\` na transição — sem eles
        ela volta a ser removida do top layer no primeiro quadro do fechamento.
        O que sai é só o DESLIZE, que é o que incomoda quem pediu menos

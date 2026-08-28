@@ -145,6 +145,51 @@ for (const pagina of PAGINAS) {
       const anota = (name, ok, detail = '') =>
         resultados.push({ name: `[driver] ${name}`, verdict: ok ? 'PASS' : 'FAIL', detail });
 
+      /* ── A alça abre no hover, e diz o que o clique vai fazer ─────────
+         Hover não se simula: `dispatchEvent(new MouseEvent('mouseover'))` não
+         faz `:hover` casar. Precisa de ponteiro de verdade, que só o driver
+         tem — mesmo motivo do Esc. A barra chega aqui RECOLHIDA da página. */
+      const alcaEm = async () => {
+        await page.hover('#barra >>> .alca');
+        await page.waitForTimeout(300);
+        return page.evaluate(`({
+          largura: window.__lcGaveta.alca.getBoundingClientRect().width,
+          rotulo: window.__lcGaveta.barra.shadowRoot.querySelector('.alca-rotulo').textContent,
+          rotuloVisivel:
+            window.__lcGaveta.barra.shadowRoot.querySelector('.alca-rotulo')
+              .getBoundingClientRect().width > 20,
+        })`);
+      };
+
+      let h = await alcaEm();
+      anota(
+        'a alça se abre de 20px para 128px no hover',
+        Math.round(h.largura) === 128,
+        `${h.largura.toFixed(1)}px`,
+      );
+      anota('e revela o rótulo, que em repouso tinha largura zero', h.rotuloVisivel);
+      anota(
+        'no trilho o hover diz EXPANDIR',
+        h.rotulo === 'Expandir',
+        `rótulo "${h.rotulo}"`,
+      );
+
+      /* Expande a barra e passa o mouse de novo: mesma animação, outra palavra.
+         É esta a asserção que amarra "um hover para cada sentido". */
+      await page.evaluate('window.__lcGaveta.barra.collapsed = false');
+      await page.mouse.move(600, 600);
+      await page.waitForTimeout(200);
+      h = await alcaEm();
+      anota(
+        'expandida o hover diz RECOLHER — mesma abertura, outro sentido',
+        h.rotulo === 'Recolher' && Math.round(h.largura) === 128,
+        `rótulo "${h.rotulo}" · ${h.largura.toFixed(1)}px`,
+      );
+      /* Devolve o trilho: a faixa da gaveta abaixo conta com ele posto. */
+      await page.evaluate('window.__lcGaveta.barra.collapsed = true');
+      await page.mouse.move(600, 600);
+      await page.waitForTimeout(200);
+
       /* ── Entra na faixa da gaveta ─────────────────────────────────────── */
       await page.setViewportSize({ width: 380, height: 720 });
       await page.waitForTimeout(200);

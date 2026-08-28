@@ -116,6 +116,19 @@
   --lc-color-shell-handle: var(--lc-_brand-turquoise);
   --lc-color-shell-handle-hover: var(--lc-_brand-turquoise-deep);
   --lc-color-shell-handle-icon: var(--lc-_brand-ink-on-turquoise);
+  /* O ANEL DA ALÇA, e ele não é decoração — é o que dá contorno ao turquesa
+     sobre a página. MEDIDO, e o painel já diz o porquê na própria folha ("o anel
+     branco de 2px é OBRIGATÓRIO"): o turquesa dá **1,52:1** contra o
+     `#ecf0f5` do conteúdo, e sem o anel a aba não tem borda nenhuma.
+
+     Honestidade sobre o que ele resolve: o anel branco dá 1,14:1 contra a mesma
+     página, então ele NÃO cria uma borda de 3:1 (o mínimo de 1.4.11 para
+     componente de interface). O que ele faz é dobrar a aresta — turquesa, branco,
+     página — e é isso que o olho lê como forma. É o dispositivo do painel,
+     reproduzido, e o defeito de contraste é herdado junto: está anotado no teste
+     como HERDADO em vez de "consertado" aqui, porque consertar mudaria a cor da
+     alça que está no ar. */
+  --lc-color-shell-handle-ring: var(--lc-_branco);
 
 
   --lc-color-border-quiet: var(--lc-_ad-divisor);

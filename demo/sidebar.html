@@ -110,6 +110,71 @@
         </div>
       </div>
 
+      <h2 class="doc-h2">A alça, e os dois sentidos dela</h2>
+      <p>
+        É o controle do trilho: uma aba turquesa montada sobre a borda direita, metade para dentro
+        e metade para fora. Passe o mouse nela no exemplo acima — <strong>ela se abre e diz o que o
+        clique vai fazer</strong>.
+      </p>
+
+      <lc-alert variant="brand">
+        <lc-icon slot="icon" name="info"></lc-icon>
+        <span>
+          <strong>Um gesto, dois sentidos.</strong> A animação é a mesma nos dois estados: a aba
+          vai de 20&nbsp;px para 128&nbsp;px e o turquesa escurece. O que muda é a palavra —
+          <strong>"Recolher"</strong> com a barra aberta, <strong>"Expandir"</strong> no trilho —
+          porque é o que o clique faz que muda. São as palavras do painel de homologação, lidas do
+          <code>bng-sidebar.js</code> dele.
+        </span>
+      </lc-alert>
+
+      <p>
+        Abre <strong>no foco também</strong>, não só no hover: quem chega pelo <kbd>Tab</kbd>
+        precisa ler o rótulo tanto quanto quem chega de mouse. É <code>:focus-visible</code> e não
+        <code>:focus</code> — depois de um clique de mouse o foco <em>fica</em> na alça, e com
+        <code>:focus</code> o rótulo ficaria aberto por cima do flyout do trilho. Essa nota está na
+        folha do painel, achada em teste ao vivo lá.
+      </p>
+
+      <h3 class="doc-h3">O anel branco não é decoração</h3>
+      <p>
+        São <strong>2&nbsp;px de anel branco</strong> em volta da aba, e a medida é do painel, que
+        traz o motivo na própria folha: o turquesa da marca dá <strong>1,52:1</strong> contra o
+        <code>#ecf0f5</code> do conteúdo. Sem o anel, a aba não tem contorno nenhum.
+      </p>
+      <p>
+        É <code>box-shadow</code> e não <code>border</code>. Borda entraria na caixa e comeria
+        4&nbsp;px dos 20&nbsp;px de largura da aba, apertando o ícone; o <em>spread</em> do
+        box-shadow cresce para fora sem mexer no layout.
+      </p>
+
+      <lc-alert variant="warning">
+        <lc-icon slot="icon" name="warning"></lc-icon>
+        <span>
+          <strong>E ele não resolve o contraste — só dobra a aresta.</strong> O anel branco dá
+          1,14:1 contra a mesma página, então o par não alcança os 3:1 que o critério 1.4.11 pede
+          para contorno de componente. O que funciona é a sequência turquesa&nbsp;→&nbsp;branco
+          →&nbsp;página, que o olho lê como forma. É o dispositivo do painel, reproduzido, e o
+          defeito vem junto: está no <code>test/tema.html</code> como <strong>HERDADO</strong>, com
+          as quatro razões medidas, em vez de "consertado" por aqui — consertar seria trocar a cor
+          de uma peça de marca por conta própria.
+        </span>
+      </lc-alert>
+
+      <h3 class="doc-h3">Ela cresce para fora, e isso é a âncora</h3>
+      <p>
+        A aba é presa pela aresta <strong>esquerda</strong>
+        (<code>inset-inline-start: 100%</code>), não pela direita. Com a direita presa, abrir no
+        hover empurraria a alça para dentro da barra, por cima do menu. O painel prende a esquerda
+        pelo mesmo motivo — e o <code>100%</code> acerta as duas larguras sozinho, 230&nbsp;px ou
+        56&nbsp;px.
+      </p>
+      <p>
+        Os três tokens da alça viraram quatro: <code>--lc-color-shell-handle</code>, o
+        <code>-hover</code>, o <code>-icon</code> e agora o <code>-ring</code>. Turquesa e branco
+        <strong>nos dois temas</strong> — a alça é peça de marca, e é assim que está no ar.
+      </p>
+
       <h2 class="doc-h2">A marca não mora na barra</h2>
       <p>
         Houve aqui uma faixa de 50&nbsp;px no topo, com a cor da marca e dois slots

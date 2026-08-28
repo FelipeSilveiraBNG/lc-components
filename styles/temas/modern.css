@@ -132,6 +132,11 @@
   --lc-color-shell-handle: var(--lc-_brand-turquoise);
   --lc-color-shell-handle-hover: var(--lc-_brand-turquoise-deep);
   --lc-color-shell-handle-icon: var(--lc-_brand-ink-on-turquoise);
+  /* O anel da alça — mesma medida e mesmo motivo do `legacy`, e os números aqui
+     são igualmente ruins: o turquesa dá 1,66:1 contra o `#f8fafc` desta página e
+     o anel dá 1,05:1. Manter o branco nos dois temas é a mesma decisão que
+     mantém o turquesa nos dois: a alça é peça de marca. */
+  --lc-color-shell-handle-ring: var(--lc-_branco);
 
 
   --lc-color-border-quiet: var(--lc-_slate-100);

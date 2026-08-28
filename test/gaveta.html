@@ -82,6 +82,7 @@
       const conteudo = document.getElementById('conteudo');
       const gatilho = document.getElementById('gatilho');
       const gaveta = barra.shadowRoot.querySelector('.gaveta');
+      const alca = barra.shadowRoot.querySelector('.alca');
       const largura = (el) => el.getBoundingClientRect().width;
 
       /* Todo fechamento e toda abertura passam por evento — é o que o gatilho do
@@ -109,6 +110,39 @@
         getComputedStyle(gatilho).display,
       );
 
+      /* ── A alça: o anel branco de 2px ──────────────────────────────────── */
+      const anel = getComputedStyle(alca).boxShadow;
+      check(
+        '[alça] o anel é box-shadow de 2px, não borda — a borda comeria a largura',
+        /2px/.test(anel) && !/inset/.test(anel),
+        anel,
+      );
+      check(
+        '[alça] o anel resolve para o token, e não para um literal',
+        anel.includes(
+          getComputedStyle(document.documentElement)
+            .getPropertyValue('--lc-color-shell-handle-ring')
+            .trim()
+            .replace(/^#fff(fff)?$/i, 'rgb(255, 255, 255)'),
+        ) || /255,\s*255,\s*255/.test(anel),
+        anel,
+      );
+      check(
+        '[alça] a borda esquerda da alça é a borda direita da coluna',
+        Math.abs(alca.getBoundingClientRect().left - (largura(barra) - 10)) < 1.5,
+        `alça em ${alca.getBoundingClientRect().left.toFixed(1)} · coluna ${largura(barra)}`,
+      );
+      check(
+        '[alça] expandida, o rótulo do hover diz Recolher',
+        barra.shadowRoot.querySelector('.alca-rotulo').textContent === 'Recolher',
+        barra.shadowRoot.querySelector('.alca-rotulo').textContent,
+      );
+      check(
+        '[alça] em repouso o rótulo tem largura zero',
+        Math.round(largura(barra.shadowRoot.querySelector('.alca-rotulo'))) === 0,
+        `${largura(barra.shadowRoot.querySelector('.alca-rotulo')).toFixed(1)}px`,
+      );
+
       /* ── `open` fora da faixa não faz nada ─────────────────────────────── */
       barra.open = true;
       await espera(60);
@@ -131,13 +165,18 @@
       );
       check('[desktop] o state rail está ligado', barra.matches(':state(rail)'));
       check(
+        '[alça] no trilho, o mesmo rótulo passa a dizer Expandir',
+        barra.shadowRoot.querySelector('.alca-rotulo').textContent === 'Expandir',
+        barra.shadowRoot.querySelector('.alca-rotulo').textContent,
+      );
+      check(
         '[desktop] os filhos receberam data-rail',
         [...barra.children].every((f) => f.dataset.rail !== undefined),
       );
 
       /* Fica RECOLHIDA para o driver: é assim que se prova que a faixa da gaveta
          ignora o trilho sem apagar o atributo de quem o pediu. */
-      window.__lcGaveta = { barra, conteudo, gatilho, gaveta, eventos };
+      window.__lcGaveta = { barra, conteudo, gatilho, gaveta, alca, eventos };
       check(
         'Cenário montado para o driver (asserções em tools/run-tests.mjs)',
         Boolean(window.__lcGaveta.barra),

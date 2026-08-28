@@ -41,6 +41,7 @@ const FAIXA_GAVETA = '(max-width: 767px)';
  * @csspart drawer - O `<dialog>` da gaveta. Fora do telefone não é caixa nenhuma.
  * @csspart menu - A lista, que é quem rola.
  * @csspart handle - A alça de recolher.
+ * @csspart handle-label - O rótulo dentro da alça. Só aparece no hover e no foco.
  *
  * @cssproperty --width - Largura expandida. Padrão 230px, medido no painel.
  * @cssproperty --rail-width - Largura do trilho. Padrão 56px, medido no painel.
@@ -117,6 +118,7 @@ export class LcSidebar extends LcElement {
     </dialog>
     <button part="handle" class="alca" type="button">
       <lc-icon class="alca-icone" name="chevron-right" aria-hidden="true"></lc-icon>
+      <span part="handle-label" class="alca-rotulo"></span>
     </button>
   `;
 
@@ -284,6 +286,15 @@ export class LcSidebar extends LcElement {
       alca.setAttribute('aria-expanded', String(!recolhida));
       alca.setAttribute('aria-label', recolhida ? 'Expandir o menu' : 'Recolher o menu');
       alca.title = recolhida ? 'Expandir o menu' : 'Recolher o menu';
+
+      /* O RÓTULO QUE O HOVER REVELA — e é ele que faz os dois hovers serem
+         diferentes. A animação é uma só; a palavra é que muda, porque o que a
+         alça vai FAZER muda. É mais curto que o `aria-label` de propósito: o
+         nome acessível diz "Recolher o menu", o rótulo visível cabe em 100px, e
+         "Recolher" é subconjunto de "Recolher o menu" — o que mantém o
+         critério 2.5.3 (rótulo no nome) satisfeito. São as palavras do painel. */
+      const rotulo = this.$('.alca-rotulo');
+      if (rotulo) rotulo.textContent = recolhida ? 'Expandir' : 'Recolher';
     }
     this.setState('rail', recolhida);
   }
