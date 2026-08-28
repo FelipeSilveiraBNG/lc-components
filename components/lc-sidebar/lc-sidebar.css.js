@@ -251,7 +251,21 @@ export default /* css */ `
     block-size: 56px;
     padding: 0;
     border: 0;
-    border-radius: var(--lc-radius-pill);
+
+    /* ── É UMA ABA, não uma pílula ─────────────────────────────────────────
+       \`4px 10px 10px 4px\` no painel: canto quase reto do lado que encosta na
+       barra, arredondado do lado que fica sobre o conteúdo. Fechada, em 20px, a
+       diferença contra uma pílula quase não aparece; ABERTA, em 128px, aparece
+       muito — a pílula viraria um estádio de 28px de raio.
+
+       Nas quatro longhands lógicas, e não no atalho físico, porque é assim que
+       o resto deste arquivo se escreve: em RTL a aba nasce do outro lado e os
+       cantos precisam acompanhar. */
+    border-start-start-radius: 4px;
+    border-start-end-radius: 10px;
+    border-end-end-radius: 10px;
+    border-end-start-radius: 4px;
+
     /* O rótulo nasce de largura zero; sem isto ele apareceria cortado para fora
        da aba durante a abertura. */
     overflow: hidden;
@@ -268,8 +282,14 @@ export default /* css */ `
 
        É \`box-shadow\` e não \`border\`: borda entraria na caixa e comeria 4px
        dos 20px de largura da aba, apertando o ícone. O spread do box-shadow
-       cresce para FORA sem mexer no layout — e é assim no painel também. */
-    box-shadow: 0 0 0 2px var(--lc-color-shell-handle-ring);
+       cresce para FORA sem mexer no layout — e é assim no painel também.
+
+       As duas camadas vêm na MESMA declaração, na ordem do painel: o anel
+       primeiro, encostado na aba, e a sombra depois, caindo por fora dele. Trocar
+       a ordem poria a sombra por baixo do anel e ela desapareceria. */
+    box-shadow:
+      0 0 0 2px var(--lc-color-shell-handle-ring),
+      var(--lc-shadow-shell-handle);
 
     /* Animar a largura DA ALÇA é seguro, ao contrário de animar a do host: ela
        é \`position: absolute\`, não é item do grid, e portanto não realimenta a

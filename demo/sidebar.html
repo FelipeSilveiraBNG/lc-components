@@ -169,10 +169,28 @@
         pelo mesmo motivo — e o <code>100%</code> acerta as duas larguras sozinho, 230&nbsp;px ou
         56&nbsp;px.
       </p>
+      <h3 class="doc-h3">É uma aba, não uma pílula</h3>
       <p>
-        Os três tokens da alça viraram quatro: <code>--lc-color-shell-handle</code>, o
-        <code>-hover</code>, o <code>-icon</code> e agora o <code>-ring</code>. Turquesa e branco
-        <strong>nos dois temas</strong> — a alça é peça de marca, e é assim que está no ar.
+        O raio é <code>4px&nbsp;10px&nbsp;10px&nbsp;4px</code>: canto quase reto do lado que
+        encosta na barra, arredondado do lado que fica sobre o conteúdo. Fechada, em 20&nbsp;px, a
+        diferença contra uma pílula quase não aparece — <strong>aberta, em 128&nbsp;px, aparece
+        muito</strong>: a pílula viraria um estádio de 28&nbsp;px de raio. Escrito nas quatro
+        longhands lógicas, e não no atalho físico, porque em RTL a aba nasce do outro lado e os
+        cantos precisam acompanhar.
+      </p>
+      <p>
+        A sombra vem na <strong>mesma declaração</strong> do anel, e na ordem do painel: o anel
+        encostado na aba, a sombra caindo por fora dele. Trocar a ordem poria a sombra por baixo do
+        anel e ela desapareceria.
+      </p>
+
+      <p>
+        Os três tokens da alça viraram <strong>cinco</strong>:
+        <code>--lc-color-shell-handle</code>, o <code>-hover</code>, o <code>-icon</code>, o
+        <code>-ring</code> e a <code>--lc-shadow-shell-handle</code>. Todos iguais
+        <strong>nos dois temas</strong> — a alça é peça de marca, e é assim que está no ar. A
+        sombra virou token, e não literal, porque nenhum componente deste kit tem cor literal e
+        toda <code>box-shadow</code> de componente sai de um <code>--lc-shadow-*</code>.
       </p>
 
       <h2 class="doc-h2">A marca não mora na barra</h2>
